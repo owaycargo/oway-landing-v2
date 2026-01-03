@@ -26,6 +26,9 @@ export function Header() {
           <a href="/#services" className="text-slate-600 hover:text-blue-600 transition-colors">
             Услуги
           </a>
+          <a href="/#marketplace" className="text-slate-600 hover:text-blue-600 transition-colors">
+            Магазины
+          </a>
           <a href="/#map" className="text-slate-600 hover:text-blue-600 transition-colors">
             Пункты приёма
           </a>
@@ -63,6 +66,13 @@ export function Header() {
               className="text-slate-600 hover:text-blue-600 transition-colors py-2"
             >
               Услуги
+            </a>
+            <a
+              href="/#marketplace"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-slate-600 hover:text-blue-600 transition-colors py-2"
+            >
+              Магазины
             </a>
             <a
               href="/#map"

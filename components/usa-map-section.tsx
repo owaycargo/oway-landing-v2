@@ -155,7 +155,10 @@ export function UsaMapSection() {
             {filteredPoints.map((point) => {
               const isSelected = selectedPoint === point.id
               const isHovered = hoveredPoint === point.id
-              const shouldScale = isSelected || isHovered
+              
+              // Вычисляем scale один раз для всех элементов
+              const scale = isSelected ? 1.3 : isHovered ? 1.1 : 1
+              const glowScale = isSelected ? 1.4 : isHovered ? 1.2 : 1
               
               return (
                 <Marker
@@ -170,50 +173,68 @@ export function UsaMapSection() {
                         onMouseLeave={() => setHoveredPoint(null)}
                         className="cursor-pointer"
                         style={{ 
-                          transformOrigin: "center",
-                          transform: shouldScale ? "scale(1.3)" : "scale(1)",
-                          transition: "transform 0.2s ease",
                           pointerEvents: "all",
                         }}
                       >
-                        {/* Outer glow effect */}
+                        {/* Outer glow effect - фиксированный размер */}
                         <circle
-                          r={isSelected ? 22 : isHovered ? 18 : 16}
+                          r={16}
                           fill={isSelected ? "#f97316" : "#2563eb"}
-                          opacity={isSelected ? 0.2 : isHovered ? 0.18 : 0.15}
+                          opacity={isSelected ? 0.25 : isHovered ? 0.2 : 0.15}
+                          transform={`scale(${glowScale})`}
+                          style={{
+                            transition: "transform 0.2s ease, opacity 0.2s ease",
+                          }}
                         />
                         {/* Pulse animation for selected */}
                         {isSelected && (
                           <circle
-                            r={22}
+                            r={16}
                             fill="#f97316"
-                            opacity={0.1}
+                            opacity={0.15}
+                            transform="scale(1.4)"
                             style={{
                               animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
                             }}
                           />
                         )}
-                        {/* Pin shadow */}
+                        {/* Pin shadow - фиксированный размер */}
                         <circle
-                          r={isSelected ? 13 : isHovered ? 10 : 9}
+                          r={9}
                           fill="rgba(0,0,0,0.2)"
-                          transform="translate(1, 1)"
+                          transform={`translate(1, 1) scale(${scale})`}
+                          style={{
+                            transition: "transform 0.2s ease",
+                          }}
                         />
-                        {/* Main pin circle */}
+                        {/* Main pin circle - фиксированный размер */}
                         <circle
-                          r={isSelected ? 13 : isHovered ? 10 : 9}
+                          r={9}
                           fill={isSelected ? "#f97316" : "#2563eb"}
                           stroke="white"
                           strokeWidth={isSelected ? 3.5 : isHovered ? 3 : 2.5}
+                          transform={`scale(${scale})`}
+                          style={{
+                            transition: "transform 0.2s ease, fill 0.2s ease, stroke-width 0.2s ease",
+                          }}
                         />
-                        {/* Inner white dot */}
+                        {/* Inner white dot - фиксированный размер */}
                         <circle
-                          r={isSelected ? 5.5 : isHovered ? 4.5 : 4}
+                          r={4}
                           fill="white"
+                          transform={`scale(${scale})`}
+                          style={{
+                            transition: "transform 0.2s ease",
+                          }}
                         />
                       </g>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="bg-slate-900 text-white border-0 shadow-lg">
+                    <TooltipContent 
+                      side="top" 
+                      className="bg-slate-900 text-white border-0 shadow-lg"
+                      sideOffset={8}
+                      avoidCollisions={true}
+                    >
                       <p className="font-semibold">{point.city}, {point.state}</p>
                       <p className="text-xs text-slate-300 mt-1">Нажмите для подробностей</p>
                     </TooltipContent>

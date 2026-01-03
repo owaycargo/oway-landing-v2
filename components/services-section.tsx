@@ -19,7 +19,7 @@ const services = [
   },
   {
     icon: Truck,
-    title: "СНГ доставка (СДЭК)",
+    title: "Доставка в страны СНГ",
     description: "Надёжная доставка до двери через проверенных партнёров",
   },
   {
@@ -27,6 +27,7 @@ const services = [
     title: "Telegram-уведомления",
     description: "Получайте обновления о статусе вашей посылки в реальном времени",
   },
+  
 ]
 
 export function ServicesSection() {

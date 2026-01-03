@@ -39,7 +39,7 @@ const deliveryExamples: Record<string, Array<{
       route: "Лос-Анджелес → Санкт-Петербург",
       weight: "3.2 кг",
       duration: "9 дней",
-      price: "$52",
+      price: "$58",
       bgColor: "from-purple-50 to-pink-50",
     },
     {
@@ -47,7 +47,7 @@ const deliveryExamples: Record<string, Array<{
       route: "Майами → Новосибирск",
       weight: "5.8 кг",
       duration: "12 дней",
-      price: "$78",
+      price: "$104",
       bgColor: "from-orange-50 to-amber-50",
     },
     {
@@ -55,7 +55,7 @@ const deliveryExamples: Record<string, Array<{
       route: "Чикаго → Екатеринбург",
       weight: "1.5 кг",
       duration: "8 дней",
-      price: "$38",
+      price: "$27",
       bgColor: "from-pink-50 to-rose-50",
     },
   ],
@@ -65,7 +65,7 @@ const deliveryExamples: Record<string, Array<{
       route: "Нью-Йорк → Бишкек",
       weight: "2.5 кг",
       duration: "10 дней",
-      price: "$48",
+      price: "$30",
       bgColor: "from-blue-50 to-cyan-50",
     },
     {
@@ -73,7 +73,7 @@ const deliveryExamples: Record<string, Array<{
       route: "Лос-Анджелес → Бишкек",
       weight: "4.2 кг",
       duration: "12 дней",
-      price: "$65",
+      price: "$50",
       bgColor: "from-purple-50 to-pink-50",
     },
     {
@@ -81,7 +81,7 @@ const deliveryExamples: Record<string, Array<{
       route: "Майами → Ош",
       weight: "6.5 кг",
       duration: "14 дней",
-      price: "$85",
+      price: "$78",
       bgColor: "from-orange-50 to-amber-50",
     },
     {
@@ -89,7 +89,7 @@ const deliveryExamples: Record<string, Array<{
       route: "Чикаго → Бишкек",
       weight: "1.8 кг",
       duration: "11 дней",
-      price: "$42",
+      price: "$22",
       bgColor: "from-pink-50 to-rose-50",
     },
   ],
@@ -99,7 +99,7 @@ const deliveryExamples: Record<string, Array<{
       route: "Нью-Йорк → Минск",
       weight: "2.5 кг",
       duration: "8 дней",
-      price: "$46",
+      price: "$45",
       bgColor: "from-blue-50 to-cyan-50",
     },
     {
@@ -107,7 +107,7 @@ const deliveryExamples: Record<string, Array<{
       route: "Лос-Анджелес → Минск",
       weight: "3.8 кг",
       duration: "10 дней",
-      price: "$58",
+      price: "$68",
       bgColor: "from-purple-50 to-pink-50",
     },
     {
@@ -115,7 +115,7 @@ const deliveryExamples: Record<string, Array<{
       route: "Майами → Гомель",
       weight: "7.2 кг",
       duration: "11 дней",
-      price: "$92",
+      price: "$130",
       bgColor: "from-orange-50 to-amber-50",
     },
     {
@@ -123,7 +123,7 @@ const deliveryExamples: Record<string, Array<{
       route: "Чикаго → Минск",
       weight: "1.6 кг",
       duration: "9 дней",
-      price: "$40",
+      price: "$29",
       bgColor: "from-pink-50 to-rose-50",
     },
   ],
@@ -179,7 +179,16 @@ export function CalculatorSection() {
 
   const calculatePrice = () => {
     if (!weight || !country) return null
-    const basePrice = Number.parseFloat(weight) * 12
+    
+    // Тарифы за кг в зависимости от страны
+    const pricePerKg: Record<string, number> = {
+      KG: 12, // Кыргызстан: $12 за кг
+      RU: 18, // Россия: $18 за кг
+      BY: 18, // Беларусь: $18 за кг
+    }
+    
+    const rate = pricePerKg[country] || 12
+    const basePrice = Number.parseFloat(weight) * rate
     const insurancePrice = insurance ? 5 : 0
     const expressPrice = express ? 20 : 0
     return (basePrice + insurancePrice + expressPrice).toFixed(2)
