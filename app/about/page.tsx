@@ -93,22 +93,6 @@ export default function AboutPage() {
           </p>
         </div>
 
-        {/* About Company */}
-        <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm mb-12">
-          <h2 className="text-3xl font-bold text-slate-900 mb-6">О компании</h2>
-          <div className="prose prose-slate max-w-none">
-            <p className="text-slate-600 leading-relaxed mb-4">
-              OWAY Cargo — это международный логистический сервис, специализирующийся на доставке посылок и товаров из
-              США в страны СНГ. Компания построена как гибкая распределённая логистическая система, объединяющая
-              автономные пункты приёма, консолидационные хабы и партнёрские сети доставки.
-            </p>
-            <p className="text-slate-600 leading-relaxed">
-              Мы работаем с частными клиентами, онлайн-покупателями, байерами и бизнесом, обеспечивая прозрачную,
-              понятную и контролируемую доставку на каждом этапе.
-            </p>
-          </div>
-        </div>
-
         {/* R.O.W. - Regions of Work */}
         <div className="mb-16">
           <div className="text-center mb-10">
@@ -160,44 +144,59 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* Kyrgyzstan */}
+            {/* Кыргызстан */}
             <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm">
-              <div className="flex items-start gap-4 mb-4">
+              <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Network className="w-6 h-6 text-blue-600" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-slate-900 mb-2">Кыргызстан (Central Transit Hub)</h3>
-                  <p className="text-slate-600 mb-4">
-                    Кыргызстан является единым транзитным и распределительным узлом OWAY Cargo.
-                  </p>
-                  <p className="font-semibold text-slate-900 mb-2">Здесь происходит:</p>
+                  <h3 className="text-xl font-semibold text-slate-900 mb-2">Кыргызстан</h3>
                   <ul className="space-y-2 text-slate-600">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>приём всех международных рейсов</span>
+                      <span>Все посылки поступают в Бишкек и распределяются по регионам страны.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>сортировка посылок по направлениям</span>
+                      <span>Доступна выдача в пункте и доставка по городу.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>внутренние доставки по Кыргызстану</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>подготовка грузов для отправки в Россию и Беларусь</span>
+                      <span>Отслеживание осуществляется на всех этапах до получения.</span>
                     </li>
                   </ul>
-                  <p className="text-sm text-slate-500 mt-4 p-3 bg-blue-50 rounded-lg">
-                    📌 Для клиентов из РФ и РБ Кыргызстан отображается как «транзитная зона» без детализации.
-                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Russia */}
+            {/* Казахстан */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-slate-900 mb-2">Казахстан</h3>
+                  <ul className="space-y-2 text-slate-600">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <span>Все отправления прибывают в Алматы и далее распределяются по городам Казахстана.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <span>Доступна офисная выдача и доставка по регионам через партнёрские службы.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <span>Статус обновляется до момента вручения получателю.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Россия */}
             <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -208,26 +207,26 @@ export default function AboutPage() {
                   <ul className="space-y-2 text-slate-600">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>Все посылки доставляются через московский распределительный склад</span>
+                      <span>Все посылки доставляются через московский распределительный склад.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>Финальная доставка осуществляется через партнёрскую сеть СДЭК</span>
+                      <span>Финальная доставка осуществляется через партнёрскую сеть СДЭК.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>Клиент получает отдельный трек-номер СДЭК</span>
+                      <span>Клиент получает отдельный трек-номер для внутренней доставки.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>OWAY Cargo отвечает за международный сегмент доставки</span>
+                      <span>OWAY Cargo отвечает за международный сегмент перевозки.</span>
                     </li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            {/* Belarus */}
+            {/* Беларусь */}
             <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -238,15 +237,15 @@ export default function AboutPage() {
                   <ul className="space-y-2 text-slate-600">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>Доставка осуществляется через Россию</span>
+                      <span>Доставка осуществляется через Россию.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>Финальный оператор доставки — СДЭК</span>
+                      <span>Финальный оператор доставки — СДЭК.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>Полное отслеживание до вручения получателю</span>
+                      <span>Отслеживание доступно до момента вручения получателю.</span>
                     </li>
                   </ul>
                 </div>

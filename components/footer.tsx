@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { useTelegramDialog } from "@/components/telegram-dialog-provider"
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -41,6 +42,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 )
 
 export function Footer() {
+  const { openTelegram } = useTelegramDialog()
   return (
     <footer id="contact" className="bg-slate-900 text-slate-300">
       <div className="container mx-auto px-4 py-12">
@@ -112,7 +114,7 @@ export function Footer() {
 
         {/* Social and copyright */}
         <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-slate-400">© 2025 OWAY CARGO. Все права защищены.</p>
+          <p className="text-sm text-slate-400">© 2026 OWAY CARGO. Все права защищены.</p>
           <div className="flex gap-4">
             <a
               href="https://www.tiktok.com/@owaycargo?_r=1&_t=ZS-93w3W1Cv5Zi"
@@ -132,72 +134,14 @@ export function Footer() {
             >
               <InstagramIcon className="w-4 h-4" />
             </a>
-            <Dialog>
-              <DialogTrigger asChild>
-                <button
-                  type="button"
-                  className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition-colors cursor-pointer"
-                  aria-label="Telegram"
-                >
-                  <TelegramIcon className="w-4 h-4" />
-                </button>
-              </DialogTrigger>
-              <DialogContent className="bg-slate-900 border-slate-700 text-slate-200 sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle className="text-white">Написать в Telegram</DialogTitle>
-                  {/* <DialogDescription className="text-slate-400">
-                  
-                  </DialogDescription> */}
-                </DialogHeader>
-                <div className="grid gap-3 pt-2">
-                  <a
-                    href="https://t.me/owaycargo"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-start gap-3 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-blue-500/50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-[#0088cc]/20 flex items-center justify-center shrink-0 mt-0.5">
-                      <TelegramIcon className="w-5 h-5 text-[#0088cc]" />
-                    </div>
-                    <div className="text-left min-w-0">
-                      <div className="font-medium text-white">OWAY CARGO — Новости и акции</div>
-                      {/* <div className="text-sm text-slate-400 mt-1">
-                        Сервис доставки из США в страны СНГ. Всё о доставке: акции, новости, сроки, стоимость. Заказ и вопросы — в канале.
-                      </div> */}
-                      <div className="text-xs text-slate-500 mt-1">@owaycargo</div>
-                    </div>
-                  </a>
-                  <a
-                    href="https://t.me/owaymanagersng"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-blue-500/50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-[#0088cc]/20 flex items-center justify-center shrink-0">
-                      <TelegramIcon className="w-5 h-5 text-[#0088cc]" />
-                    </div>
-                    <div className="text-left">
-                      <div className="font-medium text-white">Менеджер по СНГ</div>
-                      <div className="text-sm text-slate-400">@owaymanagersng</div>
-                    </div>
-                  </a>
-                  <a
-                    href="https://t.me/owaymanagerusa"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-blue-500/50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-[#0088cc]/20 flex items-center justify-center shrink-0">
-                      <TelegramIcon className="w-5 h-5 text-[#0088cc]" />
-                    </div>
-                    <div className="text-left">
-                      <div className="font-medium text-white">Менеджер по США</div>
-                      <div className="text-sm text-slate-400">@owaymanagerusa</div>
-                    </div>
-                  </a>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <button
+              type="button"
+              onClick={openTelegram}
+              className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition-colors cursor-pointer"
+              aria-label="Telegram"
+            >
+              <TelegramIcon className="w-4 h-4" />
+            </button>
             <Dialog>
               <DialogTrigger asChild>
                 <button

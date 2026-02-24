@@ -10,6 +10,7 @@ import { CaseStudiesSection } from "@/components/case-studies-section"
 import { ClientsBusinessSection } from "@/components/clients-business-section"
 import { FinalCtaSection } from "@/components/final-cta-section"
 import { Footer } from "@/components/footer"
+import { OpenTelegramButton } from "@/components/open-telegram-button"
 
 export const metadata: Metadata = {
   title: "OWAY CARGO — Доставка из США в СНГ | Быстрая международная доставка",
@@ -87,6 +88,15 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <UsaMapSection />
+        <div className="max-w-2xl mx-auto mt-6 mb-2 px-4 text-center space-y-3">
+          <p className="text-xl md:text-2xl text-slate-600 font-medium">
+            <span className="text-red-500" aria-hidden>🔴</span> Нет пункта OWAY в вашем городе?
+          </p>
+          <p className="text-xl md:text-2xl text-slate-600">
+            Откройте ПВЗ OWAY Cargo или станьте нашим представителем в своём городе.
+          </p>
+          <OpenTelegramButton />
+        </div>
         <ServicesSection />
         <HowItWorksSection />
         <CalculatorSection />

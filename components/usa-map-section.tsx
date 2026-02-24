@@ -92,11 +92,11 @@ export function UsaMapSection() {
         </h2>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto">
           Выберите штат или город и найдите ближайший пункт приёма посылок. Все точки работают в режиме{" "}
-          <span className="font-semibold text-blue-600">self-service</span>
+          <span className="font-semibold text-blue-600">самообслуживания</span>
         </p>
       </div>
 
-      <div className="mb-6 max-w-xs mx-auto">
+      <div className="mb-6 max-w-xs">
         <Select value={selectedState} onValueChange={setSelectedState}>
           <SelectTrigger className="h-12 rounded-xl" aria-label="Выберите штат для фильтрации пунктов приёма">
             <SelectValue placeholder="Выберите штат" />

@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { StructuredData } from "@/components/structured-data"
+import { TelegramDialogProvider } from "@/components/telegram-dialog-provider"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -102,9 +103,11 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={`font-sans antialiased`}>
-        <StructuredData />
-        {children}
-        <Analytics />
+        <TelegramDialogProvider>
+          <StructuredData />
+          {children}
+          <Analytics />
+        </TelegramDialogProvider>
       </body>
     </html>
   )

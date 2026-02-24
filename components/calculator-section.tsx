@@ -10,11 +10,52 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 
+// Только 4 страны: Россия, Казахстан, Кыргызстан, Беларусь
+const COUNTRIES = [
+  { value: "RU", label: "Россия" },
+  { value: "KZ", label: "Казахстан" },
+  { value: "KG", label: "Кыргызстан" },
+  { value: "BY", label: "Беларусь" },
+] as const
+
+// Тарифы: RU/BY $18/кг, KZ/KG $12/кг. До Москвы/Минска/Алматы/Бишкек; СДЭК по РФ/РБ — позже.
+const PRICE_PER_KG: Record<string, number> = {
+  RU: 18,
+  BY: 18,
+  KZ: 12,
+  KG: 12,
+}
+
 // Маппинг стран на коды валют для API
 const countryCurrencyMap: Record<string, { code: string; name: string }> = {
   BY: { code: "BYN", name: "белорусских рублей" },
   RU: { code: "RUB", name: "российских рублей" },
+  KZ: { code: "KZT", name: "тенге" },
   KG: { code: "KGS", name: "сомов" },
+}
+
+// Лимиты для валидации (чтобы не было завышенных цифр в расчёте)
+const MAX_WEIGHT_KG = 100
+const MAX_DIMENSION_CM = 300
+const MAX_CHARGEABLE_KG = 200
+const MAX_DECLARED_VALUE = 20_000
+
+// Объёмный вес (кг): L*W*H см / 5000 (формула может уточняться)
+function getVolumetricWeightKg(length: number, width: number, height: number): number {
+  return (length * width * height) / 5000
+}
+
+function clampNum(value: number, min: number, max: number): number {
+  if (!Number.isFinite(value)) return min
+  return Math.max(min, Math.min(max, value))
+}
+
+// Ограничение ввода: при значении выше max подставляем max (для полей габаритов и веса)
+function clampInput(value: string, max: number, decimals = 0): string {
+  if (value === "" || value === "-" || value.endsWith(".")) return value
+  const n = Number.parseFloat(value)
+  if (Number.isNaN(n) || n <= max) return value
+  return decimals > 0 ? Math.min(max, n).toFixed(decimals) : String(Math.min(max, Math.round(n)))
 }
 
 const deliveryExamples: Record<string, Array<{
@@ -26,150 +67,67 @@ const deliveryExamples: Record<string, Array<{
   bgColor: string
 }>> = {
   RU: [
-    {
-      category: "Электроника",
-      route: "Нью-Йорк → Москва",
-      weight: "2.5 кг",
-      duration: "7 дней",
-      price: "$45",
-      bgColor: "from-blue-50 to-cyan-50",
-    },
-    {
-      category: "Одежда",
-      route: "Лос-Анджелес → Санкт-Петербург",
-      weight: "3.2 кг",
-      duration: "9 дней",
-      price: "$58",
-      bgColor: "from-purple-50 to-pink-50",
-    },
-    {
-      category: "Спортивные товары",
-      route: "Майами → Новосибирск",
-      weight: "5.8 кг",
-      duration: "12 дней",
-      price: "$104",
-      bgColor: "from-orange-50 to-amber-50",
-    },
-    {
-      category: "Косметика",
-      route: "Чикаго → Екатеринбург",
-      weight: "1.5 кг",
-      duration: "8 дней",
-      price: "$27",
-      bgColor: "from-pink-50 to-rose-50",
-    },
-  ],
-  KG: [
-    {
-      category: "Электроника",
-      route: "Нью-Йорк → Бишкек",
-      weight: "2.5 кг",
-      duration: "10 дней",
-      price: "$30",
-      bgColor: "from-blue-50 to-cyan-50",
-    },
-    {
-      category: "Одежда",
-      route: "Лос-Анджелес → Бишкек",
-      weight: "4.2 кг",
-      duration: "12 дней",
-      price: "$50",
-      bgColor: "from-purple-50 to-pink-50",
-    },
-    {
-      category: "Спортивные товары",
-      route: "Майами → Ош",
-      weight: "6.5 кг",
-      duration: "14 дней",
-      price: "$78",
-      bgColor: "from-orange-50 to-amber-50",
-    },
-    {
-      category: "Косметика",
-      route: "Чикаго → Бишкек",
-      weight: "1.8 кг",
-      duration: "11 дней",
-      price: "$22",
-      bgColor: "from-pink-50 to-rose-50",
-    },
+    { category: "Электроника", route: "США → Москва", weight: "2.5 кг", duration: "7–10 дней", price: "$45", bgColor: "from-blue-50 to-cyan-50" },
+    { category: "Одежда", route: "США → Москва", weight: "3.2 кг", duration: "9 дней", price: "$58", bgColor: "from-purple-50 to-pink-50" },
+    { category: "Спортивные товары", route: "США → Москва", weight: "5.8 кг", duration: "12 дней", price: "$104", bgColor: "from-orange-50 to-amber-50" },
+    { category: "Косметика", route: "США → Москва", weight: "1.5 кг", duration: "8 дней", price: "$27", bgColor: "from-pink-50 to-rose-50" },
   ],
   BY: [
-    {
-      category: "Электроника",
-      route: "Нью-Йорк → Минск",
-      weight: "2.5 кг",
-      duration: "8 дней",
-      price: "$45",
-      bgColor: "from-blue-50 to-cyan-50",
-    },
-    {
-      category: "Одежда",
-      route: "Лос-Анджелес → Минск",
-      weight: "3.8 кг",
-      duration: "10 дней",
-      price: "$68",
-      bgColor: "from-purple-50 to-pink-50",
-    },
-    {
-      category: "Спортивные товары",
-      route: "Майами → Гомель",
-      weight: "7.2 кг",
-      duration: "11 дней",
-      price: "$130",
-      bgColor: "from-orange-50 to-amber-50",
-    },
-    {
-      category: "Косметика",
-      route: "Чикаго → Минск",
-      weight: "1.6 кг",
-      duration: "9 дней",
-      price: "$29",
-      bgColor: "from-pink-50 to-rose-50",
-    },
+    { category: "Электроника", route: "США → Минск", weight: "2.5 кг", duration: "8 дней", price: "$45", bgColor: "from-blue-50 to-cyan-50" },
+    { category: "Одежда", route: "США → Минск", weight: "3.8 кг", duration: "10 дней", price: "$68", bgColor: "from-purple-50 to-pink-50" },
+    { category: "Спортивные товары", route: "США → Минск", weight: "5 кг", duration: "11 дней", price: "$90", bgColor: "from-orange-50 to-amber-50" },
+    { category: "Косметика", route: "США → Минск", weight: "1.6 кг", duration: "9 дней", price: "$29", bgColor: "from-pink-50 to-rose-50" },
+  ],
+  KZ: [
+    { category: "Электроника", route: "США → Алматы", weight: "2.5 кг", duration: "10 дней", price: "$30", bgColor: "from-blue-50 to-cyan-50" },
+    { category: "Одежда", route: "США → Алматы", weight: "3 кг", duration: "12 дней", price: "$36", bgColor: "from-purple-50 to-pink-50" },
+    { category: "Спортивные товары", route: "США → Алматы", weight: "6.5 кг", duration: "14 дней", price: "$78", bgColor: "from-orange-50 to-amber-50" },
+    { category: "Косметика", route: "США → Алматы", weight: "1.8 кг", duration: "11 дней", price: "$22", bgColor: "from-pink-50 to-rose-50" },
+  ],
+  KG: [
+    { category: "Электроника", route: "США → Бишкек", weight: "2.5 кг", duration: "10 дней", price: "$30", bgColor: "from-blue-50 to-cyan-50" },
+    { category: "Одежда", route: "США → Бишкек", weight: "4.2 кг", duration: "12 дней", price: "$50", bgColor: "from-purple-50 to-pink-50" },
+    { category: "Спортивные товары", route: "США → Бишкек", weight: "6.5 кг", duration: "14 дней", price: "$78", bgColor: "from-orange-50 to-amber-50" },
+    { category: "Косметика", route: "США → Бишкек", weight: "1.8 кг", duration: "11 дней", price: "$22", bgColor: "from-pink-50 to-rose-50" },
   ],
 }
+
+type GoodsCategory = "regular" | "electronics"
 
 export function CalculatorSection() {
   const [country, setCountry] = useState("")
   const [weight, setWeight] = useState("")
+  const [length, setLength] = useState("")
+  const [width, setWidth] = useState("")
+  const [height, setHeight] = useState("")
   const [insurance, setInsurance] = useState(false)
-  const [express, setExpress] = useState(false)
+  const [declaredValue, setDeclaredValue] = useState("")
+  const [goodsCategory, setGoodsCategory] = useState<GoodsCategory>("regular")
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({})
   const [loadingRates, setLoadingRates] = useState(true)
 
-  // Загрузка актуальных курсов валют
   useEffect(() => {
     const fetchExchangeRates = async () => {
       try {
-        // Используем бесплатный API для получения курсов валют
         const response = await fetch("https://api.exchangerate-api.com/v4/latest/USD")
         const data = await response.json()
-        
         if (data.rates) {
           setExchangeRates({
-            BYN: data.rates.BYN || 3.3, // Fallback если API не вернул курс
-            RUB: data.rates.RUB || 90,
-            KGS: data.rates.KGS || 89,
+            BYN: data.rates.BYN ?? 3.3,
+            RUB: data.rates.RUB ?? 90,
+            KZT: data.rates.KZT ?? 450,
+            KGS: data.rates.KGS ?? 89,
           })
         }
       } catch (error) {
         console.error("Ошибка загрузки курсов валют:", error)
-        // Используем fallback значения при ошибке
-        setExchangeRates({
-          BYN: 3.3,
-          RUB: 90,
-          KGS: 89,
-        })
+        setExchangeRates({ BYN: 3.3, RUB: 90, KZT: 450, KGS: 89 })
       } finally {
         setLoadingRates(false)
       }
     }
-
     fetchExchangeRates()
-    
-    // Обновляем курсы каждые 30 минут
     const interval = setInterval(fetchExchangeRates, 30 * 60 * 1000)
-    
     return () => clearInterval(interval)
   }, [])
 
@@ -177,33 +135,44 @@ export function CalculatorSection() {
     return country ? (deliveryExamples[country] || []) : []
   }, [country])
 
-  const calculatePrice = () => {
-    if (!weight || !country) return null
-    
-    // Тарифы за кг в зависимости от страны
-    const pricePerKg: Record<string, number> = {
-      KG: 12, // Кыргызстан: $12 за кг
-      RU: 18, // Россия: $18 за кг
-      BY: 18, // Беларусь: $18 за кг
+  // Вес для расчёта: max(фактический, объёмный), с ограничением лимитов
+  const chargeableWeightKg = useMemo(() => {
+    const rawActual = Number.parseFloat(weight)
+    if (!Number.isFinite(rawActual) || rawActual <= 0) return null
+    const actual = clampNum(rawActual, 0.1, MAX_WEIGHT_KG)
+    const l = clampNum(Number.parseFloat(length), 0, MAX_DIMENSION_CM)
+    const w = clampNum(Number.parseFloat(width), 0, MAX_DIMENSION_CM)
+    const h = clampNum(Number.parseFloat(height), 0, MAX_DIMENSION_CM)
+    if (l > 0 && w > 0 && h > 0) {
+      const vol = getVolumetricWeightKg(l, w, h)
+      return Math.min(MAX_CHARGEABLE_KG, Math.max(actual, vol))
     }
-    
-    const rate = pricePerKg[country] || 12
-    const basePrice = Number.parseFloat(weight) * rate
-    const insurancePrice = insurance ? 5 : 0
-    const expressPrice = express ? 20 : 0
-    return (basePrice + insurancePrice + expressPrice).toFixed(2)
+    return Math.min(MAX_CHARGEABLE_KG, actual)
+  }, [weight, length, width, height])
+
+  const calculatePrice = () => {
+    if (!country || chargeableWeightKg == null || chargeableWeightKg <= 0) return null
+    const rate = PRICE_PER_KG[country] ?? 12
+    const basePrice = chargeableWeightKg * rate
+    // Страхование: до $500 бесплатно; > $500 — обычные 3%, электроника 5%
+    let insuranceCost = 0
+    if (insurance) {
+      const value = clampNum(Number.parseFloat(declaredValue), 0, MAX_DECLARED_VALUE)
+      if (value > 500) {
+        insuranceCost = goodsCategory === "electronics" ? value * 0.05 : value * 0.03
+      }
+    }
+    return (basePrice + insuranceCost).toFixed(2)
   }
 
   const price = calculatePrice()
-  
+
   const convertedPrice = useMemo(() => {
     if (!price || !country || loadingRates) return null
     const currencyInfo = countryCurrencyMap[country]
     if (!currencyInfo) return null
-    
     const rate = exchangeRates[currencyInfo.code]
     if (!rate) return null
-    
     const converted = (Number.parseFloat(price) * rate).toFixed(2)
     return { amount: converted, code: currencyInfo.code, name: currencyInfo.name, rate }
   }, [price, country, exchangeRates, loadingRates])
@@ -230,16 +199,18 @@ export function CalculatorSection() {
           <div className="space-y-6">
             <div>
               <Label htmlFor="country" className="text-slate-700">
-                Страна получения
+                Страна получателя
               </Label>
               <Select value={country} onValueChange={setCountry}>
                 <SelectTrigger id="country" className="mt-2 h-12 rounded-xl">
                   <SelectValue placeholder="Выберите страну" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="KG">Кыргызстан</SelectItem>
-                  <SelectItem value="RU">Россия</SelectItem>
-                  <SelectItem value="BY">Беларусь</SelectItem>
+                  {COUNTRIES.map((c) => (
+                    <SelectItem key={c.value} value={c.value}>
+                      {c.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -251,12 +222,68 @@ export function CalculatorSection() {
               <Input
                 id="weight"
                 type="number"
-                placeholder="Введите вес"
+                min="0.1"
+                max={MAX_WEIGHT_KG}
+                step="0.1"
+                placeholder={`До ${MAX_WEIGHT_KG} кг`}
                 value={weight}
-                onChange={(e) => setWeight(e.target.value)}
+                onChange={(e) => setWeight(clampInput(e.target.value, MAX_WEIGHT_KG, 1))}
                 className="mt-2 h-12 rounded-xl"
               />
+              <p className="text-xs text-slate-500 mt-1">Макс. {MAX_WEIGHT_KG} кг для расчёта</p>
             </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <Label htmlFor="length" className="text-slate-700">Длина (см)</Label>
+                <Input
+                  id="length"
+                  type="number"
+                  min="0"
+                  max={MAX_DIMENSION_CM}
+                  step="1"
+                  placeholder={`до ${MAX_DIMENSION_CM}`}
+                  value={length}
+                  onChange={(e) => setLength(clampInput(e.target.value, MAX_DIMENSION_CM))}
+                  className="mt-2 h-12 rounded-xl"
+                />
+              </div>
+              <div>
+                <Label htmlFor="width" className="text-slate-700">Ширина (см)</Label>
+                <Input
+                  id="width"
+                  type="number"
+                  min="0"
+                  max={MAX_DIMENSION_CM}
+                  step="1"
+                  placeholder={`до ${MAX_DIMENSION_CM}`}
+                  value={width}
+                  onChange={(e) => setWidth(clampInput(e.target.value, MAX_DIMENSION_CM))}
+                  className="mt-2 h-12 rounded-xl"
+                />
+              </div>
+              <div>
+                <Label htmlFor="height" className="text-slate-700">Высота (см)</Label>
+                <Input
+                  id="height"
+                  type="number"
+                  min="0"
+                  max={MAX_DIMENSION_CM}
+                  step="1"
+                  placeholder={`до ${MAX_DIMENSION_CM}`}
+                  value={height}
+                  onChange={(e) => setHeight(clampInput(e.target.value, MAX_DIMENSION_CM))}
+                  className="mt-2 h-12 rounded-xl"
+                />
+              </div>
+            </div>
+            <p className="text-xs text-slate-500">Габариты: макс. {MAX_DIMENSION_CM} см по каждой стороне. Учитываемый вес — не более {MAX_CHARGEABLE_KG} кг.</p>
+            {chargeableWeightKg != null && weight && (
+              <p className="text-xs text-slate-600">
+                Учитываемый вес для расчёта: <strong>{chargeableWeightKg.toFixed(2)} кг</strong>
+                {length && width && height && Number(weight) !== chargeableWeightKg && " (учтён объёмный вес)"}
+              </p>
+            )}
 
             <div className="space-y-3">
               <Label className="text-slate-700">Дополнительные услуги</Label>
@@ -267,21 +294,45 @@ export function CalculatorSection() {
                   onCheckedChange={(checked) => setInsurance(checked as boolean)}
                 />
                 <label htmlFor="insurance" className="text-sm text-slate-600 cursor-pointer">
-                  Страхование груза (+$5)
+                  Страхование груза (до $500 — бесплатно)
                 </label>
               </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox id="express" checked={express} onCheckedChange={(checked) => setExpress(checked as boolean)} />
-                <label htmlFor="express" className="text-sm text-slate-600 cursor-pointer">
-                  Экспресс-доставка (+$20)
-                </label>
-              </div>
+              {insurance && (
+                <div className="pl-6 space-y-3 border-l-2 border-slate-200">
+                  <div>
+                    <Label htmlFor="declaredValue" className="text-slate-600 text-sm">Объявленная стоимость ($)</Label>
+                    <Input
+                      id="declaredValue"
+                      type="number"
+                      min="0"
+                      max={MAX_DECLARED_VALUE}
+                      step="1"
+                      placeholder={`До ${MAX_DECLARED_VALUE.toLocaleString("ru")} $`}
+                      value={declaredValue}
+                      onChange={(e) => setDeclaredValue(clampInput(e.target.value, MAX_DECLARED_VALUE))}
+                      className="mt-1 h-10 rounded-lg"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-slate-600 text-sm mb-1 block">Категория товара</Label>
+                    <Select value={goodsCategory} onValueChange={(v) => setGoodsCategory(v as GoodsCategory)}>
+                      <SelectTrigger className="h-10 rounded-lg">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="regular">Обычные товары (одежда, обувь, косметика и т.д.) — 3%</SelectItem>
+                        <SelectItem value="electronics">Электроника и техника — 5%</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
             </div>
 
             {price && (
               <Card className="p-6 bg-gradient-to-br from-blue-50 to-slate-50 border-blue-200 rounded-2xl">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-700 font-medium">Примерная стоимость:</span>
+                  <span className="text-slate-700 font-medium">Примерная стоимость до города назначения:</span>
                   <span className="text-3xl font-bold text-blue-600">${price}</span>
                 </div>
                 {convertedPrice && (
@@ -292,12 +343,10 @@ export function CalculatorSection() {
                     </span>
                   </div>
                 )}
-                <div className="flex items-center justify-between text-sm mt-3 pt-3 border-t border-blue-200">
-                  <span className="text-slate-600">Срок доставки:</span>
-                  <span className="font-semibold text-slate-700">{express ? "5-7 дней" : "10-14 дней"}</span>
-                </div>
-                <p className="text-xs text-slate-600 mt-4 italic">
-                  * Окончательная стоимость подтверждается менеджером после проверки габаритов
+                <p className="text-xs text-slate-600 mt-3">
+                  {country === "RU" || country === "BY"
+                    ? "* Стоимость до Москвы/Минска. Доставка по РФ/РБ через СДЭК рассчитывается отдельно (интеграция в разработке)."
+                    : "* Окончательная стоимость подтверждается менеджером после проверки габаритов."}
                 </p>
               </Card>
             )}

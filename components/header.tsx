@@ -22,31 +22,31 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6 text-sm">
-          <a href="/#services" className="text-slate-600 hover:text-blue-600 transition-colors">
+        <nav className="hidden md:flex items-center gap-6 text-sm shrink-0">
+          <a href="/#services" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
             Услуги
           </a>
-          <a href="/#marketplace" className="text-slate-600 hover:text-blue-600 transition-colors">
+          <a href="/#marketplace" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
             Магазины
           </a>
-          <a href="/#map" className="text-slate-600 hover:text-blue-600 transition-colors">
+          <a href="/#map" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
             Пункты приёма
           </a>
-          <a href="/#calculator" className="text-slate-600 hover:text-blue-600 transition-colors">
+          <a href="/#calculator" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
             Калькулятор
           </a>
-          <Link href="/about" className="text-slate-600 hover:text-blue-600 transition-colors">
+          <Link href="/about" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
             О нас
           </Link>
-          <Link href="/faq" className="text-slate-600 hover:text-blue-600 transition-colors">
+          <Link href="/faq" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
             FAQ
           </Link>
-          <a href="/#contact" className="text-slate-600 hover:text-blue-600 transition-colors">
+          <a href="/#contact" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
             Контакты
           </a>
         </nav>
 
-        <Button className="hidden md:flex bg-orange-600 hover:bg-orange-700 text-white">Личный кабинет</Button>
+        <Button className="hidden md:flex shrink-0 bg-orange-600 hover:bg-orange-700 text-white whitespace-nowrap">Личный кабинет</Button>
 
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

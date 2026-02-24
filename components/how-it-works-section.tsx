@@ -22,8 +22,8 @@ const steps = [
   {
     icon: Truck,
     number: "4",
-    title: "Доставка в СНГ",
-    description: "Получаете посылку через СДЭК (Россия/Беларусь) или в пункте выдачи (Кыргызстан). Отслеживание в реальном времени",
+    title: "Доставка и выдача в стране назначения",
+    description: "Посылка прибывает в страну получателя (Казахстан, Кыргызстан, Россия, Беларусь) и передаётся на локальную доставку. Вы можете забрать в офисе, получить через курьерскую службу или выбрать пункт выдачи (СДЭК и партнёры). Отслеживание доступно в реальном времени.",
   },
   
 ]
@@ -36,7 +36,7 @@ export function HowItWorksSection() {
         <p className="text-lg text-slate-600 max-w-2xl mx-auto">Простой и понятный процесс доставки в 4 шага</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative items-stretch">
         {steps.map((step, index) => (
           <div key={index} className="relative flex">
             <div className="bg-white rounded-3xl p-8 border-2 border-slate-200 hover:border-blue-300 transition-all shadow-sm hover:shadow-lg w-full flex flex-col">
@@ -51,10 +51,6 @@ export function HowItWorksSection() {
               <h3 className="text-xl font-bold text-slate-900 mb-2 text-center flex-shrink-0">{step.title}</h3>
               <p className="text-slate-600 text-center text-sm flex-grow">{step.description}</p>
             </div>
-
-            {index < steps.length - 1 && (
-              <div className="hidden lg:block absolute top-1/2 -right-3 w-6 h-0.5 bg-blue-200 z-10" />
-            )}
           </div>
         ))}
       </div>
