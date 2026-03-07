@@ -16,65 +16,65 @@ import {
   Target,
   CheckCircle2,
 } from "lucide-react"
+import { getSeoPage, parseKeywords, getStrapiImageUrl } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "О компании OWAY CARGO | Международная логистика из США в СНГ",
-  description:
-    "OWAY Cargo — международный логистический сервис доставки посылок из США в страны СНГ. Автономная логистика, self-service пункты приёма, прозрачное отслеживание. Узнайте о нашей модели работы, географии и технологиях.",
-  keywords: [
-    "OWAY Cargo о компании",
-    "логистика из США",
-    "доставка в СНГ",
-    "международная доставка",
-    "self-service доставка",
-    "автономная логистика",
-    "доставка посылок",
-    "логистический сервис",
-    "доставка в Россию",
-    "доставка в Беларусь",
-    "доставка в Кыргызстан",
-  ],
-  authors: [{ name: "OWAY CARGO" }],
-  creator: "OWAY CARGO",
-  publisher: "OWAY CARGO",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com"),
-  alternates: {
-    canonical: "/about",
-  },
-  openGraph: {
-    title: "О компании OWAY CARGO | Международная логистика",
-    description:
-      "Узнайте о OWAY Cargo — международном логистическом сервисе доставки посылок из США в страны СНГ. Автономная логистика, self-service пункты приёма, прозрачное отслеживание.",
-    url: "/about",
-    siteName: "OWAY CARGO",
-    locale: "ru_RU",
-    type: "website",
-    images: [
-      {
-        url: "/banner.jpg",
-        width: 1200,
-        height: 630,
-        alt: "О компании OWAY CARGO",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "О компании OWAY CARGO",
-    description: "Международный логистический сервис доставки посылок из США в страны СНГ",
-    images: ["/banner.jpg"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com")
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getSeoPage("about")
+  if (!seo) {
+    return {
+      metadataBase,
+      alternates: { canonical: "/about" },
+      robots: { index: true, follow: true },
+    }
+  }
+
+  const keywords = parseKeywords(seo.keywords)
+  const ogImage = seo.image?.[0]
+  const imageUrl = ogImage ? getStrapiImageUrl(ogImage.url) : undefined
+  const imageAlt = ogImage?.alternativeText || seo.title
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    ...(keywords.length > 0 && { keywords }),
+    authors: [{ name: "OWAY CARGO" }],
+    creator: "OWAY CARGO",
+    publisher: "OWAY CARGO",
+    metadataBase,
+    alternates: { canonical: "/about" },
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      url: "/about",
+      siteName: "OWAY CARGO",
+      locale: "ru_RU",
+      type: "website",
+      ...(imageUrl && {
+        images: [
+          { url: imageUrl, width: ogImage?.width ?? 1200, height: ogImage?.height ?? 630, alt: imageAlt },
+        ],
+      }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title,
+      description: seo.description,
+      ...(imageUrl && { images: [imageUrl] }),
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
+  }
 }
 
 export default function AboutPage() {

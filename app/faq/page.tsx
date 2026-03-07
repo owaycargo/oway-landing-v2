@@ -4,64 +4,65 @@ import { Footer } from "@/components/footer"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { getSeoPage, parseKeywords, getStrapiImageUrl } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "FAQ — Часто задаваемые вопросы | OWAY CARGO",
-  description:
-    "Ответы на популярные вопросы о доставке из США в СНГ: оформление заказа, отслеживание посылок, оплата, таможня, сроки доставки. Получите помощь от OWAY CARGO.",
-  keywords: [
-    "FAQ OWAY Cargo",
-    "вопросы о доставке",
-    "доставка из США вопросы",
-    "как работает доставка",
-    "оформление заказа",
-    "отслеживание посылок",
-    "таможня доставка",
-    "стоимость доставки",
-    "сроки доставки",
-    "поддержка OWAY Cargo",
-  ],
-  authors: [{ name: "OWAY CARGO" }],
-  creator: "OWAY CARGO",
-  publisher: "OWAY CARGO",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com"),
-  alternates: {
-    canonical: "/faq",
-  },
-  openGraph: {
-    title: "FAQ — Часто задаваемые вопросы | OWAY CARGO",
-    description:
-      "Ответы на популярные вопросы о доставке из США в СНГ: оформление заказа, отслеживание посылок, оплата, таможня, сроки доставки.",
-    url: "/faq",
-    siteName: "OWAY CARGO",
-    locale: "ru_RU",
-    type: "website",
-    images: [
-      {
-        url: "/banner.jpg",
-        width: 1200,
-        height: 630,
-        alt: "FAQ OWAY CARGO",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "FAQ — Часто задаваемые вопросы | OWAY CARGO",
-    description: "Ответы на популярные вопросы о доставке из США в СНГ",
-    images: ["/banner.jpg"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com")
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getSeoPage("faq")
+  if (!seo) {
+    return {
+      metadataBase,
+      alternates: { canonical: "/faq" },
+      robots: { index: true, follow: true },
+    }
+  }
+
+  const keywords = parseKeywords(seo.keywords)
+  const ogImage = seo.image?.[0]
+  const imageUrl = ogImage ? getStrapiImageUrl(ogImage.url) : undefined
+  const imageAlt = ogImage?.alternativeText || seo.title
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    ...(keywords.length > 0 && { keywords }),
+    authors: [{ name: "OWAY CARGO" }],
+    creator: "OWAY CARGO",
+    publisher: "OWAY CARGO",
+    metadataBase,
+    alternates: { canonical: "/faq" },
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      url: "/faq",
+      siteName: "OWAY CARGO",
+      locale: "ru_RU",
+      type: "website",
+      ...(imageUrl && {
+        images: [
+          { url: imageUrl, width: ogImage?.width ?? 1200, height: ogImage?.height ?? 630, alt: imageAlt },
+        ],
+      }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title,
+      description: seo.description,
+      ...(imageUrl && { images: [imageUrl] }),
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
+  }
 }
 
 export default function FAQPage() {

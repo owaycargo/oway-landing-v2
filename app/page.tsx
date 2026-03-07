@@ -11,74 +11,70 @@ import { ClientsBusinessSection } from "@/components/clients-business-section"
 import { FinalCtaSection } from "@/components/final-cta-section"
 import { Footer } from "@/components/footer"
 import { OpenTelegramButton } from "@/components/open-telegram-button"
+import { getSeoPage, parseKeywords, getStrapiImageUrl } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "OWAY CARGO — Доставка из США в СНГ | Быстрая международная доставка",
-  description:
-    "Надёжная доставка посылок из США в Кыргызстан, Россию и Беларусь. Self-service пункты приёма, авиадоставка, консолидация грузов. Telegram-уведомления. Калькулятор стоимости доставки.",
-  keywords: [
-    "доставка из США",
-    "посылки в СНГ",
-    "OWAY Cargo",
-    "международная доставка",
-    "США Россия",
-    "США Кыргызстан",
-    "США Беларусь",
-    "доставка посылок",
-    "логистика из США",
-    "авиадоставка",
-    "консолидация грузов",
-    "self-service доставка",
-  ],
-  authors: [{ name: "OWAY CARGO" }],
-  creator: "OWAY CARGO",
-  publisher: "OWAY CARGO",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com"),
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: "OWAY CARGO — Доставка из США в СНГ",
-    description: "Быстрая и удобная доставка посылок из США в страны СНГ. Self-service пункты приёма, прозрачное отслеживание, доступные цены.",
-    url: "/",
-    siteName: "OWAY CARGO",
-    locale: "ru_RU",
-    type: "website",
-    images: [
-      {
-        url: "/banner.jpg",
-        width: 1200,
-        height: 630,
-        alt: "OWAY CARGO — Доставка из США в СНГ",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "OWAY CARGO — Доставка из США в СНГ",
-    description: "Быстрая и удобная доставка посылок из США в страны СНГ",
-    images: ["/banner.jpg"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com")
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getSeoPage("home")
+  if (!seo) {
+    return {
+      metadataBase,
+      alternates: { canonical: "/" },
+      robots: { index: true, follow: true },
+    }
+  }
+
+  const keywords = parseKeywords(seo.keywords)
+  const ogImage = seo.image?.[0]
+  const imageUrl = ogImage ? getStrapiImageUrl(ogImage.url) : undefined
+  const imageAlt = ogImage?.alternativeText || seo.title
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    ...(keywords.length > 0 && { keywords }),
+    authors: [{ name: "OWAY CARGO" }],
+    creator: "OWAY CARGO",
+    publisher: "OWAY CARGO",
+    formatDetection: { email: false, address: false, telephone: false },
+    metadataBase,
+    alternates: { canonical: "/" },
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      url: "/",
+      siteName: "OWAY CARGO",
+      locale: "ru_RU",
+      type: "website",
+      ...(imageUrl && {
+        images: [
+          { url: imageUrl, width: ogImage?.width ?? 1200, height: ogImage?.height ?? 630, alt: imageAlt },
+        ],
+      }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title,
+      description: seo.description,
+      ...(imageUrl && { images: [imageUrl] }),
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
-  verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
-    yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
-  },
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
+      yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+    },
+  }
 }
 
 export default function HomePage() {
