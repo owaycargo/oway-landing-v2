@@ -1,390 +1,137 @@
 import { Globe, Package, Zap, Bell } from "lucide-react"
 import type { ComponentType } from "react"
 
-export type NewsCategory = "Новости компании" | "Обновления доставки" | "Акции" | "Объявления"
+const API_BASE = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"
 
-export interface NewsContentBlock {
-  type: "paragraph" | "heading" | "list"
-  content: string | string[]
-}
+// --- Strapi v5 API types (flat, no `attributes` wrapper) ---
 
-export interface NewsItem {
+export interface StrapiNewsType {
   id: number
-  slug: string
-  category: NewsCategory
-  date: string
-  readingTime: string
-  title: string
-  excerpt: string
-  content: NewsContentBlock[]
-  featured?: boolean
+  documentId: string
+  name: string
 }
 
-export const categoryConfig: Record<
-  NewsCategory,
-  { bg: string; text: string; icon: ComponentType<{ className?: string }> }
-> = {
+export interface StrapiNewsItem {
+  id: number
+  documentId: string
+  title: string
+  card_description: string
+  description?: string | null
+  slug: string
+  title_seo?: string | null
+  seo_description?: string | null
+  createdAt: string
+  news_types?: StrapiNewsType[]
+}
+
+export interface StrapiPagination {
+  page: number
+  pageSize: number
+  pageCount: number
+  total: number
+}
+
+export interface StrapiListResponse<T> {
+  data: T[]
+  meta: { pagination: StrapiPagination }
+}
+
+export interface StrapiSingleResponse<T> {
+  data: T
+  meta: Record<string, unknown>
+}
+
+// --- Category UI config ---
+
+export interface CategoryStyle {
+  bg: string
+  text: string
+  icon: ComponentType<{ className?: string }>
+}
+
+const categoryStyles: Record<string, CategoryStyle> = {
   "Новости компании": { bg: "bg-blue-100", text: "text-blue-700", icon: Globe },
   "Обновления доставки": { bg: "bg-emerald-100", text: "text-emerald-700", icon: Package },
   "Акции": { bg: "bg-orange-100", text: "text-orange-700", icon: Zap },
   "Объявления": { bg: "bg-purple-100", text: "text-purple-700", icon: Bell },
 }
 
-export const news: NewsItem[] = [
-  {
-    id: 1,
-    slug: "bishkek-pickup-expansion",
-    category: "Новости компании",
-    date: "3 марта 2026",
-    readingTime: "3 мин",
-    title: "OWAY CARGO расширяет сеть пунктов выдачи в Бишкеке",
-    excerpt:
-      "Мы рады сообщить об открытии пяти новых пунктов выдачи в Бишкеке. Теперь получить вашу посылку из США ещё удобнее — пункты расположены в ключевых районах города.",
-    featured: true,
-    content: [
-      {
-        type: "paragraph",
-        content:
-          "OWAY CARGO продолжает развивать инфраструктуру в Кыргызстане. С марта 2026 года клиенты Бишкека получат доступ к пяти новым пунктам выдачи, расположенным в ключевых районах города. Это часть нашей стратегии по снижению времени на получение посылок и повышению удобства для каждого клиента.",
-      },
-      {
-        type: "heading",
-        content: "Где открылись новые пункты",
-      },
-      {
-        type: "list",
-        content: [
-          "Центр города — ул. Киевская, 77 (рядом с ЦУМом)",
-          "Асанбай — ТЦ «Азия Молл», 1 этаж",
-          "Микрорайон Джал — ул. Ахунбаева, 119",
-          "Аламедин-1 — ул. Фрунзе, 204",
-          "Южные ворота — ул. Льва Толстого, 40",
-        ],
-      },
-      {
-        type: "heading",
-        content: "Режим работы",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Все пункты работают ежедневно с 9:00 до 21:00 без выходных. При получении посылки достаточно предъявить трек-номер или документ, удостоверяющий личность. Уведомление о прибытии посылки придёт вам в Telegram и на email автоматически.",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Мы продолжим расширять сеть — до конца 2026 года планируем открыть ещё 8 пунктов выдачи в регионах Кыргызстана: Ош, Джалал-Абад, Каракол и Нарын. Следите за обновлениями на нашем сайте и в Telegram-канале.",
-      },
-    ],
-  },
-  {
-    id: 2,
-    slug: "express-delivery-5-7-days",
-    category: "Обновления доставки",
-    date: "25 февраля 2026",
-    readingTime: "2 мин",
-    title: "Ускоренная доставка: получайте посылки за 5–7 дней",
-    excerpt:
-      "Запускаем новый тариф экспресс-доставки. Теперь товары с восточного побережья США прибывают в страны СНГ за 5–7 рабочих дней.",
-    content: [
-      {
-        type: "paragraph",
-        content:
-          "OWAY CARGO запускает новый тариф «Экспресс». Начиная с 1 марта 2026 года вы можете выбрать ускоренный способ доставки при оформлении посылки в личном кабинете. Срок доставки составит 5–7 рабочих дней с момента поступления товара на наш склад в США.",
-      },
-      {
-        type: "heading",
-        content: "Как работает экспресс-доставка",
-      },
-      {
-        type: "list",
-        content: [
-          "Приоритетная обработка посылки на складе в США — в течение 24 часов",
-          "Прямой авиарейс без промежуточных хабов",
-          "Ускоренное таможенное оформление на стороне получателя",
-          "Приоритетная доставка до пункта выдачи или курьером",
-        ],
-      },
-      {
-        type: "heading",
-        content: "Стоимость",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Тариф «Экспресс» доступен для посылок весом до 30 кг. Надбавка к стандартной цене доставки составляет $3 за килограмм. Точную стоимость всегда можно рассчитать в нашем калькуляторе на главной странице.",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Стандартная доставка по-прежнему доступна и занимает 10–14 рабочих дней. Выбор тарифа остаётся за вами.",
-      },
-    ],
-  },
-  {
-    id: 3,
-    slug: "spring-promotion-2026",
-    category: "Акции",
-    date: "18 февраля 2026",
-    readingTime: "2 мин",
-    title: "Весенняя акция: доставка 20 кг по цене 15 кг",
-    excerpt:
-      "Только с 1 по 31 марта 2026 года — специальное предложение для всех клиентов. При отправке посылки весом от 15 кг вы платите только за 15 кг.",
-    content: [
-      {
-        type: "paragraph",
-        content:
-          "Весна — время обновлений, и OWAY CARGO встречает её специальным предложением. В марте 2026 года все клиенты, отправляющие посылки весом от 15 кг, получат скидку: вы платите за 15 кг, даже если фактический вес посылки составляет до 20 кг включительно.",
-      },
-      {
-        type: "heading",
-        content: "Условия акции",
-      },
-      {
-        type: "list",
-        content: [
-          "Акция действует с 1 по 31 марта 2026 года",
-          "Минимальный вес посылки — 15 кг",
-          "Максимальный вес со скидкой — 20 кг",
-          "Скидка применяется автоматически при оформлении в личном кабинете",
-          "Акция распространяется на все направления: Кыргызстан, Казахстан, Россия",
-        ],
-      },
-      {
-        type: "heading",
-        content: "Как воспользоваться",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Никаких промокодов вводить не нужно. Просто оформите отправку в личном кабинете в период акции — система автоматически применит выгодный тариф, если вес вашей посылки попадает в диапазон 15–20 кг.",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Это отличная возможность заказать крупные покупки: электронику, спортивный инвентарь, одежду и обувь из американских магазинов. Успейте воспользоваться предложением!",
-      },
-    ],
-  },
-  {
-    id: 4,
-    slug: "usa-logistics-partnership",
-    category: "Новости компании",
-    date: "10 февраля 2026",
-    readingTime: "3 мин",
-    title: "Партнёрство с ведущими логистическими операторами США",
-    excerpt:
-      "OWAY CARGO подписала соглашения о сотрудничестве с двумя крупными американскими логистическими компаниями, что позволит ускорить обработку посылок.",
-    content: [
-      {
-        type: "paragraph",
-        content:
-          "OWAY CARGO вышла на новый уровень развития: в феврале 2026 года мы подписали соглашения о стратегическом партнёрстве с двумя ведущими логистическими операторами на территории США. Соглашения охватывают совместную работу по сборке, сортировке и первичной обработке входящих посылок.",
-      },
-      {
-        type: "heading",
-        content: "Что изменится для клиентов",
-      },
-      {
-        type: "list",
-        content: [
-          "Сокращение времени обработки посылки на складе с 48 до 24 часов",
-          "Расширение возможностей по консолидации — до 10 посылок в одну",
-          "Более точные весовые и объёмные замеры благодаря новому оборудованию",
-          "Дополнительные фотофиксации содержимого по запросу",
-        ],
-      },
-      {
-        type: "heading",
-        content: "Расширение географии",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Один из партнёров оперирует на западном побережье США (Лос-Анджелес, Сан-Франциско, Сиэтл), второй — специализируется на центральных штатах (Техас, Иллинойс, Огайо). В совокупности это позволяет OWAY CARGO ускорить внутренние перевозки к консолидационным хабам в Делавэре и Лос-Анджелесе.",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Мы уверены, что новые партнёрства станут важным шагом в повышении качества сервиса для всех наших клиентов. Улучшения начнут действовать уже с апреля 2026 года.",
-      },
-    ],
-  },
-  {
-    id: 5,
-    slug: "real-time-tracking-update",
-    category: "Обновления доставки",
-    date: "1 февраля 2026",
-    readingTime: "2 мин",
-    title: "Новая система отслеживания посылок в реальном времени",
-    excerpt:
-      "Мы обновили систему трекинга. Теперь вы видите местонахождение вашей посылки на каждом этапе пути — от склада в США до пункта выдачи.",
-    content: [
-      {
-        type: "paragraph",
-        content:
-          "Мы полностью обновили систему отслеживания посылок в личном кабинете. Теперь каждый клиент может видеть точный статус своей посылки в режиме реального времени — от момента поступления на склад в США до выдачи в пункте получения.",
-      },
-      {
-        type: "heading",
-        content: "Новые этапы трекинга",
-      },
-      {
-        type: "list",
-        content: [
-          "Принято на складе в США — с фотофиксацией",
-          "Взвешено и обмерено",
-          "Отправлено в транзитный хаб",
-          "Вылетело из США",
-          "Прибыло в страну назначения",
-          "На таможенном оформлении",
-          "Передано в службу доставки",
-          "Готово к выдаче / курьер в пути",
-        ],
-      },
-      {
-        type: "heading",
-        content: "Уведомления",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Система автоматически отправляет push-уведомления в Telegram и на email при каждой смене статуса. Уведомления приходят мгновенно — никаких ручных проверок больше не нужно.",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Новая система уже доступна для всех клиентов. Войдите в личный кабинет, чтобы увидеть обновлённый интерфейс трекинга.",
-      },
-    ],
-  },
-  {
-    id: 6,
-    slug: "almaty-hub-launch",
-    category: "Объявления",
-    date: "20 января 2026",
-    readingTime: "2 мин",
-    title: "Начало работы нового хаба в Алматы",
-    excerpt:
-      "Распределительный центр в Алматы начал полноценную работу, сокращая транзитное время для получателей в Казахстане на 2–3 дня.",
-    content: [
-      {
-        type: "paragraph",
-        content:
-          "С 20 января 2026 года распределительный центр OWAY CARGO в Алматы работает в полном объёме. Хаб расположен в логистическом парке вблизи аэропорта, что обеспечивает быструю обработку входящих грузов и оперативную отправку по городам Казахстана.",
-      },
-      {
-        type: "heading",
-        content: "Возможности нового хаба",
-      },
-      {
-        type: "list",
-        content: [
-          "Площадь склада — 1 200 м², вместимость до 3 000 посылок одновременно",
-          "Автоматизированная сортировка по городам Казахстана",
-          "Выдача посылок непосредственно на складе (самовывоз)",
-          "Партнёрская доставка по Алматы и регионам",
-          "Работа 7 дней в неделю с 8:00 до 22:00",
-        ],
-      },
-      {
-        type: "paragraph",
-        content:
-          "Благодаря новому хабу транзитное время для клиентов в Казахстане сокращается на 2–3 дня. Посылки больше не проходят через Бишкек, а поступают напрямую в Алматы и оперативно распределяются по городам: Нур-Султан, Шымкент, Актобе, Костанай и другим.",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Адрес хаба и актуальный режим работы доступны в разделе «Пункты выдачи» в личном кабинете.",
-      },
-    ],
-  },
-  {
-    id: 7,
-    slug: "referral-program",
-    category: "Акции",
-    date: "15 января 2026",
-    readingTime: "2 мин",
-    title: "Реферальная программа: приглашай друзей и получай бонусы",
-    excerpt:
-      "Пригласите друга воспользоваться OWAY CARGO — и оба получите скидку $5 на следующую доставку. Программа действует бессрочно.",
-    content: [
-      {
-        type: "paragraph",
-        content:
-          "Мы запускаем реферальную программу для всех зарегистрированных клиентов. Теперь вы можете приглашать друзей и знакомых пользоваться услугами OWAY CARGO — и получать за это реальные бонусы.",
-      },
-      {
-        type: "heading",
-        content: "Как это работает",
-      },
-      {
-        type: "list",
-        content: [
-          "Войдите в личный кабинет и перейдите в раздел «Реферальная программа»",
-          "Скопируйте вашу уникальную реферальную ссылку",
-          "Поделитесь ею с другом — по любому удобному каналу",
-          "Когда друг зарегистрируется и оформит первую доставку, вы оба получите скидку $5",
-        ],
-      },
-      {
-        type: "heading",
-        content: "Детали программы",
-      },
-      {
-        type: "list",
-        content: [
-          "Скидка $5 начисляется как бонус на счёт в личном кабинете",
-          "Бонус применяется к следующей оплате доставки автоматически",
-          "Количество приглашений не ограничено",
-          "Программа действует бессрочно",
-          "Минимальная сумма первого заказа друга — $10",
-        ],
-      },
-      {
-        type: "paragraph",
-        content:
-          "Приглашайте друзей и экономьте на доставке вместе. Программа уже доступна в личном кабинете.",
-      },
-    ],
-  },
-  {
-    id: 8,
-    slug: "holiday-schedule",
-    category: "Объявления",
-    date: "5 января 2026",
-    readingTime: "1 мин",
-    title: "График работы в праздничные дни",
-    excerpt:
-      "В связи с праздниками возможны небольшие задержки в обработке посылок. Мы работаем в штатном режиме, но рекомендуем учитывать 1–2 дополнительных дня.",
-    content: [
-      {
-        type: "paragraph",
-        content:
-          "Уважаемые клиенты! В период новогодних и рождественских праздников в США и странах СНГ возможны небольшие задержки в обработке и доставке посылок. Просим вас учитывать это при планировании заказов.",
-      },
-      {
-        type: "heading",
-        content: "Изменения в расписании",
-      },
-      {
-        type: "list",
-        content: [
-          "7–8 января — сокращённый режим работы складов в США",
-          "9–11 января — полная нормализация работы",
-          "Пункты выдачи в СНГ работают в штатном режиме",
-          "Служба поддержки доступна 24/7 через Telegram",
-        ],
-      },
-      {
-        type: "paragraph",
-        content:
-          "Мы рекомендуем добавлять 1–2 рабочих дня к ожидаемым срокам доставки для посылок, поступивших на склад с 5 по 10 января 2026 года. Приносим извинения за возможные неудобства и поздравляем всех с Новым годом!",
-      },
-    ],
-  },
-]
+const fallbackStyle: CategoryStyle = { bg: "bg-slate-100", text: "text-slate-600", icon: Globe }
 
-export function getNewsBySlug(slug: string): NewsItem | undefined {
-  return news.find((n) => n.slug === slug)
+export function getCategoryStyle(name: string): CategoryStyle {
+  return categoryStyles[name] ?? fallbackStyle
+}
+
+// --- Date formatting ---
+
+export function formatNewsDate(iso: string): string {
+  try {
+    return new Intl.DateTimeFormat("ru-RU", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(iso))
+  } catch {
+    return iso
+  }
+}
+
+// --- API fetch functions ---
+
+export async function getNewsList(params?: {
+  page?: number
+  pageSize?: number
+  categoryName?: string
+}): Promise<StrapiListResponse<StrapiNewsItem>> {
+  const { page = 1, pageSize = 12, categoryName } = params ?? {}
+
+  const qs = new URLSearchParams({
+    populate: "news_types",
+    "pagination[page]": String(page),
+    "pagination[pageSize]": String(pageSize),
+    sort: "createdAt:desc",
+  })
+
+  if (categoryName) {
+    qs.set("filters[news_types][name][$eq]", categoryName)
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/api/news-list?${qs}`, {
+      next: { revalidate: 60 },
+    })
+    if (!res.ok) throw new Error("fetch failed")
+    return res.json()
+  } catch {
+    return {
+      data: [],
+      meta: { pagination: { page: 1, pageSize, pageCount: 0, total: 0 } },
+    }
+  }
+}
+
+export async function getNewsArticle(slug: string): Promise<StrapiNewsItem | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/news/${slug}`, {
+      next: { revalidate: 60 },
+    })
+    if (!res.ok) return null
+    const json: StrapiSingleResponse<StrapiNewsItem> = await res.json()
+    return json.data ?? null
+  } catch {
+    return null
+  }
+}
+
+export async function getNewsTypes(): Promise<StrapiNewsType[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/news-types`, {
+      next: { revalidate: 300 },
+    })
+    if (!res.ok) return []
+    const json: StrapiListResponse<StrapiNewsType> = await res.json()
+    return json.data ?? []
+  } catch {
+    return []
+  }
 }
