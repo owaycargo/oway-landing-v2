@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
-import { MapPin, Copy, Clock, X, Navigation } from "lucide-react"
+import { useState, useMemo } from "react"
+import { MapPin, Copy, Clock, Navigation } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -18,51 +18,11 @@ const states = [
 ]
 
 const pickupPoints = [
-  {
-    id: 1,
-    state: "FL",
-    city: "Miami",
-    address: "1234 Ocean Drive, Miami Beach, FL 33139",
-    hours: "Пн-Пт: 9:00-18:00, Сб-Вс: 10:00-16:00",
-    lat: 25.7617,
-    lng: -80.1918,
-  },
-  {
-    id: 2,
-    state: "FL",
-    city: "Orlando",
-    address: "5678 International Drive, Orlando, FL 32819",
-    hours: "Пн-Пт: 8:00-20:00, Сб-Вс: 10:00-18:00",
-    lat: 28.5383,
-    lng: -81.3792,
-  },
-  {
-    id: 3,
-    state: "TX",
-    city: "Houston",
-    address: "9012 Westheimer Road, Houston, TX 77063",
-    hours: "Пн-Пт: 9:00-19:00, Сб: 10:00-17:00",
-    lat: 29.7604,
-    lng: -95.3698,
-  },
-  {
-    id: 4,
-    state: "CA",
-    city: "Los Angeles",
-    address: "3456 Wilshire Blvd, Los Angeles, CA 90010",
-    hours: "Пн-Сб: 8:00-20:00, Вс: 10:00-18:00",
-    lat: 34.0522,
-    lng: -118.2437,
-  },
-  {
-    id: 5,
-    state: "NY",
-    city: "New York",
-    address: "7890 Broadway, New York, NY 10003",
-    hours: "Пн-Вс: 8:00-22:00",
-    lat: 40.7128,
-    lng: -74.006,
-  },
+  { id: 1, state: "FL", city: "Miami", address: "1234 Ocean Drive, Miami Beach, FL 33139", hours: "Пн-Пт: 9:00-18:00, Сб-Вс: 10:00-16:00", lat: 25.7617, lng: -80.1918 },
+  { id: 2, state: "FL", city: "Orlando", address: "5678 International Drive, Orlando, FL 32819", hours: "Пн-Пт: 8:00-20:00, Сб-Вс: 10:00-18:00", lat: 28.5383, lng: -81.3792 },
+  { id: 3, state: "TX", city: "Houston", address: "9012 Westheimer Road, Houston, TX 77063", hours: "Пн-Пт: 9:00-19:00, Сб: 10:00-17:00", lat: 29.7604, lng: -95.3698 },
+  { id: 4, state: "CA", city: "Los Angeles", address: "3456 Wilshire Blvd, Los Angeles, CA 90010", hours: "Пн-Сб: 8:00-20:00, Вс: 10:00-18:00", lat: 34.0522, lng: -118.2437 },
+  { id: 5, state: "NY", city: "New York", address: "7890 Broadway, New York, NY 10003", hours: "Пн-Вс: 8:00-22:00", lat: 40.7128, lng: -74.006 },
 ]
 
 export function UsaMapSection() {
@@ -71,8 +31,8 @@ export function UsaMapSection() {
   const [hoveredPoint, setHoveredPoint] = useState<number | null>(null)
 
   const filteredPoints = useMemo(() => {
-    return selectedState === "all" 
-      ? pickupPoints 
+    return selectedState === "all"
+      ? pickupPoints
       : pickupPoints.filter((point) => point.state === selectedState)
   }, [selectedState])
 
@@ -113,7 +73,6 @@ export function UsaMapSection() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
-        {/* Interactive Map */}
         <Card className="rounded-3xl overflow-hidden border-slate-200 h-[600px] relative shadow-lg bg-gradient-to-br from-blue-50 via-slate-50 to-blue-100">
           <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm px-5 py-3 rounded-xl shadow-lg border border-slate-200">
             <div className="flex items-center gap-2 mb-1">
@@ -124,19 +83,17 @@ export function UsaMapSection() {
               {filteredPoints.length} {filteredPoints.length === 1 ? "пункт" : filteredPoints.length < 5 ? "пункта" : "пунктов"} приёма
             </p>
           </div>
-          
+
           <ComposableMap
             projection="geoAlbersUsa"
-            projectionConfig={{
-              scale: 1000,
-            }}
+            projectionConfig={{ scale: 1000 }}
             width={800}
             height={600}
             style={{ width: "100%", height: "100%" }}
           >
             <Geographies geography="https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json">
-              {({ geographies }: { geographies: any[] }) =>
-                geographies.map((geo: any) => (
+              {({ geographies }: { geographies: { rsmKey: string }[] }) =>
+                geographies.map((geo) => (
                   <Geography
                     key={geo.rsmKey}
                     geography={geo}
@@ -155,16 +112,10 @@ export function UsaMapSection() {
             {filteredPoints.map((point) => {
               const isSelected = selectedPoint === point.id
               const isHovered = hoveredPoint === point.id
-              
-              // Вычисляем scale один раз для всех элементов
               const scale = isSelected ? 1.3 : isHovered ? 1.1 : 1
               const glowScale = isSelected ? 1.4 : isHovered ? 1.2 : 1
-              
               return (
-                <Marker
-                  key={point.id}
-                  coordinates={[point.lng, point.lat]}
-                >
+                <Marker key={point.id} coordinates={[point.lng, point.lat]}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <g
@@ -172,69 +123,37 @@ export function UsaMapSection() {
                         onMouseEnter={() => setHoveredPoint(point.id)}
                         onMouseLeave={() => setHoveredPoint(null)}
                         className="cursor-pointer"
-                        style={{ 
-                          pointerEvents: "all",
-                        }}
+                        style={{ pointerEvents: "all" }}
                       >
-                        {/* Outer glow effect - фиксированный размер */}
                         <circle
                           r={16}
                           fill={isSelected ? "#f97316" : "#2563eb"}
                           opacity={isSelected ? 0.25 : isHovered ? 0.2 : 0.15}
                           transform={`scale(${glowScale})`}
-                          style={{
-                            transition: "transform 0.2s ease, opacity 0.2s ease",
-                          }}
+                          style={{ transition: "transform 0.2s ease, opacity 0.2s ease" }}
                         />
-                        {/* Pulse animation for selected */}
                         {isSelected && (
                           <circle
                             r={16}
                             fill="#f97316"
                             opacity={0.15}
                             transform="scale(1.4)"
-                            style={{
-                              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-                            }}
+                            style={{ animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite" }}
                           />
                         )}
-                        {/* Pin shadow - фиксированный размер */}
-                        <circle
-                          r={9}
-                          fill="rgba(0,0,0,0.2)"
-                          transform={`translate(1, 1) scale(${scale})`}
-                          style={{
-                            transition: "transform 0.2s ease",
-                          }}
-                        />
-                        {/* Main pin circle - фиксированный размер */}
+                        <circle r={9} fill="rgba(0,0,0,0.2)" transform={`translate(1, 1) scale(${scale})`} style={{ transition: "transform 0.2s ease" }} />
                         <circle
                           r={9}
                           fill={isSelected ? "#f97316" : "#2563eb"}
                           stroke="white"
                           strokeWidth={isSelected ? 3.5 : isHovered ? 3 : 2.5}
                           transform={`scale(${scale})`}
-                          style={{
-                            transition: "transform 0.2s ease, fill 0.2s ease, stroke-width 0.2s ease",
-                          }}
+                          style={{ transition: "transform 0.2s ease, fill 0.2s ease, stroke-width 0.2s ease" }}
                         />
-                        {/* Inner white dot - фиксированный размер */}
-                        <circle
-                          r={4}
-                          fill="white"
-                          transform={`scale(${scale})`}
-                          style={{
-                            transition: "transform 0.2s ease",
-                          }}
-                        />
+                        <circle r={4} fill="white" transform={`scale(${scale})`} style={{ transition: "transform 0.2s ease" }} />
                       </g>
                     </TooltipTrigger>
-                    <TooltipContent 
-                      side="top" 
-                      className="bg-slate-900 text-white border-0 shadow-lg"
-                      sideOffset={8}
-                      avoidCollisions={true}
-                    >
+                    <TooltipContent side="top" className="bg-slate-900 text-white border-0 shadow-lg" sideOffset={8} avoidCollisions>
                       <p className="font-semibold">{point.city}, {point.state}</p>
                       <p className="text-xs text-slate-300 mt-1">Нажмите для подробностей</p>
                     </TooltipContent>
@@ -245,55 +164,38 @@ export function UsaMapSection() {
           </ComposableMap>
         </Card>
 
-        {/* Points list */}
         <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
           {filteredPoints.map((point) => (
             <Card
               key={point.id}
               className={`p-6 rounded-2xl cursor-pointer transition-all ${
-                selectedPoint === point.id
-                  ? "border-orange-500 border-2 bg-orange-50 shadow-lg"
-                  : "border-slate-200 hover:border-blue-300 hover:shadow-md"
+                selectedPoint === point.id ? "border-orange-500 border-2 bg-orange-50 shadow-lg" : "border-slate-200 hover:border-blue-300 hover:shadow-md"
               }`}
               onClick={() => setSelectedPoint(point.id)}
             >
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="font-bold text-lg text-slate-900">
-                    {point.city}, {point.state}
-                  </h3>
+                  <h3 className="font-bold text-lg text-slate-900">{point.city}, {point.state}</h3>
                   <p className="text-sm text-slate-600">США</p>
                 </div>
                 <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-white" />
                 </div>
               </div>
-
               <div className="space-y-2">
                 <div className="flex items-start gap-2">
                   <MapPin className="w-4 h-4 text-slate-500 mt-1 flex-shrink-0" />
                   <p className="text-sm text-slate-700">{point.address}</p>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      copyAddress(point.address)
-                    }}
-                    className="ml-auto"
-                    aria-label="Копировать адрес"
-                  >
+                  <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); copyAddress(point.address) }} className="ml-auto" aria-label="Копировать адрес">
                     <Copy className="w-4 h-4" />
                   </Button>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-slate-500" />
                   <p className="text-sm text-slate-700">{point.hours}</p>
                 </div>
-
                 <div className="pt-3 border-t border-slate-200">
-                  <p className="text-xs text-blue-600 font-medium">💡 Сообщите партнёру: "Я для OWAY Cargo"</p>
+                  <p className="text-xs text-blue-600 font-medium">💡 Сообщите партнёру: &quot;Я для OWAY Cargo&quot;</p>
                 </div>
               </div>
             </Card>
@@ -301,7 +203,6 @@ export function UsaMapSection() {
         </div>
       </div>
 
-      {/* Dialog с информацией о выбранном пункте */}
       <Dialog open={selectedPoint !== null && selectedPointData !== null} onOpenChange={(open) => !open && setSelectedPoint(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -316,18 +217,12 @@ export function UsaMapSection() {
                 <div className="flex-1">
                   <p className="text-sm font-medium text-slate-700 mb-1">Адрес:</p>
                   <p className="text-sm text-slate-600">{selectedPointData.address}</p>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => copyAddress(selectedPointData.address)}
-                    className="mt-2"
-                  >
+                  <Button size="sm" variant="ghost" onClick={() => copyAddress(selectedPointData.address)} className="mt-2">
                     <Copy className="w-4 h-4 mr-2" />
                     Копировать адрес
                   </Button>
                 </div>
               </div>
-
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-slate-500 mt-1 flex-shrink-0" />
                 <div className="flex-1">
@@ -335,31 +230,19 @@ export function UsaMapSection() {
                   <p className="text-sm text-slate-600">{selectedPointData.hours}</p>
                 </div>
               </div>
-
               <div className="pt-4 border-t border-slate-200">
                 <div className="bg-blue-50 rounded-lg p-3">
-                  <p className="text-xs text-blue-700 font-medium">
-                    💡 Сообщите партнёру: "Я для OWAY Cargo"
-                  </p>
+                  <p className="text-xs text-blue-700 font-medium">💡 Сообщите партнёру: &quot;Я для OWAY Cargo&quot;</p>
                 </div>
               </div>
-
               <div className="flex gap-2 pt-2">
                 <Button
                   className="flex-1 bg-blue-600 hover:bg-blue-700"
-                  onClick={() => {
-                    const url = `https://www.google.com/maps/search/?api=1&query=${selectedPointData.lat},${selectedPointData.lng}`
-                    window.open(url, "_blank")
-                  }}
+                  onClick={() => { const url = `https://www.google.com/maps/search/?api=1&query=${selectedPointData.lat},${selectedPointData.lng}`; window.open(url, "_blank") }}
                 >
                   Открыть в Google Maps
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setSelectedPoint(null)}
-                >
-                  Закрыть
-                </Button>
+                <Button variant="outline" onClick={() => setSelectedPoint(null)}>Закрыть</Button>
               </div>
             </div>
           )}

@@ -1,16 +1,18 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
-import { HeroSection } from "@/components/hero-section"
-import { UsaMapSection } from "@/components/usa-map-section"
-import { ServicesSection } from "@/components/services-section"
-import { HowItWorksSection } from "@/components/how-it-works-section"
-import { CalculatorSection } from "@/components/calculator-section"
-import { MarketplaceSection } from "@/components/marketplace-section"
-import { CaseStudiesSection } from "@/components/case-studies-section"
-import { ClientsBusinessSection } from "@/components/clients-business-section"
-import { FinalCtaSection } from "@/components/final-cta-section"
 import { Footer } from "@/components/footer"
 import { OpenTelegramButton } from "@/components/open-telegram-button"
+import {
+  HeroSection,
+  UsaMapSection,
+  ServicesSection,
+  HowItWorksSection,
+  CalculatorSection,
+  MarketplaceSection,
+  CaseStudiesSection,
+  ClientsBusinessSection,
+  FinalCtaSection,
+} from "@/modules/home"
 import { getSeoPage, parseKeywords, getStrapiImageUrl } from "@/lib/seo"
 
 const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com")

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { Search, Package, Calculator, MapPin, MessageCircle, ShoppingCart } from "lucide-react"
+import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
@@ -10,17 +10,8 @@ export function HeroSection() {
   const [eyePosition, setEyePosition] = useState({ x: 0, y: 0 })
   const imageRef = useRef<HTMLDivElement>(null)
 
-  const quickActions = [
-    { icon: Package, label: "Оформить посылку" },
-    { icon: Calculator, label: "Калькулятор" },
-    { icon: MapPin, label: "Пункты приёма" },
-    { icon: MessageCircle, label: "Поддержка 24/7" },
-    { icon: ShoppingCart, label: "Запрос на выкуп" },
-  ]
-
   return (
     <section className="relative min-h-[85vh] md:min-h-[85vh] w-full bg-gradient-to-br from-white via-blue-50/30 to-blue-100/40 flex items-center overflow-hidden">
-      {/* Background decoration */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(59,130,246,0.05),transparent_50%)]" />
       <div className="absolute top-10 md:top-20 right-5 md:right-10 w-48 h-48 md:w-96 md:h-96 bg-blue-200/20 rounded-full blur-3xl" />
       <div className="absolute bottom-10 md:bottom-20 left-5 md:left-10 w-40 h-40 md:w-80 md:h-80 bg-orange-200/20 rounded-full blur-3xl" />
@@ -64,24 +55,7 @@ export function HeroSection() {
               <Button className="h-12 md:h-14 px-6 md:px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-xl md:rounded-2xl text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all">
                 Получить консультацию
               </Button>
-              {/* <Button
-                variant="outline"
-                className="h-14 px-8 border-2 border-slate-300 hover:border-slate-400 rounded-2xl text-base font-bold hover:bg-slate-50 transition-all bg-transparent"
-              >
-                Купить за меня
-              </Button> */}
             </div>
-
-            {/* <div className="flex flex-wrap gap-6 pt-6">
-              {quickActions.map((action, index) => (
-                <button key={index} className="flex flex-col items-center gap-2 group">
-                  <div className="w-16 h-16 rounded-full bg-blue-600 hover:bg-orange-500 flex items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg group-hover:scale-110">
-                    <action.icon className="w-7 h-7 text-white" />
-                  </div>
-                  <span className="text-sm font-medium text-slate-700 text-center max-w-[80px]">{action.label}</span>
-                </button>
-              ))}
-            </div> */}
           </div>
 
           <div className="hidden md:flex items-center justify-center">
@@ -92,54 +66,34 @@ export function HeroSection() {
                 onMouseMove={(e) => {
                   if (!imageRef.current) return
                   const rect = imageRef.current.getBoundingClientRect()
-                  
-                  // Calculate mouse position relative to image (0 to 1)
                   const mouseX = (e.clientX - rect.left) / rect.width
                   const mouseY = (e.clientY - rect.top) / rect.height
-                  
-                  // Eye positions in the image (adjust these based on actual image)
-                  // Based on the character description, eyes are in the center-upper area
-                  const eyeCenterX = 0.5 // Center horizontally
-                  const eyeCenterY = 0.45 // Slightly above center vertically
-                  
-                  // Calculate direction from eye center to mouse
+                  const eyeCenterX = 0.5
+                  const eyeCenterY = 0.45
                   const deltaX = mouseX - eyeCenterX
                   const deltaY = mouseY - eyeCenterY
-                  
-                  // Maximum distance eyes can move (in image coordinates, 0-1)
                   const maxDistance = 0.12
                   const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
-                  
-                  // Normalize and limit movement
                   let normalizedX = deltaX
                   let normalizedY = deltaY
-                  
                   if (distance > maxDistance) {
                     normalizedX = (deltaX / distance) * maxDistance
                     normalizedY = (deltaY / distance) * maxDistance
                   }
-                  
-                  // Convert to pixel movement (adjust multiplier for sensitivity)
-                  const sensitivity = 12 // pixels per unit
-                  setEyePosition({ 
-                    x: normalizedX * sensitivity, 
-                    y: normalizedY * sensitivity 
+                  const sensitivity = 12
+                  setEyePosition({
+                    x: normalizedX * sensitivity,
+                    y: normalizedY * sensitivity,
                   })
                 }}
-                onMouseLeave={() => {
-                  // Smoothly return eyes to center
-                  setEyePosition({ x: 0, y: 0 })
-                }}
+                onMouseLeave={() => setEyePosition({ x: 0, y: 0 })}
               >
                 <img
                   src="/banner.jpg"
                   alt="OWAY Cargo - Доставка из США в СНГ"
                   className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                
-                {/* Animated eyes overlay */}
                 <div className="absolute inset-0 pointer-events-none">
-                  {/* Left eye pupil - positioned based on character's actual eye location */}
                   <div
                     className="absolute w-3 h-3 md:w-4 md:h-4 rounded-full bg-black transition-all duration-200 ease-out"
                     style={{
@@ -148,7 +102,6 @@ export function HeroSection() {
                       transform: "translate(-50%, -50%)",
                     }}
                   />
-                  {/* Right eye pupil */}
                   <div
                     className="absolute w-3 h-3 md:w-4 md:h-4 rounded-full bg-black transition-all duration-200 ease-out"
                     style={{
