@@ -18,7 +18,6 @@ const states = [
 ]
 
 const pickupPoints = [
-  { id: 1, state: "FL", city: "Miami", address: "1234 Ocean Drive, Miami Beach, FL 33139", hours: "Пн-Пт: 9:00-18:00, Сб-Вс: 10:00-16:00", lat: 25.7617, lng: -80.1918 },
   { id: 2, state: "FL", city: "Orlando", address: "5678 International Drive, Orlando, FL 32819", hours: "Пн-Пт: 8:00-20:00, Сб-Вс: 10:00-18:00", lat: 28.5383, lng: -81.3792 },
   { id: 3, state: "TX", city: "Houston", address: "9012 Westheimer Road, Houston, TX 77063", hours: "Пн-Пт: 9:00-19:00, Сб: 10:00-17:00", lat: 29.7604, lng: -95.3698 },
   { id: 4, state: "CA", city: "Los Angeles", address: "3456 Wilshire Blvd, Los Angeles, CA 90010", hours: "Пн-Сб: 8:00-20:00, Вс: 10:00-18:00", lat: 34.0522, lng: -118.2437 },
