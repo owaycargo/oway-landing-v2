@@ -1,14 +1,12 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 export function HeroSection() {
   const [trackingNumber, setTrackingNumber] = useState("")
-  const [eyePosition, setEyePosition] = useState({ x: 0, y: 0 })
-  const imageRef = useRef<HTMLDivElement>(null)
 
   return (
     <section className="relative min-h-[85vh] md:min-h-[85vh] w-full bg-gradient-to-br from-white via-blue-50/30 to-blue-100/40 flex items-center overflow-hidden">
@@ -60,57 +58,12 @@ export function HeroSection() {
 
           <div className="hidden md:flex items-center justify-center">
             <div className="relative w-full max-w-lg">
-              <div
-                ref={imageRef}
-                className="relative rounded-3xl overflow-hidden shadow-2xl cursor-none group"
-                onMouseMove={(e) => {
-                  if (!imageRef.current) return
-                  const rect = imageRef.current.getBoundingClientRect()
-                  const mouseX = (e.clientX - rect.left) / rect.width
-                  const mouseY = (e.clientY - rect.top) / rect.height
-                  const eyeCenterX = 0.5
-                  const eyeCenterY = 0.45
-                  const deltaX = mouseX - eyeCenterX
-                  const deltaY = mouseY - eyeCenterY
-                  const maxDistance = 0.12
-                  const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
-                  let normalizedX = deltaX
-                  let normalizedY = deltaY
-                  if (distance > maxDistance) {
-                    normalizedX = (deltaX / distance) * maxDistance
-                    normalizedY = (deltaY / distance) * maxDistance
-                  }
-                  const sensitivity = 12
-                  setEyePosition({
-                    x: normalizedX * sensitivity,
-                    y: normalizedY * sensitivity,
-                  })
-                }}
-                onMouseLeave={() => setEyePosition({ x: 0, y: 0 })}
-              >
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl group">
                 <img
                   src="/banner.jpg"
                   alt="OWAY Cargo - Доставка из США в СНГ"
                   className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 pointer-events-none">
-                  <div
-                    className="absolute w-3 h-3 md:w-4 md:h-4 rounded-full bg-black transition-all duration-200 ease-out"
-                    style={{
-                      left: `calc(47% + ${eyePosition.x}px)`,
-                      top: `calc(45% + ${eyePosition.y}px)`,
-                      transform: "translate(-50%, -50%)",
-                    }}
-                  />
-                  <div
-                    className="absolute w-3 h-3 md:w-4 md:h-4 rounded-full bg-black transition-all duration-200 ease-out"
-                    style={{
-                      left: `calc(53% + ${eyePosition.x}px)`,
-                      top: `calc(45% + ${eyePosition.y}px)`,
-                      transform: "translate(-50%, -50%)",
-                    }}
-                  />
-                </div>
               </div>
             </div>
           </div>
