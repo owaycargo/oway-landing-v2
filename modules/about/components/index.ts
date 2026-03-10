@@ -1,0 +1,8 @@
+export { AboutHero } from "./about-hero"
+export { AboutGeography } from "./about-geography"
+export { AboutBusinessModel } from "./about-business-model"
+export { AboutClientTypes } from "./about-client-types"
+export { AboutTransparency } from "./about-transparency"
+export { AboutTechnology } from "./about-technology"
+export { AboutPartnership } from "./about-partnership"
+export { AboutMission } from "./about-mission"
