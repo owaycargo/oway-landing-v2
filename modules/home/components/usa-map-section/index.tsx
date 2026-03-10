@@ -15,36 +15,14 @@ const states = [
   { name: "California", code: "CA" },
   { name: "New York", code: "NY" },
   { name: "Illinois", code: "IL" },
-  { name: "Oregon", code: "OR" },
-  { name: "Washington", code: "WA" },
-  { name: "Minnesota", code: "MN" },
-  { name: "Arizona", code: "AZ" },
-  { name: "Ohio", code: "OH" },
-  { name: "Maryland", code: "MD" },
-  { name: "Pennsylvania", code: "PA" },
-  { name: "Massachusetts", code: "MA" },
 ]
 
 const pickupPoints = [
-  { id: 1, state: "FL", city: "Miami", hours: "Пн-Пт: 9:00-18:00, Сб-Вс: 10:00-16:00", lat: 25.7617, lng: -80.1918, comingSoon: false },
-  { id: 2, state: "FL", city: "Orlando", hours: "Пн-Пт: 8:00-20:00, Сб-Вс: 10:00-18:00", lat: 28.5383, lng: -81.3792, comingSoon: false },
-  { id: 3, state: "TX", city: "Houston", hours: "Пн-Пт: 9:00-19:00, Сб: 10:00-17:00", lat: 29.7604, lng: -95.3698, comingSoon: false },
-  { id: 4, state: "CA", city: "Los Angeles", hours: "Пн-Сб: 8:00-20:00, Вс: 10:00-18:00", lat: 34.0522, lng: -118.2437, comingSoon: false },
-  { id: 5, state: "NY", city: "New York", hours: "Пн-Вс: 8:00-22:00", lat: 40.7128, lng: -74.006, comingSoon: false },
-  // Скоро откроемся
-  { id: 6, state: "OR", city: "Portland", hours: "Скоро откроемся", lat: 45.5152, lng: -122.6784, comingSoon: true },
-  { id: 7, state: "WA", city: "Seattle", hours: "Скоро откроемся", lat: 47.6062, lng: -122.3321, comingSoon: true },
-  { id: 8, state: "CA", city: "San Francisco", hours: "Скоро откроемся", lat: 37.7749, lng: -122.4194, comingSoon: true },
-  { id: 9, state: "CA", city: "San Jose", hours: "Скоро откроемся", lat: 37.3382, lng: -121.8863, comingSoon: true },
-  { id: 10, state: "CA", city: "Sacramento", hours: "Скоро откроемся", lat: 38.5816, lng: -121.4944, comingSoon: true },
-  { id: 11, state: "CA", city: "San Diego", hours: "Скоро откроемся", lat: 32.7157, lng: -117.1611, comingSoon: true },
-  { id: 12, state: "MN", city: "Minneapolis", hours: "Скоро откроемся", lat: 44.9778, lng: -93.2650, comingSoon: true },
-  { id: 13, state: "AZ", city: "Phoenix", hours: "Скоро откроемся", lat: 33.4484, lng: -112.0740, comingSoon: true },
-  { id: 14, state: "OH", city: "Cincinnati", hours: "Скоро откроемся", lat: 39.1031, lng: -84.5120, comingSoon: true },
-  { id: 15, state: "MD", city: "Baltimore", hours: "Скоро откроемся", lat: 39.2904, lng: -76.6122, comingSoon: true },
-  { id: 16, state: "PA", city: "Pittsburgh", hours: "Скоро откроемся", lat: 40.4406, lng: -79.9959, comingSoon: true },
-  { id: 17, state: "NY", city: "Brooklyn", hours: "Скоро откроемся", lat: 40.6782, lng: -73.9442, comingSoon: true },
-  { id: 18, state: "MA", city: "Boston", hours: "Скоро откроемся", lat: 42.3601, lng: -71.0589, comingSoon: true },
+  { id: 1, state: "FL", city: "Miami", hours: "Пн-Пт: 9:00-18:00, Сб-Вс: 10:00-16:00", lat: 25.7617, lng: -80.1918 },
+  { id: 2, state: "FL", city: "Orlando", hours: "Пн-Пт: 8:00-20:00, Сб-Вс: 10:00-18:00", lat: 28.5383, lng: -81.3792 },
+  { id: 3, state: "TX", city: "Houston", hours: "Пн-Пт: 9:00-19:00, Сб: 10:00-17:00", lat: 29.7604, lng: -95.3698 },
+  { id: 4, state: "CA", city: "Los Angeles", hours: "Пн-Сб: 8:00-20:00, Вс: 10:00-18:00", lat: 34.0522, lng: -118.2437 },
+  { id: 5, state: "NY", city: "New York", hours: "Пн-Вс: 8:00-22:00", lat: 40.7128, lng: -74.006 },
 ]
 
 export function UsaMapSection() {
@@ -132,7 +110,6 @@ export function UsaMapSection() {
               const isHovered = hoveredPoint === point.id
               const scale = isSelected ? 1.3 : isHovered ? 1.1 : 1
               const glowScale = isSelected ? 1.4 : isHovered ? 1.2 : 1
-              const markerColor = point.comingSoon ? "#94a3b8" : isSelected ? "#f97316" : "#2563eb"
               return (
                 <Marker key={point.id} coordinates={[point.lng, point.lat]}>
                   <Tooltip>
@@ -146,12 +123,12 @@ export function UsaMapSection() {
                       >
                         <circle
                           r={16}
-                          fill={markerColor}
+                          fill={isSelected ? "#f97316" : "#2563eb"}
                           opacity={isSelected ? 0.25 : isHovered ? 0.2 : 0.15}
                           transform={`scale(${glowScale})`}
                           style={{ transition: "transform 0.2s ease, opacity 0.2s ease" }}
                         />
-                        {isSelected && !point.comingSoon && (
+                        {isSelected && (
                           <circle
                             r={16}
                             fill="#f97316"
@@ -163,7 +140,7 @@ export function UsaMapSection() {
                         <circle r={9} fill="rgba(0,0,0,0.2)" transform={`translate(1, 1) scale(${scale})`} style={{ transition: "transform 0.2s ease" }} />
                         <circle
                           r={9}
-                          fill={markerColor}
+                          fill={isSelected ? "#f97316" : "#2563eb"}
                           stroke="white"
                           strokeWidth={isSelected ? 3.5 : isHovered ? 3 : 2.5}
                           transform={`scale(${scale})`}
@@ -174,7 +151,7 @@ export function UsaMapSection() {
                     </TooltipTrigger>
                     <TooltipContent side="top" className="bg-slate-900 text-white border-0 shadow-lg" sideOffset={8} avoidCollisions>
                       <p className="font-semibold">{point.city}, {point.state}</p>
-                      <p className="text-xs text-slate-300 mt-1">{point.comingSoon ? "Скоро откроемся" : "Нажмите для подробностей"}</p>
+                      <p className="text-xs text-slate-300 mt-1">Нажмите для подробностей</p>
                     </TooltipContent>
                   </Tooltip>
                 </Marker>
@@ -247,6 +224,8 @@ export function UsaMapSection() {
                 </Button>
                 <Button variant="outline" onClick={() => setSelectedPoint(null)}>Закрыть</Button>
               </div>
+            </div>
+          )}
             </div>
           )}
         </DialogContent>
