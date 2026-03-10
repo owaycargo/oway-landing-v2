@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { MapPin, Copy, Clock, Navigation } from "lucide-react"
+import { MapPin, Clock, Navigation } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -18,10 +18,11 @@ const states = [
 ]
 
 const pickupPoints = [
-  { id: 2, state: "FL", city: "Orlando", address: "5678 International Drive, Orlando, FL 32819", hours: "Пн-Пт: 8:00-20:00, Сб-Вс: 10:00-18:00", lat: 28.5383, lng: -81.3792 },
-  { id: 3, state: "TX", city: "Houston", address: "9012 Westheimer Road, Houston, TX 77063", hours: "Пн-Пт: 9:00-19:00, Сб: 10:00-17:00", lat: 29.7604, lng: -95.3698 },
-  { id: 4, state: "CA", city: "Los Angeles", address: "3456 Wilshire Blvd, Los Angeles, CA 90010", hours: "Пн-Сб: 8:00-20:00, Вс: 10:00-18:00", lat: 34.0522, lng: -118.2437 },
-  { id: 5, state: "NY", city: "New York", address: "7890 Broadway, New York, NY 10003", hours: "Пн-Вс: 8:00-22:00", lat: 40.7128, lng: -74.006 },
+  { id: 1, state: "FL", city: "Miami", hours: "Пн-Пт: 9:00-18:00, Сб-Вс: 10:00-16:00", lat: 25.7617, lng: -80.1918 },
+  { id: 2, state: "FL", city: "Orlando", hours: "Пн-Пт: 8:00-20:00, Сб-Вс: 10:00-18:00", lat: 28.5383, lng: -81.3792 },
+  { id: 3, state: "TX", city: "Houston", hours: "Пн-Пт: 9:00-19:00, Сб: 10:00-17:00", lat: 29.7604, lng: -95.3698 },
+  { id: 4, state: "CA", city: "Los Angeles", hours: "Пн-Сб: 8:00-20:00, Вс: 10:00-18:00", lat: 34.0522, lng: -118.2437 },
+  { id: 5, state: "NY", city: "New York", hours: "Пн-Вс: 8:00-22:00", lat: 40.7128, lng: -74.006 },
 ]
 
 export function UsaMapSection() {
@@ -38,10 +39,6 @@ export function UsaMapSection() {
   const selectedPointData = useMemo(() => {
     return pickupPoints.find((point) => point.id === selectedPoint) || null
   }, [selectedPoint])
-
-  const copyAddress = (address: string) => {
-    navigator.clipboard.writeText(address)
-  }
 
   return (
     <section id="map" className="w-full max-w-[1440px] mx-auto px-4 py-16 md:py-24">
@@ -182,13 +179,6 @@ export function UsaMapSection() {
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <MapPin className="w-4 h-4 text-slate-500 mt-1 flex-shrink-0" />
-                  <p className="text-sm text-slate-700">{point.address}</p>
-                  <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); copyAddress(point.address) }} className="ml-auto" aria-label="Копировать адрес">
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                </div>
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-slate-500" />
                   <p className="text-sm text-slate-700">{point.hours}</p>
@@ -211,17 +201,6 @@ export function UsaMapSection() {
           </DialogHeader>
           {selectedPointData && (
             <div className="space-y-4 mt-4">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-slate-500 mt-1 flex-shrink-0" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-slate-700 mb-1">Адрес:</p>
-                  <p className="text-sm text-slate-600">{selectedPointData.address}</p>
-                  <Button size="sm" variant="ghost" onClick={() => copyAddress(selectedPointData.address)} className="mt-2">
-                    <Copy className="w-4 h-4 mr-2" />
-                    Копировать адрес
-                  </Button>
-                </div>
-              </div>
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-slate-500 mt-1 flex-shrink-0" />
                 <div className="flex-1">
