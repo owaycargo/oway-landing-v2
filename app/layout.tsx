@@ -6,8 +6,8 @@ import { StructuredData } from "@/components/structured-data"
 import { TelegramDialogProvider } from "@/components/telegram-dialog-provider"
 import "./globals.css"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" })
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" })
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com"),
@@ -89,6 +89,15 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-icon.png",
   },
+  alternates: {
+    canonical: "/",
+    languages: {
+      "ru": "/",
+      "ky": "/",
+      "be": "/",
+      "x-default": "/",
+    },
+  },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
     yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
@@ -102,7 +111,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body className={`font-sans antialiased`}>
+      <body className={`${geist.variable} ${geistMono.variable} font-sans antialiased`}>
         <TelegramDialogProvider>
           <StructuredData />
           {children}
