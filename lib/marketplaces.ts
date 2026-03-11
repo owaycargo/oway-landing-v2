@@ -125,7 +125,7 @@ export const marketplaces: Marketplace[] = [
     url: "https://www.zara.com/us",
   },
   {
-    id: "h&m",
+    id: "hm",
     name: "H&M",
     category: "clothing",
     description: "Модная одежда для всей семьи в скандинавском стиле.",
