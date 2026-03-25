@@ -146,7 +146,7 @@ export function CalculatorSection() {
               </Card>
             )}
 
-            <Button className="w-full h-12 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-lg font-semibold">Оформить доставку</Button>
+            <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer"><Button className="w-full h-12 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-lg font-semibold">Оформить доставку</Button></a>
           </div>
         </Card>
 

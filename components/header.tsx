@@ -49,7 +49,7 @@ export function Header() {
           </a>
         </nav>
 
-        <Button className="hidden md:flex shrink-0 bg-orange-600 hover:bg-orange-700 text-white whitespace-nowrap">Личный кабинет</Button>
+        <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer"><Button className="hidden md:flex shrink-0 bg-orange-600 hover:bg-orange-700 text-white whitespace-nowrap">Личный кабинет</Button></a>
 
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -119,7 +119,7 @@ export function Header() {
             >
               Контакты
             </a>
-            <Button className="bg-orange-600 hover:bg-orange-700 text-white w-full mt-2">Личный кабинет</Button>
+            <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer"><Button className="bg-orange-600 hover:bg-orange-700 text-white w-full mt-2">Личный кабинет</Button></a>
           </nav>
         </div>
       )}

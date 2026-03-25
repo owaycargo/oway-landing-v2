@@ -14,14 +14,18 @@ export function FinalCtaSection() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button className="h-14 px-8 bg-orange-600 hover:bg-orange-700 text-white rounded-2xl text-lg font-semibold">
-            Оформить посылку
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
-          <Button className="h-14 px-8 bg-white hover:bg-slate-100 text-blue-600 rounded-2xl text-lg font-semibold">
-            Получить консультацию
-            <MessageCircle className="w-5 h-5 ml-2" />
-          </Button>
+          <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer">
+            <Button className="h-14 px-8 bg-orange-600 hover:bg-orange-700 text-white rounded-2xl text-lg font-semibold">
+              Оформить посылку
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </a>
+          <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer">
+            <Button className="h-14 px-8 bg-white hover:bg-slate-100 text-blue-600 rounded-2xl text-lg font-semibold">
+              Получить консультацию
+              <MessageCircle className="w-5 h-5 ml-2" />
+            </Button>
+          </a>
         </div>
       </Card>
     </section>

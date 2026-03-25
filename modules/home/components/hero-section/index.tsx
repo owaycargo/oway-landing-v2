@@ -47,12 +47,16 @@ export function HeroSection() {
             </div>
 
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 pt-2 md:pt-4">
-              <Button className="h-12 md:h-14 px-6 md:px-8 bg-orange-600 hover:bg-orange-700 text-white rounded-xl md:rounded-2xl text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all">
-                Оформить посылку
-              </Button>
-              <Button className="h-12 md:h-14 px-6 md:px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-xl md:rounded-2xl text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all">
-                Получить консультацию
-              </Button>
+              <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer">
+                <Button className="h-12 md:h-14 px-6 md:px-8 bg-orange-600 hover:bg-orange-700 text-white rounded-xl md:rounded-2xl text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all">
+                  Оформить посылку
+                </Button>
+              </a>
+              <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer">
+                <Button className="h-12 md:h-14 px-6 md:px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-xl md:rounded-2xl text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all">
+                  Получить консультацию
+                </Button>
+              </a>
             </div>
           </div>
 
