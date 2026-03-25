@@ -226,6 +226,8 @@ export function UsaMapSection() {
               </div>
             </div>
           )}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </section>
