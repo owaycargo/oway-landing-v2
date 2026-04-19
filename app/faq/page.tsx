@@ -224,7 +224,7 @@ export default function FAQPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer"><Button className="bg-orange-500 hover:bg-orange-600 text-white">Написать в поддержку</Button></a>
             <Button variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
-              Позвонить: +1 (555) 123-4567
+              Позвонить: +1 213 276 6898
             </Button>
           </div>
         </div>
