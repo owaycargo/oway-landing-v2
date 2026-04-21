@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { OpenTelegramButton } from "@/components/open-telegram-button"
 import {
   HeroSection,
   PickupPointsSection,
@@ -11,6 +10,7 @@ import {
   MarketplaceSection,
   CaseStudiesSection,
   ClientsBusinessSection,
+  PartnerSection,
 } from "@/modules/home"
 import { getSeoPage, parseKeywords, getStrapiImageUrl } from "@/lib/seo"
 
@@ -85,15 +85,7 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <PickupPointsSection />
-        <div className="max-w-2xl mx-auto mt-6 mb-2 px-4 text-center space-y-3">
-          <p className="text-xl md:text-2xl text-slate-600 font-medium">
-            <span className="text-red-500" aria-hidden>🔴</span> Нет пункта OWAY в вашем городе?
-          </p>
-          <p className="text-xl md:text-2xl text-slate-600">
-            Откройте ПВЗ OWAY Cargo или станьте нашим представителем в своём городе.
-          </p>
-          <OpenTelegramButton />
-        </div>
+        <PartnerSection />
         <ServicesSection />
         <HowItWorksSection />
         <CalculatorSection />
