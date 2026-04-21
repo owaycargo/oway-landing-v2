@@ -1,15 +1,8 @@
 "use client"
 
 import { Package, Mail, Phone, MapPin } from "lucide-react"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import { useTelegramDialog } from "@/components/telegram-dialog-provider"
+import { useWhatsAppDialog } from "@/components/whatsapp-dialog-provider"
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -43,6 +36,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 
 export function Footer() {
   const { openTelegram } = useTelegramDialog()
+  const { openWhatsApp } = useWhatsAppDialog()
   return (
     <footer id="contact" className="bg-slate-900 text-slate-300">
       <div className="container mx-auto px-4 py-12">
@@ -142,55 +136,14 @@ export function Footer() {
             >
               <TelegramIcon className="w-4 h-4" />
             </button>
-            <Dialog>
-              <DialogTrigger asChild>
-                <button
-                  type="button"
-                  className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition-colors cursor-pointer"
-                  aria-label="WhatsApp"
-                >
-                  <WhatsAppIcon className="w-4 h-4" />
-                </button>
-              </DialogTrigger>
-              <DialogContent className="bg-slate-900 border-slate-700 text-slate-200 sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle className="text-white">Написать в WhatsApp</DialogTitle>
-                  <DialogDescription className="text-slate-400">
-                    Выберите менеджера по вашему региону
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-3 pt-2">
-                  <a
-                    href="https://wa.me/996709969621"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-blue-500/50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-[#25D366]/20 flex items-center justify-center shrink-0">
-                      <WhatsAppIcon className="w-5 h-5 text-[#25D366]" />
-                    </div>
-                    <div className="text-left">
-                      <div className="font-medium text-white">Менеджер по СНГ</div>
-                      <div className="text-sm text-slate-400">+996 709 969 621</div>
-                    </div>
-                  </a>
-                  <a
-                    href="https://wa.me/12132766898"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-blue-500/50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-[#25D366]/20 flex items-center justify-center shrink-0">
-                      <WhatsAppIcon className="w-5 h-5 text-[#25D366]" />
-                    </div>
-                    <div className="text-left">
-                      <div className="font-medium text-white">Менеджер по США</div>
-                      <div className="text-sm text-slate-400">+1 213 276 6898</div>
-                    </div>
-                  </a>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <button
+              type="button"
+              onClick={openWhatsApp}
+              className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition-colors cursor-pointer"
+              aria-label="WhatsApp"
+            >
+              <WhatsAppIcon className="w-4 h-4" />
+            </button>
             <a
               href="https://threads.net/@owaycargo"
               target="_blank"

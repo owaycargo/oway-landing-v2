@@ -5,6 +5,8 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { StructuredData } from "@/components/structured-data"
 import { TelegramDialogProvider } from "@/components/telegram-dialog-provider"
+import { WhatsAppDialogProvider } from "@/components/whatsapp-dialog-provider"
+import { FloatingWhatsAppButton } from "@/components/floating-whatsapp-button"
 import "./globals.css"
 
 const GA_MEASUREMENT_ID = "G-4G1RFW231V"
@@ -124,9 +126,12 @@ export default function RootLayout({
       </head>
       <body className={`${geist.variable} ${geistMono.variable} font-sans antialiased`}>
         <TelegramDialogProvider>
-          <StructuredData />
-          {children}
-          <Analytics />
+          <WhatsAppDialogProvider>
+            <StructuredData />
+            {children}
+            <FloatingWhatsAppButton />
+            <Analytics />
+          </WhatsAppDialogProvider>
         </TelegramDialogProvider>
       </body>
     </html>
