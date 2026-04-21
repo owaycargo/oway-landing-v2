@@ -29,7 +29,7 @@ export function Header() {
           <a href="/#marketplace" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
             Магазины
           </a>
-          <a href="/#map" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
+          <a href="/#pickup" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
             Пункты приёма
           </a>
           <a href="/#calculator" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
@@ -78,7 +78,7 @@ export function Header() {
               Магазины
             </a>
             <a
-              href="/#map"
+              href="/#pickup"
               onClick={() => setMobileMenuOpen(false)}
               className="text-slate-600 hover:text-blue-600 transition-colors py-2"
             >

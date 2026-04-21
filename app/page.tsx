@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import { OpenTelegramButton } from "@/components/open-telegram-button"
 import {
   HeroSection,
-  UsaMapSection,
+  PickupPointsSection,
   ServicesSection,
   HowItWorksSection,
   CalculatorSection,
@@ -84,7 +84,7 @@ export default function HomePage() {
       <Header />
       <main>
         <HeroSection />
-        <UsaMapSection />
+        <PickupPointsSection />
         <div className="max-w-2xl mx-auto mt-6 mb-2 px-4 text-center space-y-3">
           <p className="text-xl md:text-2xl text-slate-600 font-medium">
             <span className="text-red-500" aria-hidden>🔴</span> Нет пункта OWAY в вашем городе?

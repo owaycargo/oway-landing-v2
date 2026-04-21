@@ -65,7 +65,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#map" className="hover:text-blue-400 transition-colors">
+                <a href="#pickup" className="hover:text-blue-400 transition-colors">
                   Пункты приёма
                 </a>
               </li>

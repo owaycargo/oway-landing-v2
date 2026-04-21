@@ -9,23 +9,47 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps"
 
-const states = [
-  { name: "Florida", code: "FL" },
-  { name: "Texas", code: "TX" },
+type UsaState = { name: string; code: string }
+type PickupPoint = {
+  id: number
+  state: string
+  city: string
+  address: string
+  hours: string
+  lat: number
+  lng: number
+}
+
+const states: UsaState[] = [
+  { name: "Washington", code: "WA" },
+  { name: "Oregon", code: "OR" },
   { name: "California", code: "CA" },
-  { name: "New York", code: "NY" },
   { name: "Illinois", code: "IL" },
+  { name: "Minnesota", code: "MN" },
+  { name: "Ohio", code: "OH" },
+  { name: "Pennsylvania", code: "PA" },
+  { name: "Maryland", code: "MD" },
+  { name: "New York", code: "NY" },
 ]
 
-const pickupPoints = [
-  { id: 1, state: "FL", city: "Miami", hours: "Пн-Пт: 9:00-18:00, Сб-Вс: 10:00-16:00", lat: 25.7617, lng: -80.1918 },
-  { id: 2, state: "FL", city: "Orlando", hours: "Пн-Пт: 8:00-20:00, Сб-Вс: 10:00-18:00", lat: 28.5383, lng: -81.3792 },
-  { id: 3, state: "TX", city: "Houston", hours: "Пн-Пт: 9:00-19:00, Сб: 10:00-17:00", lat: 29.7604, lng: -95.3698 },
-  { id: 4, state: "CA", city: "Los Angeles", hours: "Пн-Сб: 8:00-20:00, Вс: 10:00-18:00", lat: 34.0522, lng: -118.2437 },
-  { id: 5, state: "NY", city: "New York", hours: "Пн-Вс: 8:00-22:00", lat: 40.7128, lng: -74.006 },
+const pickupPoints: PickupPoint[] = [
+  { id: 1, state: "WA", city: "Seattle", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 47.6062, lng: -122.3321 },
+  { id: 2, state: "OR", city: "Portland", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 45.5152, lng: -122.6784 },
+  { id: 3, state: "CA", city: "San Francisco", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 37.7749, lng: -122.4194 },
+  { id: 4, state: "CA", city: "Sacramento", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 38.5816, lng: -121.4944 },
+  { id: 5, state: "CA", city: "Los Angeles", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 34.0522, lng: -118.2437 },
+  { id: 6, state: "CA", city: "Irvine", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 33.6846, lng: -117.8265 },
+  { id: 7, state: "CA", city: "San Diego", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 32.7157, lng: -117.1611 },
+  { id: 8, state: "IL", city: "Chicago", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 41.8781, lng: -87.6298 },
+  { id: 9, state: "MN", city: "Minneapolis", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 44.9778, lng: -93.265 },
+  { id: 10, state: "OH", city: "Cincinnati", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 39.1031, lng: -84.512 },
+  { id: 11, state: "PA", city: "Pittsburgh", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 40.4406, lng: -79.9959 },
+  { id: 12, state: "PA", city: "Philadelphia", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 39.9526, lng: -75.1652 },
+  { id: 13, state: "MD", city: "Baltimore", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 39.2904, lng: -76.6122 },
+  { id: 14, state: "NY", city: "New York", address: "[УТОЧНИТЬ]", hours: "[УТОЧНИТЬ]", lat: 40.7128, lng: -74.006 },
 ]
 
-export function UsaMapSection() {
+export function UsaPanel() {
   const [selectedState, setSelectedState] = useState<string>("all")
   const [selectedPoint, setSelectedPoint] = useState<number | null>(null)
   const [hoveredPoint, setHoveredPoint] = useState<number | null>(null)
@@ -40,21 +64,14 @@ export function UsaMapSection() {
     return pickupPoints.find((point) => point.id === selectedPoint) || null
   }, [selectedPoint])
 
-  return (
-    <section id="map" className="w-full max-w-[1440px] mx-auto px-4 py-16 md:py-24">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
-          Пункты приёма OWAY Cargo в США
-        </h2>
-        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-          Выберите штат или город и найдите ближайший пункт приёма посылок. Все точки работают в режиме{" "}
-          <span className="font-semibold text-blue-600">самообслуживания</span>
-        </p>
-      </div>
+  const pointsWord = (n: number) =>
+    n === 1 ? "пункт" : n >= 2 && n <= 4 ? "пункта" : "пунктов"
 
+  return (
+    <div>
       <div className="mb-6 max-w-xs">
         <Select value={selectedState} onValueChange={setSelectedState}>
-          <SelectTrigger className="h-12 rounded-xl" aria-label="Выберите штат для фильтрации пунктов приёма">
+          <SelectTrigger className="h-12 rounded-xl" aria-label="Выберите штат">
             <SelectValue placeholder="Выберите штат" />
           </SelectTrigger>
           <SelectContent>
@@ -69,14 +86,14 @@ export function UsaMapSection() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
-        <Card className="rounded-3xl overflow-hidden border-slate-200 h-[600px] relative shadow-lg bg-gradient-to-br from-blue-50 via-slate-50 to-blue-100">
+        <Card className="rounded-3xl overflow-hidden border-slate-200 h-[500px] md:h-[600px] relative shadow-lg bg-gradient-to-br from-blue-50 via-slate-50 to-blue-100">
           <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm px-5 py-3 rounded-xl shadow-lg border border-slate-200">
             <div className="flex items-center gap-2 mb-1">
               <Navigation className="w-5 h-5 text-blue-600" />
-              <p className="text-slate-900 font-bold text-lg">Интерактивная карта США</p>
+              <p className="text-slate-900 font-bold text-lg">Карта пунктов в США</p>
             </div>
             <p className="text-slate-600 text-sm font-medium">
-              {filteredPoints.length} {filteredPoints.length === 1 ? "пункт" : filteredPoints.length < 5 ? "пункта" : "пунктов"} приёма
+              {filteredPoints.length} {pointsWord(filteredPoints.length)}
             </p>
           </div>
 
@@ -160,13 +177,13 @@ export function UsaMapSection() {
           </ComposableMap>
         </Card>
 
-        <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+        <div className="space-y-4 max-h-[500px] md:max-h-[600px] overflow-y-auto pr-2">
           {filteredPoints.map((point) => (
             <Card
               key={point.id}
               className={`p-6 rounded-2xl cursor-pointer transition-all ${
-                selectedPoint === point.id 
-                  ? "border-orange-500 border-2 bg-orange-50 shadow-lg" 
+                selectedPoint === point.id
+                  ? "border-orange-500 border-2 bg-orange-50 shadow-lg"
                   : "border-slate-200 hover:border-blue-300 hover:shadow-md"
               }`}
               onClick={() => setSelectedPoint(point.id)}
@@ -204,6 +221,13 @@ export function UsaMapSection() {
           {selectedPointData && (
             <div className="space-y-4 mt-4">
               <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-slate-500 mt-1 flex-shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-slate-700 mb-1">Адрес:</p>
+                  <p className="text-sm text-slate-600">{selectedPointData.address}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-slate-500 mt-1 flex-shrink-0" />
                 <div className="flex-1">
                   <p className="text-sm font-medium text-slate-700 mb-1">Часы работы:</p>
@@ -228,6 +252,6 @@ export function UsaMapSection() {
           )}
         </DialogContent>
       </Dialog>
-    </section>
+    </div>
   )
 }

@@ -1,5 +1,5 @@
 export { HeroSection } from "./hero-section"
-export { UsaMapSection } from "./usa-map-section"
+export { PickupPointsSection } from "./pickup-points-section"
 export { ServicesSection } from "./services-section"
 export { HowItWorksSection } from "./how-it-works-section"
 export { CalculatorSection } from "./calculator-section"
