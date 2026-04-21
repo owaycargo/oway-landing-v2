@@ -39,7 +39,7 @@ export function ServicesSection() {
     <section id="services" className="w-full max-w-[1440px] mx-auto px-4 py-16 md:py-24 bg-slate-50">
       <div className="text-center mb-12 flex flex-col items-center">
         <img
-          src="/mascots/mascot-party.png"
+          src="/mascots/mascot-party.webp"
           alt=""
           aria-hidden
           className="w-24 md:w-32 h-auto mb-4 drop-shadow-[0_15px_25px_rgba(15,23,42,0.15)]"

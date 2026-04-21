@@ -108,7 +108,7 @@ export function HeroSection() {
             <div className="relative w-full">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18),transparent_60%)] blur-2xl" />
               <img
-                src="/mascots/mascot-wink.png"
+                src="/mascots/mascot-wink.webp"
                 alt="OWAY — маскот"
                 className="relative w-full max-w-[520px] h-auto mx-auto drop-shadow-[0_25px_40px_rgba(15,23,42,0.25)] animate-[float_6s_ease-in-out_infinite]"
               />
