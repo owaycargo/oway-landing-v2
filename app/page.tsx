@@ -11,7 +11,6 @@ import {
   MarketplaceSection,
   CaseStudiesSection,
   ClientsBusinessSection,
-  FinalCtaSection,
 } from "@/modules/home"
 import { getSeoPage, parseKeywords, getStrapiImageUrl } from "@/lib/seo"
 
@@ -100,7 +99,6 @@ export default function HomePage() {
         <CalculatorSection />
         <MarketplaceSection />
         <ClientsBusinessSection />
-        <FinalCtaSection />
       </main>
       <Footer />
     </div>

@@ -34,7 +34,7 @@ export function HeroSection() {
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="space-y-6 md:space-y-8">
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-tight text-balance">
-              Доставка из США <span className="text-orange-600">в 5 стран</span>
+              Доставка посылок из США <span className="text-orange-600">в страны СНГ</span>
             </h1>
 
             <p className="text-base md:text-xl text-slate-600 leading-relaxed text-pretty max-w-xl">
