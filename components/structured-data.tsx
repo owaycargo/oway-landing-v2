@@ -29,7 +29,7 @@ export function StructuredData() {
     url: baseUrl,
     logo: `${baseUrl}/icon.svg`,
     image: `${baseUrl}/banner.jpg`,
-    description: "Международная доставка посылок из США в страны СНГ: Кыргызстан, Россия, Беларусь, Казахстан",
+    description: "Международная доставка посылок из США в страны СНГ: Россия, Беларусь, Кыргызстан, Казахстан, Узбекистан",
     priceRange: "$$",
     areaServed: [
       { "@type": "Country", name: "United States" },
@@ -37,10 +37,11 @@ export function StructuredData() {
       { "@type": "Country", name: "Belarus" },
       { "@type": "Country", name: "Kyrgyzstan" },
       { "@type": "Country", name: "Kazakhstan" },
+      { "@type": "Country", name: "Uzbekistan" },
     ],
     serviceArea: {
       "@type": "GeoShape",
-      addressCountry: ["US", "RU", "BY", "KG", "KZ"],
+      addressCountry: ["US", "RU", "BY", "KG", "KZ", "UZ"],
     },
     hasOfferCatalog: {
       "@type": "OfferCatalog",
@@ -106,13 +107,14 @@ export function StructuredData() {
       { "@type": "Country", name: "Belarus" },
       { "@type": "Country", name: "Kyrgyzstan" },
       { "@type": "Country", name: "Kazakhstan" },
+      { "@type": "Country", name: "Uzbekistan" },
     ],
-    description: "Доставка посылок из США в страны СНГ (Россия, Беларусь, Кыргызстан, Казахстан)",
+    description: "Доставка посылок из США в страны СНГ (Россия, Беларусь, Кыргызстан, Казахстан, Узбекистан)",
     offers: {
       "@type": "AggregateOffer",
       priceCurrency: "USD",
-      lowPrice: "8",
-      description: "от $8 за кг",
+      lowPrice: "12",
+      description: "от $12 за кг",
     },
   }
 
