@@ -37,10 +37,6 @@ export function HeroSection() {
               Доставка посылок из США <span className="text-orange-600">в страны СНГ</span>
             </h1>
 
-            <p className="text-base md:text-xl text-slate-600 leading-relaxed text-pretty max-w-xl">
-              Россия, Беларусь, Кыргызстан, Казахстан, Узбекистан
-            </p>
-
             <div className="space-y-2.5 pt-1">
               <div className="flex items-center gap-3 md:gap-4 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-xl md:rounded-2xl p-3 md:p-4 shadow-sm">
                 <div className="flex text-2xl md:text-3xl shrink-0" aria-hidden>🇰🇿🇰🇬🇺🇿</div>
@@ -109,14 +105,13 @@ export function HeroSection() {
           </div>
 
           <div className="hidden md:flex items-center justify-center">
-            <div className="relative w-full max-w-lg">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl group">
-                <img
-                  src="/banner.jpg"
-                  alt="OWAY Cargo - Доставка из США в СНГ"
-                  className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
+            <div className="relative w-full">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18),transparent_60%)] blur-2xl" />
+              <img
+                src="/mascots/mascot-wink.png"
+                alt="OWAY — маскот"
+                className="relative w-full max-w-[520px] h-auto mx-auto drop-shadow-[0_25px_40px_rgba(15,23,42,0.25)] animate-[float_6s_ease-in-out_infinite]"
+              />
             </div>
           </div>
         </div>
