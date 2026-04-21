@@ -84,13 +84,13 @@ export default function HomePage() {
       <Header />
       <main>
         <HeroSection />
-        <PickupPointsSection />
-        <PartnerSection />
-        <ServicesSection />
         <HowItWorksSection />
+        <PickupPointsSection />
         <CalculatorSection />
+        <ServicesSection />
         <MarketplaceSection />
         <ClientsBusinessSection />
+        <PartnerSection />
       </main>
       <Footer />
     </div>
