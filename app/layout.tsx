@@ -6,7 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { StructuredData } from "@/components/structured-data"
 import { TelegramDialogProvider } from "@/components/telegram-dialog-provider"
 import { WhatsAppDialogProvider } from "@/components/whatsapp-dialog-provider"
-import { FloatingWhatsAppButton } from "@/components/floating-whatsapp-button"
+import { FloatingContacts } from "@/components/floating-contacts"
 import "./globals.css"
 
 const GA_MEASUREMENT_ID = "G-4G1RFW231V"
@@ -129,7 +129,7 @@ export default function RootLayout({
           <WhatsAppDialogProvider>
             <StructuredData />
             {children}
-            <FloatingWhatsAppButton />
+            <FloatingContacts />
             <Analytics />
           </WhatsAppDialogProvider>
         </TelegramDialogProvider>
