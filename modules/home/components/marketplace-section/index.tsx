@@ -13,7 +13,13 @@ export function MarketplaceSection() {
 
   return (
     <section id="marketplace" className="w-full max-w-[1440px] mx-auto px-[15px] py-16 md:py-24">
-      <div className="text-center mb-12">
+      <div className="text-center mb-12 flex flex-col items-center">
+        <img
+          src="/mascots/mascot-love.png"
+          alt=""
+          aria-hidden
+          className="w-24 md:w-32 h-auto mb-4 drop-shadow-[0_15px_25px_rgba(15,23,42,0.15)]"
+        />
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">Где покупать товары</h2>
         <p className="text-lg text-slate-600 max-w-4xl mx-auto">
           Сотни американских магазинов и миллионы товаров, которые в странах СНГ не продаются или стоят значительно дороже, вы можете заказать через OWAY CARGO по реальным ценам из США.
