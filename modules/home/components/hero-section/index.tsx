@@ -33,12 +33,16 @@ export function HeroSection() {
       <div className="relative w-full max-w-[1440px] mx-auto px-4 md:px-[15px] py-8 md:py-12">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="space-y-6 md:space-y-8">
-            <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-tight text-balance">
-              OWAY CARGO — ДОСТАВКА ИЗ США В СНГ
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-tight text-balance">
+              ОТ <span className="text-orange-600">$12</span>/КГ
+              <span className="mx-2 md:mx-3 text-slate-300">·</span>
+              10–14 ДНЕЙ
+              <span className="mx-2 md:mx-3 text-slate-300">·</span>
+              БЕЗ МИН. ВЕСА
             </h1>
 
             <p className="text-base md:text-2xl text-slate-600 leading-relaxed text-pretty max-w-xl">
-              Быстрая и удобная доставка посылок из США в Кыргызстан, Россию и Беларусь через автономные пункты приёма
+              Доставка из США в Россию, Беларусь, Кыргызстан, Казахстан, Узбекистан
             </p>
 
             <div className="space-y-2">
