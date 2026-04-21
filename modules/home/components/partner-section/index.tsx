@@ -1,6 +1,6 @@
 "use client"
 
-import { Handshake, Package, Users, ShieldCheck, MapPin } from "lucide-react"
+import { Handshake, Package, Users, ShieldCheck, MapPin, ArrowRight } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useTelegramDialog } from "@/components/telegram-dialog-provider"
@@ -57,9 +57,50 @@ export function PartnerSection() {
             Станьте партнёром OWAY <span className="text-orange-600">в своём городе</span>
           </h2>
           <p className="text-lg md:text-xl text-slate-600">
-            Подходит владельцам барбершопов, салонов, кафе, цветочных, автосервисов и других малых бизнесов
+            Открываем точки приёма в США и точки выдачи в странах СНГ. Подходит владельцам
+            барбершопов, салонов, кафе, цветочных, автосервисов и других малых бизнесов
             с постоянным потоком клиентов.
           </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10 md:mb-14 max-w-5xl mx-auto">
+          <Card className="p-6 md:p-7 rounded-2xl border-2 border-blue-200 bg-white hover:shadow-xl transition-all">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="text-4xl" aria-hidden>🇺🇸</div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-blue-700">США</span>
+                <ArrowRight className="w-4 h-4 text-slate-400" />
+                <span className="text-sm font-semibold text-slate-600">приём посылок</span>
+              </div>
+            </div>
+            <h3 className="font-bold text-xl text-slate-900 mb-2">Точка приёма в США</h3>
+            <p className="text-sm md:text-base text-slate-600 leading-relaxed">
+              Клиенты привозят свои посылки к вам в бизнес — мы забираем и отправляем
+              в страны СНГ. Вы получаете новый поток посетителей и доход с каждой посылки.
+            </p>
+          </Card>
+
+          <Card className="p-6 md:p-7 rounded-2xl border-2 border-orange-200 bg-white hover:shadow-xl transition-all">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="text-4xl" aria-hidden>🌍</div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-orange-700">СНГ</span>
+                <ArrowRight className="w-4 h-4 text-slate-400" />
+                <span className="text-sm font-semibold text-slate-600">выдача посылок</span>
+              </div>
+            </div>
+            <h3 className="font-bold text-xl text-slate-900 mb-2">Точка выдачи в СНГ</h3>
+            <p className="text-sm md:text-base text-slate-600 leading-relaxed">
+              Мы привозим посылки из США в ваш город — клиенты приходят забирать к вам
+              в бизнес. Если у вас магазин — это бесплатная реклама ваших товаров.
+            </p>
+          </Card>
+        </div>
+
+        <div className="text-center mb-8 md:mb-10">
+          <h3 className="text-2xl md:text-3xl font-bold text-slate-900">
+            Что вы получаете в обоих случаях
+          </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-10 md:mb-14">
@@ -86,8 +127,8 @@ export function PartnerSection() {
               Хотите узнать условия?
             </h3>
             <p className="text-base md:text-lg text-slate-600 max-w-xl mx-auto">
-              Расскажем подробно о работе пункта и обсудим условия сотрудничества
-              индивидуально — напишите нам в удобный мессенджер.
+              Напишите, в какой стране и городе у вас бизнес — расскажем о роли пункта
+              приёма (США) или выдачи (СНГ) и обсудим условия индивидуально.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 pt-2 justify-center">
               <Button
