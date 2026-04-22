@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import type { ReactElement } from "react"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Header } from "@/components/header"
@@ -15,7 +16,7 @@ interface MarketplacePageProps {
 }
 
 function getMarketplaceLogo(logo: string) {
-  const logoStyles: Record<string, JSX.Element> = {
+  const logoStyles: Record<string, ReactElement> = {
     ebay: <span className="text-blue-600" style={{ fontSize: "14px" }}>eBay</span>,
     amazon: <span className="text-orange-700" style={{ fontSize: "12px" }}>amazon</span>,
     walmart: <span className="text-blue-600" style={{ fontSize: "11px" }}>Walmart</span>,
