@@ -3,8 +3,8 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { MessageCircle } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { getSeoPage, parseKeywords, getStrapiImageUrl } from "@/lib/seo"
+import { FaqContactCta } from "./contact-cta"
 
 const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com")
 
@@ -395,12 +395,7 @@ export default function FAQPage() {
             Наша служба поддержки работает 24/7 и готова помочь вам в любое время. Мы ответим на все ваши вопросы и
             решим любые проблемы.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer"><Button className="bg-orange-500 hover:bg-orange-600 text-white">Написать в поддержку</Button></a>
-            <Button variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
-              Позвонить: +1 213 276 6898
-            </Button>
-          </div>
+          <FaqContactCta />
         </div>
       </main>
 
