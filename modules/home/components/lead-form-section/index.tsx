@@ -51,9 +51,25 @@ export function LeadFormSection() {
         throw new Error(data.error || "Не удалось отправить заявку")
       }
       setStatus("success")
+
+      const w = window as Window & {
+        gtag?: (command: string, event: string, params: Record<string, unknown>) => void
+      }
+      w.gtag?.("event", "form_submit", {
+        form_name: "lead_callback",
+        country: form.country,
+      })
     } catch (err) {
       setStatus("error")
       setErrorText(err instanceof Error ? err.message : "Неизвестная ошибка")
+
+      const w = window as Window & {
+        gtag?: (command: string, event: string, params: Record<string, unknown>) => void
+      }
+      w.gtag?.("event", "form_submit_error", {
+        form_name: "lead_callback",
+        error: err instanceof Error ? err.message : "unknown",
+      })
     }
   }
 
