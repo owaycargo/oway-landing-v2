@@ -15,6 +15,28 @@ type LeadBody = {
   country?: string
   city?: string
   message?: string
+  website?: string
+}
+
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000
+const RATE_LIMIT_MAX = 5
+const rateLimitMap = new Map<string, { count: number; firstAt: number }>()
+
+function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
+  const now = Date.now()
+  const record = rateLimitMap.get(ip)
+
+  if (!record || now - record.firstAt > RATE_LIMIT_WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, firstAt: now })
+    return { allowed: true, remaining: RATE_LIMIT_MAX - 1 }
+  }
+
+  if (record.count >= RATE_LIMIT_MAX) {
+    return { allowed: false, remaining: 0 }
+  }
+
+  record.count += 1
+  return { allowed: true, remaining: RATE_LIMIT_MAX - record.count }
 }
 
 function clean(v: unknown, max = 500): string {
@@ -30,6 +52,27 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Некорректный запрос" }, { status: 400 })
   }
 
+  if (clean(body.website, 200)) {
+    console.warn("[lead] honeypot triggered — bot detected")
+    return NextResponse.json({ ok: true, delivered: false })
+  }
+
+  const h = await headers()
+  const ip =
+    h.get("x-forwarded-for")?.split(",")[0].trim() ||
+    h.get("x-real-ip") ||
+    h.get("x-vercel-ip") ||
+    "unknown"
+
+  const limit = checkRateLimit(ip)
+  if (!limit.allowed) {
+    console.warn(`[lead] rate limit exceeded for ${ip}`)
+    return NextResponse.json(
+      { error: "Слишком много заявок. Попробуйте через 15 минут или напишите в Telegram." },
+      { status: 429 },
+    )
+  }
+
   const name = clean(body.name, 100)
   const phoneRaw = clean(body.phone, 40)
   const country = clean(body.country, 4)
@@ -41,7 +84,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Проверьте имя, телефон и страну" }, { status: 400 })
   }
 
-  const h = await headers()
   const ipCountry = h.get("x-vercel-ip-country") || ""
   const ipCity = h.get("x-vercel-ip-city") || ""
   const ua = h.get("user-agent") || ""

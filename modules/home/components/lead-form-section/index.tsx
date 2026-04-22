@@ -26,6 +26,7 @@ export function LeadFormSection() {
     country: "",
     city: "",
     message: "",
+    website: "",
   })
 
   const canSubmit =
@@ -108,6 +109,26 @@ export function LeadFormSection() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
+                <div
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    left: "-9999px",
+                    width: "1px",
+                    height: "1px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <label htmlFor="lead-website">Не заполняйте это поле</label>
+                  <input
+                    id="lead-website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={form.website}
+                    onChange={(e) => setForm({ ...form, website: e.target.value })}
+                  />
+                </div>
                 <div className="grid md:grid-cols-2 gap-4 md:gap-5">
                   <div className="space-y-2">
                     <Label htmlFor="lead-name">Имя *</Label>
