@@ -1,5 +1,5 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import Script from "next/script"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
@@ -11,8 +11,26 @@ import "./globals.css"
 
 const GA_MEASUREMENT_ID = "G-4G1RFW231V"
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" })
-const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" })
+const geist = Geist({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-geist-sans",
+  display: "swap",
+})
+const geistMono = Geist_Mono({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-geist-mono",
+  display: "swap",
+})
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
+  ],
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com"),
