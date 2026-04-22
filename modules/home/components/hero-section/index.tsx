@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -107,9 +108,13 @@ export function HeroSection() {
           <div className="hidden md:flex items-center justify-center">
             <div className="relative w-full">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18),transparent_60%)] blur-2xl" />
-              <img
+              <Image
                 src="/mascots/mascot-wink.webp"
                 alt="OWAY — маскот"
+                width={1717}
+                height={2516}
+                priority
+                sizes="(max-width: 768px) 0px, 520px"
                 className="relative w-full max-w-[520px] h-auto mx-auto drop-shadow-[0_25px_40px_rgba(15,23,42,0.25)] animate-[float_6s_ease-in-out_infinite]"
               />
             </div>

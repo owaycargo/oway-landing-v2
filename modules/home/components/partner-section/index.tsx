@@ -1,6 +1,7 @@
 "use client"
 
 import { Handshake, Package, Users, ShieldCheck, MapPin, ArrowRight } from "lucide-react"
+import Image from "next/image"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useTelegramDialog } from "@/components/telegram-dialog-provider"
@@ -49,12 +50,15 @@ export function PartnerSection() {
     <section id="partner" className="w-full py-16 md:py-24 bg-gradient-to-br from-blue-50 via-white to-orange-50">
       <div className="max-w-[1440px] mx-auto px-4">
         <div className="text-center mb-10 md:mb-14 max-w-3xl mx-auto flex flex-col items-center">
-          <img
+          <Image
             src="/mascots/mascot-shush.webp"
             alt=""
             aria-hidden
+            width={1769}
+            height={2489}
+            sizes="(max-width: 768px) 96px, 128px"
             className="w-24 md:w-32 h-auto mb-4 drop-shadow-[0_15px_25px_rgba(15,23,42,0.15)]"
-          />
+            />
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 border border-orange-200 mb-5">
             <Handshake className="w-4 h-4 text-orange-700" />
             <span className="text-sm font-semibold text-orange-700">Партнёрская программа</span>
