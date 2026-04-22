@@ -7,6 +7,7 @@ import {
   ServicesSection,
   HowItWorksSection,
   CalculatorSection,
+  LeadFormSection,
   MarketplaceSection,
   CaseStudiesSection,
   ClientsBusinessSection,
@@ -87,6 +88,7 @@ export default function HomePage() {
         <HowItWorksSection />
         <PickupPointsSection />
         <CalculatorSection />
+        <LeadFormSection />
         <ServicesSection />
         <MarketplaceSection />
         <ClientsBusinessSection />
