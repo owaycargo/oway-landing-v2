@@ -62,35 +62,48 @@ export async function POST(req: Request) {
     .join("\n")
 
   const token = process.env.TELEGRAM_BOT_TOKEN
-  const chatId = process.env.TELEGRAM_LEADS_CHAT_ID
+  const chatIdsRaw = process.env.TELEGRAM_LEADS_CHAT_ID
+  const chatIds = (chatIdsRaw || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
 
-  if (!token || !chatId) {
+  if (!token || chatIds.length === 0) {
     console.warn("[lead] TELEGRAM_BOT_TOKEN/TELEGRAM_LEADS_CHAT_ID not set — lead logged only")
     console.info("[lead]", { name, phone: phoneRaw, country, city, message })
     return NextResponse.json({ ok: true, delivered: false })
   }
 
-  try {
-    const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text,
-        parse_mode: "HTML",
-        disable_web_page_preview: true,
-      }),
-    })
-    if (!tgRes.ok) {
-      const errText = await tgRes.text()
-      console.error("[lead] Telegram API error:", errText)
-      return NextResponse.json({ error: "Ошибка доставки" }, { status: 502 })
-    }
-    return NextResponse.json({ ok: true, delivered: true })
-  } catch (err) {
-    console.error("[lead] Telegram fetch failed:", err)
+  const results = await Promise.allSettled(
+    chatIds.map(async (id) => {
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: id,
+          text,
+          parse_mode: "HTML",
+          disable_web_page_preview: true,
+        }),
+      })
+      if (!res.ok) {
+        const errText = await res.text()
+        throw new Error(`chat_id ${id}: ${errText}`)
+      }
+      return id
+    }),
+  )
+
+  const delivered = results.filter((r) => r.status === "fulfilled").length
+  const failed = results.filter((r) => r.status === "rejected")
+  if (failed.length > 0) {
+    failed.forEach((r) => console.error("[lead] Telegram send failed:", (r as PromiseRejectedResult).reason))
+  }
+
+  if (delivered === 0) {
     return NextResponse.json({ error: "Ошибка доставки" }, { status: 502 })
   }
+  return NextResponse.json({ ok: true, delivered: true, recipients: delivered, failed: failed.length })
 }
 
 function escapeHtml(s: string): string {
