@@ -1,4 +1,5 @@
 import { FileText, MapPin, Plane, Truck } from "lucide-react"
+import Image from "next/image"
 
 const steps = [
   {
@@ -31,12 +32,15 @@ export function HowItWorksSection() {
   return (
     <section className="w-full max-w-[1440px] mx-auto px-4 py-16 md:py-24">
       <div className="text-center mb-12 flex flex-col items-center">
-        <img
+        <Image
           src="/mascots/mascot-thinking.webp"
           alt=""
           aria-hidden
+          width={1701}
+          height={2485}
+          sizes="(max-width: 768px) 96px, 128px"
           className="w-24 md:w-32 h-auto mb-4 drop-shadow-[0_15px_25px_rgba(15,23,42,0.15)]"
-        />
+          />
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">Этапы работы</h2>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto">Простой и понятный процесс доставки в 4 шага</p>
       </div>
