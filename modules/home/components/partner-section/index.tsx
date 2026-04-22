@@ -50,7 +50,7 @@ export function PartnerSection() {
       <div className="max-w-[1440px] mx-auto px-4">
         <div className="text-center mb-10 md:mb-14 max-w-3xl mx-auto flex flex-col items-center">
           <img
-            src="/mascots/mascot-shush.png"
+            src="/mascots/mascot-shush.webp"
             alt=""
             aria-hidden
             className="w-24 md:w-32 h-auto mb-4 drop-shadow-[0_15px_25px_rgba(15,23,42,0.15)]"
