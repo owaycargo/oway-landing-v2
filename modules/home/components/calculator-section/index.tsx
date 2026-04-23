@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useRef } from "react"
 import { Calculator, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import { Card } from "@/components/ui/card"
@@ -19,6 +20,7 @@ import {
 } from "@/modules/home/constants"
 import { clampInput } from "@/modules/home/utils"
 import { useCalculator } from "@/modules/home/hooks"
+import { trackEvent } from "@/lib/analytics"
 
 export function CalculatorSection() {
   const {
@@ -43,6 +45,20 @@ export function CalculatorSection() {
     price,
     convertedPrice,
   } = useCalculator()
+
+  const hasTrackedUse = useRef(false)
+  useEffect(() => {
+    if (price && country && !hasTrackedUse.current) {
+      trackEvent("calculator_use", {
+        country,
+        weight: Number(weight) || undefined,
+        chargeable_weight: chargeableWeightKg ?? undefined,
+        price: Number(price) || undefined,
+        insurance: insurance ? "yes" : "no",
+      })
+      hasTrackedUse.current = true
+    }
+  }, [price, country, weight, chargeableWeightKg, insurance])
 
   return (
     <section id="calculator" className="w-full max-w-[1440px] mx-auto px-4 py-16 md:py-24 bg-slate-50">
@@ -156,7 +172,22 @@ export function CalculatorSection() {
               </Card>
             )}
 
-            <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer"><Button className="w-full h-12 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-lg font-semibold">Оформить доставку</Button></a>
+            <a
+              href="https://client.owaycargo.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() =>
+                trackEvent("calculator_cta_click", {
+                  country: country || undefined,
+                  weight: Number(weight) || undefined,
+                  price: price ? Number(price) : undefined,
+                })
+              }
+            >
+              <Button className="w-full h-12 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-lg font-semibold">
+                Оформить доставку
+              </Button>
+            </a>
           </div>
         </Card>
 
