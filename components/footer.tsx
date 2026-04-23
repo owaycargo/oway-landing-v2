@@ -90,6 +90,11 @@ export function Footer() {
                   Политика конфиденциальности
                 </Link>
               </li>
+              <li>
+                <Link href="/terms" className="hover:text-blue-400 transition-colors">
+                  Публичная оферта
+                </Link>
+              </li>
             </ul>
           </div>
 
