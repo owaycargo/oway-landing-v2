@@ -6,6 +6,7 @@ import { StructuredData } from "@/components/structured-data"
 import { TelegramDialogProvider } from "@/components/telegram-dialog-provider"
 import { WhatsAppDialogProvider } from "@/components/whatsapp-dialog-provider"
 import { FloatingContacts } from "@/components/floating-contacts"
+import { CookieConsent } from "@/components/cookie-consent"
 import "./globals.css"
 
 const GA_MEASUREMENT_ID = "G-4G1RFW231V"
@@ -123,14 +124,29 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <head>
+        <Script id="ga4-consent-default" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            window.gtag = gtag;
+            var stored = null;
+            try { stored = localStorage.getItem('oway_cookie_consent'); } catch (e) {}
+            var granted = stored === 'accepted';
+            gtag('consent', 'default', {
+              analytics_storage: granted ? 'granted' : 'denied',
+              ad_storage: granted ? 'granted' : 'denied',
+              functionality_storage: 'granted',
+              security_storage: 'granted',
+              wait_for_update: 500
+            });
+          `}
+        </Script>
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
           strategy="afterInteractive"
         />
         <Script id="ga4-init" strategy="afterInteractive">
           {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${GA_MEASUREMENT_ID}', {
               page_path: window.location.pathname,
@@ -144,6 +160,7 @@ export default function RootLayout({
             <StructuredData />
             {children}
             <FloatingContacts />
+            <CookieConsent />
           </WhatsAppDialogProvider>
         </TelegramDialogProvider>
       </body>
