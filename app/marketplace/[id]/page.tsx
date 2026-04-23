@@ -7,8 +7,9 @@ import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
+import { ShopLinkButton } from "./shop-link-button"
 import { getMarketplaceById, marketplaces, categories } from "@/lib/marketplaces"
-import { ArrowLeft, ExternalLink, ShoppingBag } from "lucide-react"
+import { ArrowLeft, ShoppingBag } from "lucide-react"
 
 interface MarketplacePageProps {
   params: Promise<{
@@ -171,17 +172,7 @@ export default async function MarketplacePage({ params }: MarketplacePageProps) 
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <a
-              href={marketplace.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1"
-            >
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-base font-medium py-6">
-                <ExternalLink className="w-5 h-5 mr-2" />
-                Перейти на сайт магазина
-              </Button>
-            </a>
+            <ShopLinkButton marketplaceId={marketplace.id} url={marketplace.url} />
             <Link href="/#calculator" className="flex-1">
               <Button
                 variant="outline"
