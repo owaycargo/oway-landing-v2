@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import type { ReactElement } from "react"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Header } from "@/components/header"
@@ -7,6 +6,7 @@ import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
+import { MarketplaceLogo } from "@/components/marketplace-logo"
 import { ShopLinkButton } from "./shop-link-button"
 import { getMarketplaceById, marketplaces, categories } from "@/lib/marketplaces"
 import { ArrowLeft, ShoppingBag } from "lucide-react"
@@ -15,40 +15,6 @@ interface MarketplacePageProps {
   params: Promise<{
     id: string
   }>
-}
-
-function getMarketplaceLogo(logo: string) {
-  const logoStyles: Record<string, ReactElement> = {
-    ebay: <span className="text-blue-600" style={{ fontSize: "14px" }}>eBay</span>,
-    amazon: <span className="text-orange-700" style={{ fontSize: "12px" }}>amazon</span>,
-    walmart: <span className="text-blue-600" style={{ fontSize: "11px" }}>Walmart</span>,
-    newegg: <span className="text-orange-700" style={{ fontSize: "12px" }}>Newegg</span>,
-    macys: <span className="text-red-600" style={{ fontSize: "13px" }}>Macy's</span>,
-    nordstrom: <span className="text-slate-800" style={{ fontSize: "11px" }}>Nordstrom</span>,
-    target: <span className="text-red-600" style={{ fontSize: "13px" }}>Target</span>,
-    kohls: <span className="text-blue-600" style={{ fontSize: "13px" }}>Kohl's</span>,
-    zara: <span className="text-slate-900" style={{ fontSize: "16px" }}>ZARA</span>,
-    hm: <span className="text-red-600" style={{ fontSize: "18px", fontWeight: "900" }}>H&M</span>,
-    gap: <span className="text-blue-600" style={{ fontSize: "16px" }}>GAP</span>,
-    oldnavy: <span className="text-blue-600" style={{ fontSize: "11px" }}>Old Navy</span>,
-    nike: <span className="text-slate-900" style={{ fontSize: "14px", fontWeight: "900" }}>NIKE</span>,
-    adidas: <span className="text-slate-900" style={{ fontSize: "12px" }}>adidas</span>,
-    footlocker: <span className="text-blue-600" style={{ fontSize: "10px" }}>Foot Locker</span>,
-    dsw: <span className="text-orange-700" style={{ fontSize: "14px", fontWeight: "900" }}>DSW</span>,
-    costco: <span className="text-red-600" style={{ fontSize: "13px", fontWeight: "700" }}>Costco</span>,
-    samsclub: <span className="text-blue-600" style={{ fontSize: "11px" }}>Sam's Club</span>,
-    bjs: <span className="text-blue-600" style={{ fontSize: "14px", fontWeight: "700" }}>BJ's</span>,
-    dollargeneral: <span className="text-yellow-600" style={{ fontSize: "10px" }}>Dollar General</span>,
-    toysrus: <span className="text-blue-600" style={{ fontSize: "11px" }}>Toys R Us</span>,
-    carters: <span className="text-blue-600" style={{ fontSize: "13px" }}>Carter's</span>,
-    childrensplace: <span className="text-blue-600" style={{ fontSize: "9px" }}>Children's Place</span>,
-    potterybarnkids: <span className="text-slate-700" style={{ fontSize: "8px" }}>Pottery Barn Kids</span>,
-    vitaminshoppe: <span className="text-green-600" style={{ fontSize: "9px" }}>Vitamin Shoppe</span>,
-    gnc: <span className="text-yellow-600" style={{ fontSize: "16px", fontWeight: "900" }}>GNC</span>,
-    iherb: <span className="text-green-600" style={{ fontSize: "14px", fontWeight: "700" }}>iHerb</span>,
-    vitacost: <span className="text-green-600" style={{ fontSize: "12px" }}>Vitacost</span>,
-  }
-  return logoStyles[logo] || <span className="text-slate-700">{logo}</span>
 }
 
 export async function generateStaticParams() {
@@ -159,7 +125,7 @@ export default async function MarketplacePage({ params }: MarketplacePageProps) 
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-6">
             <div className="w-32 h-32 rounded-3xl bg-white border-2 border-slate-200 flex items-center justify-center shadow-sm overflow-hidden flex-shrink-0">
               <div className="text-xs font-bold text-slate-700 px-2 text-center leading-tight">
-                {getMarketplaceLogo(marketplace.logo)}
+                <MarketplaceLogo logo={marketplace.logo} />
               </div>
             </div>
             <div className="flex-1">
@@ -261,7 +227,7 @@ export default async function MarketplacePage({ params }: MarketplacePageProps) 
                     <div className="flex flex-col items-center text-center">
                       <div className="w-20 h-20 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center mb-4 shadow-sm overflow-hidden">
                         <div className="text-xs font-bold text-slate-700 px-2 text-center leading-tight">
-                          {getMarketplaceLogo(related.logo)}
+                          <MarketplaceLogo logo={related.logo} />
                         </div>
                       </div>
                       <h3 className="font-bold text-lg text-slate-900 mb-2">{related.name}</h3>

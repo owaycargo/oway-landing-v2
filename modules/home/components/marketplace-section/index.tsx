@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { categories, marketplaces } from "@/lib/marketplaces"
 import { trackEvent } from "@/lib/analytics"
+import { MarketplaceLogo } from "@/components/marketplace-logo"
 
 export function MarketplaceSection() {
   const [activeTab, setActiveTab] = useState("marketplaces")
@@ -54,34 +55,7 @@ export function MarketplaceSection() {
                 <div className="flex flex-col items-center text-center">
                   <div className="w-20 h-20 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center mb-4 shadow-sm overflow-hidden">
                     <div className="text-xs font-bold text-slate-700 px-2 text-center leading-tight">
-                      {marketplace.logo === "ebay" && <span className="text-blue-600" style={{ fontSize: "14px" }}>eBay</span>}
-                      {marketplace.logo === "amazon" && <span className="text-orange-700" style={{ fontSize: "12px" }}>amazon</span>}
-                      {marketplace.logo === "walmart" && <span className="text-blue-600" style={{ fontSize: "11px" }}>Walmart</span>}
-                      {marketplace.logo === "newegg" && <span className="text-orange-700" style={{ fontSize: "12px" }}>Newegg</span>}
-                      {marketplace.logo === "macys" && <span className="text-red-600" style={{ fontSize: "13px" }}>Macy&apos;s</span>}
-                      {marketplace.logo === "nordstrom" && <span className="text-slate-800" style={{ fontSize: "11px" }}>Nordstrom</span>}
-                      {marketplace.logo === "target" && <span className="text-red-600" style={{ fontSize: "13px" }}>Target</span>}
-                      {marketplace.logo === "kohls" && <span className="text-blue-600" style={{ fontSize: "13px" }}>Kohl&apos;s</span>}
-                      {marketplace.logo === "zara" && <span className="text-slate-900" style={{ fontSize: "16px" }}>ZARA</span>}
-                      {marketplace.logo === "hm" && <span className="text-red-600" style={{ fontSize: "18px", fontWeight: "900" }}>H&M</span>}
-                      {marketplace.logo === "gap" && <span className="text-blue-600" style={{ fontSize: "16px" }}>GAP</span>}
-                      {marketplace.logo === "oldnavy" && <span className="text-blue-600" style={{ fontSize: "11px" }}>Old Navy</span>}
-                      {marketplace.logo === "nike" && <span className="text-slate-900" style={{ fontSize: "14px", fontWeight: "900" }}>NIKE</span>}
-                      {marketplace.logo === "adidas" && <span className="text-slate-900" style={{ fontSize: "12px" }}>adidas</span>}
-                      {marketplace.logo === "footlocker" && <span className="text-blue-600" style={{ fontSize: "10px" }}>Foot Locker</span>}
-                      {marketplace.logo === "dsw" && <span className="text-orange-700" style={{ fontSize: "14px", fontWeight: "900" }}>DSW</span>}
-                      {marketplace.logo === "costco" && <span className="text-red-600" style={{ fontSize: "13px", fontWeight: "700" }}>Costco</span>}
-                      {marketplace.logo === "samsclub" && <span className="text-blue-600" style={{ fontSize: "11px" }}>Sam&apos;s Club</span>}
-                      {marketplace.logo === "bjs" && <span className="text-blue-600" style={{ fontSize: "14px", fontWeight: "700" }}>BJ&apos;s</span>}
-                      {marketplace.logo === "dollargeneral" && <span className="text-yellow-600" style={{ fontSize: "10px" }}>Dollar General</span>}
-                      {marketplace.logo === "toysrus" && <span className="text-blue-600" style={{ fontSize: "11px" }}>Toys R Us</span>}
-                      {marketplace.logo === "carters" && <span className="text-blue-600" style={{ fontSize: "13px" }}>Carter&apos;s</span>}
-                      {marketplace.logo === "childrensplace" && <span className="text-blue-600" style={{ fontSize: "9px" }}>Children&apos;s Place</span>}
-                      {marketplace.logo === "potterybarnkids" && <span className="text-slate-700" style={{ fontSize: "8px" }}>Pottery Barn Kids</span>}
-                      {marketplace.logo === "vitaminshoppe" && <span className="text-green-600" style={{ fontSize: "9px" }}>Vitamin Shoppe</span>}
-                      {marketplace.logo === "gnc" && <span className="text-yellow-600" style={{ fontSize: "16px", fontWeight: "900" }}>GNC</span>}
-                      {marketplace.logo === "iherb" && <span className="text-green-600" style={{ fontSize: "14px", fontWeight: "700" }}>iHerb</span>}
-                      {marketplace.logo === "vitacost" && <span className="text-green-600" style={{ fontSize: "12px" }}>Vitacost</span>}
+                      <MarketplaceLogo logo={marketplace.logo} />
                     </div>
                   </div>
                   <h3 className="font-bold text-lg text-slate-900 mb-2">{marketplace.name}</h3>
