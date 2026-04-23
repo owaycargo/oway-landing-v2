@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { Package, Mail, Phone, MapPin } from "lucide-react"
 import { useTelegramDialog } from "@/components/telegram-dialog-provider"
 import { useWhatsAppDialog } from "@/components/whatsapp-dialog-provider"
@@ -60,24 +61,34 @@ export function Footer() {
             <h3 className="font-semibold text-white mb-4">Навигация</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#services" className="hover:text-blue-400 transition-colors">
+                <a href="/#services" className="hover:text-blue-400 transition-colors">
                   Услуги
                 </a>
               </li>
               <li>
-                <a href="#pickup" className="hover:text-blue-400 transition-colors">
+                <a href="/#pickup" className="hover:text-blue-400 transition-colors">
                   Пункты приёма
                 </a>
               </li>
               <li>
-                <a href="#calculator" className="hover:text-blue-400 transition-colors">
+                <a href="/#calculator" className="hover:text-blue-400 transition-colors">
                   Калькулятор
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
+                <Link href="/about" className="hover:text-blue-400 transition-colors">
                   О компании
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="hover:text-blue-400 transition-colors">
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-blue-400 transition-colors">
+                  Политика конфиденциальности
+                </Link>
               </li>
             </ul>
           </div>
