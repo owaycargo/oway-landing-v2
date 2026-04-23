@@ -1,6 +1,6 @@
-import { Calendar } from "lucide-react"
+import { Calendar, Clock } from "lucide-react"
 import type { NewsItem } from "@/modules/news/types"
-import { getCategoryStyle, formatNewsDate } from "@/modules/news/utils"
+import { getCategoryStyle, formatNewsDate, calculateReadTime } from "@/modules/news/utils"
 
 interface ArticleHeaderProps {
   item: NewsItem
@@ -8,6 +8,7 @@ interface ArticleHeaderProps {
 
 export function ArticleHeader({ item }: ArticleHeaderProps) {
   const types = item.news_types ?? []
+  const readTime = calculateReadTime(item.description)
 
   return (
     <div className="bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-slate-100 mb-6 relative overflow-hidden">
@@ -31,6 +32,12 @@ export function ArticleHeader({ item }: ArticleHeaderProps) {
             <Calendar className="w-3.5 h-3.5" />
             {formatNewsDate(item.createdAt)}
           </span>
+          {item.description && (
+            <span className="inline-flex items-center gap-1.5 text-slate-400 text-xs">
+              <Clock className="w-3.5 h-3.5" />
+              {readTime} мин чтения
+            </span>
+          )}
         </div>
         <h1 className="text-2xl md:text-4xl font-bold text-slate-900 leading-tight text-balance">
           {item.title}

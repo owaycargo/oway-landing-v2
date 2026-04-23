@@ -1,5 +1,6 @@
 export { getCategoryStyle } from "./category-style"
 export { formatNewsDate } from "./format-date"
 export { buildNewsListHref } from "./build-href"
+export { calculateReadTime } from "./read-time"
 export { CATEGORY_STYLES, FALLBACK_STYLE } from "./constants"
 export type { BuildHrefParams } from "./build-href"
