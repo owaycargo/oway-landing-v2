@@ -322,7 +322,7 @@ export default async function CountryDeliveryPage({ params }: PageProps) {
               Готовы отправить посылку в {data.nameInto}?
             </h2>
             <p className="mb-6 text-blue-100">
-              Рассчитайте стоимость или оставьте заявку — менеджер свяжется в течение часа.
+              Рассчитайте стоимость или оставьте заявку — менеджер свяжется в течение 15 минут. Поддержка 24/7.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/#calculator">

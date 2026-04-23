@@ -80,7 +80,7 @@ export function LeadFormSection() {
               <span className="text-sm font-semibold text-blue-700">Обратный звонок</span>
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
-              Оставьте заявку — <span className="text-blue-600">перезвоним в течение часа</span>
+              Оставьте заявку — <span className="text-blue-600">перезвоним в течение 15 минут</span>
             </h2>
             <p className="text-base md:text-lg text-slate-600">
               Не хотите писать в мессенджеры? Заполните короткую форму — менеджер свяжется
@@ -96,8 +96,7 @@ export function LeadFormSection() {
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900">Заявка отправлена!</h3>
                 <p className="text-slate-600 max-w-md mx-auto">
-                  Менеджер свяжется с вами в течение часа в рабочее время.
-                  Если заявка вечером или в выходной — ответим утром в понедельник.
+                  Менеджер свяжется с вами в течение 15 минут — поддержка работает 24/7.
                 </p>
               </div>
             ) : (
