@@ -12,12 +12,16 @@ export function StructuredData() {
       {
         "@type": "ContactPoint",
         contactType: "Customer Service",
+        telephone: "+1-213-276-6898",
         availableLanguage: ["Russian", "English"],
         url: "https://t.me/owaycargo",
       },
     ],
     sameAs: [
       "https://t.me/owaycargo",
+      "https://www.instagram.com/oway.cargo",
+      "https://www.tiktok.com/@owaycargo",
+      "https://threads.net/@owaycargo",
     ],
   }
 
@@ -29,7 +33,13 @@ export function StructuredData() {
     url: baseUrl,
     logo: `${baseUrl}/icon.svg`,
     image: `${baseUrl}/banner.jpg`,
+    telephone: "+1-213-276-6898",
     description: "Международная доставка посылок из США в страны СНГ: Россия, Беларусь, Кыргызстан, Казахстан, Узбекистан",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "US",
+      addressRegion: "DE",
+    },
     priceRange: "$$",
     areaServed: [
       { "@type": "Country", name: "United States" },

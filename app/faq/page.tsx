@@ -4,6 +4,7 @@ import { Footer } from "@/components/footer"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { MessageCircle } from "lucide-react"
 import { getSeoPage, parseKeywords, getStrapiImageUrl } from "@/lib/seo"
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
 import { FaqContactCta } from "./contact-cta"
 
 const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com")
@@ -345,6 +346,12 @@ export default function FAQPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Главная", url: "/" },
+          { name: "FAQ", url: "/faq" },
+        ]}
       />
       <Header />
 
