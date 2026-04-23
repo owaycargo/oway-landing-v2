@@ -75,6 +75,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.3,
     },
     {
+      url: `${baseUrl}/guides/ebay`,
+      lastModified: STATIC_LAST_MODIFIED,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/terms`,
       lastModified: STATIC_LAST_MODIFIED,
       changeFrequency: "yearly",
