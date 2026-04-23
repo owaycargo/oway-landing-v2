@@ -1,3 +1,11 @@
+const DELIVERY_OFFERS = [
+  { country: "Kyrgyzstan", code: "KG", price: "12", days: "7-9" },
+  { country: "Kazakhstan", code: "KZ", price: "12", days: "7-9" },
+  { country: "Uzbekistan", code: "UZ", price: "12", days: "7-9" },
+  { country: "Russia", code: "RU", price: "18", days: "16-21" },
+  { country: "Belarus", code: "BY", price: "18", days: "16-21" },
+]
+
 export function StructuredData() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com"
 
@@ -57,28 +65,45 @@ export function StructuredData() {
       "@type": "OfferCatalog",
       name: "Услуги доставки",
       itemListElement: [
-        {
+        ...DELIVERY_OFFERS.map((offer) => ({
           "@type": "Offer",
+          priceCurrency: "USD",
+          price: offer.price,
+          priceSpecification: {
+            "@type": "UnitPriceSpecification",
+            price: offer.price,
+            priceCurrency: "USD",
+            unitCode: "KGM",
+          },
+          eligibleRegion: { "@type": "Country", name: offer.country },
           itemOffered: {
             "@type": "Service",
-            name: "Авиадоставка из США",
-            description: "Доставка посылок авиатранспортом из США в страны СНГ",
+            name: `Авиадоставка из США в ${offer.country}`,
+            description: `$${offer.price}/кг, ${offer.days} дней`,
           },
-        },
+        })),
         {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
             name: "Консолидация посылок",
-            description: "Объединение нескольких заказов в одну отправку",
+            description: "Объединение нескольких заказов в одну отправку — бесплатно",
           },
         },
         {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Выкуп товаров",
-            description: "Выкуп товаров из американских магазинов",
+            name: "Выкуп товаров из США",
+            description: "Выкуп товаров из американских магазинов для клиента (10% физ, 5% бизнес)",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Обмен валюты",
+            description: "USD ↔ RUB/KGS/KZT/UZS/BYN",
           },
         },
       ],
@@ -124,7 +149,27 @@ export function StructuredData() {
       "@type": "AggregateOffer",
       priceCurrency: "USD",
       lowPrice: "12",
-      description: "от $12 за кг",
+      highPrice: "18",
+      offerCount: DELIVERY_OFFERS.length,
+      description: "От $12/кг (KG, KZ, UZ) до $18/кг (RU, BY)",
+      offers: DELIVERY_OFFERS.map((offer) => ({
+        "@type": "Offer",
+        priceCurrency: "USD",
+        price: offer.price,
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: offer.price,
+          priceCurrency: "USD",
+          unitCode: "KGM",
+        },
+        eligibleRegion: { "@type": "Country", name: offer.country },
+        deliveryLeadTime: {
+          "@type": "QuantitativeValue",
+          minValue: offer.days.split("-")[0],
+          maxValue: offer.days.split("-")[1],
+          unitCode: "DAY",
+        },
+      })),
     },
   }
 
