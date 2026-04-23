@@ -1,8 +1,9 @@
 import Link from "next/link"
 import ReactMarkdown from "react-markdown"
-import { Tag, ArrowLeft } from "lucide-react"
+import { ArrowLeft, Calculator, MessageCircle, Tag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { NewsItem } from "@/modules/news/types"
+import { ArticleShare } from "@/modules/news/components/article-share"
 
 interface ArticleBodyProps {
   item: NewsItem
@@ -25,6 +26,40 @@ export function ArticleBody({ item }: ArticleBodyProps) {
       ) : (
         <p className="text-slate-400 italic">Полный текст статьи недоступен.</p>
       )}
+
+      <ArticleShare title={item.title} slug={item.slug} />
+
+      <div className="mt-8 p-6 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 text-white">
+        <h3 className="text-lg md:text-xl font-bold mb-2">
+          Планируете отправку посылки из США?
+        </h3>
+        <p className="text-sm text-blue-100 mb-4">
+          OWAY CARGO — доставка в Россию, Казахстан, Кыргызстан, Узбекистан, Беларусь.
+          От $12/кг. Рассчитайте за 30 секунд.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Link href="/#calculator" className="flex-1">
+            <Button className="w-full bg-white text-blue-700 hover:bg-blue-50 rounded-xl gap-2">
+              <Calculator className="w-4 h-4" />
+              Калькулятор
+            </Button>
+          </Link>
+          <a
+            href="https://t.me/owaycargo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1"
+          >
+            <Button
+              variant="outline"
+              className="w-full bg-transparent text-white border-white hover:bg-white/10 rounded-xl gap-2"
+            >
+              <MessageCircle className="w-4 h-4" />
+              Telegram
+            </Button>
+          </a>
+        </div>
+      </div>
 
       <div className="mt-10 pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-2 text-slate-400 text-sm">
