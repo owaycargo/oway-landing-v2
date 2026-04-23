@@ -2,7 +2,6 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 import Script from "next/script"
 import { Geist } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
 import { StructuredData } from "@/components/structured-data"
 import { TelegramDialogProvider } from "@/components/telegram-dialog-provider"
 import { WhatsAppDialogProvider } from "@/components/whatsapp-dialog-provider"
@@ -145,7 +144,6 @@ export default function RootLayout({
             <StructuredData />
             {children}
             <FloatingContacts />
-            <Analytics />
           </WhatsAppDialogProvider>
         </TelegramDialogProvider>
       </body>
