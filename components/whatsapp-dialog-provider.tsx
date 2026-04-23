@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { trackEvent } from "@/lib/analytics"
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -16,8 +17,8 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 )
 
 const WHATSAPP_OPTIONS = [
-  { title: "Менеджер по СНГ", phone: "+996 709 969 621", href: "https://wa.me/996709969621" },
-  { title: "Менеджер по США", phone: "+1 213 276 6898", href: "https://wa.me/12132766898" },
+  { id: "manager_sng", title: "Менеджер по СНГ", phone: "+996 709 969 621", href: "https://wa.me/996709969621" },
+  { id: "manager_usa", title: "Менеджер по США", phone: "+1 213 276 6898", href: "https://wa.me/12132766898" },
 ]
 
 type WhatsAppDialogContextValue = {
@@ -34,7 +35,10 @@ export function useWhatsAppDialog() {
 
 export function WhatsAppDialogProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false)
-  const openWhatsApp = useCallback(() => setOpen(true), [])
+  const openWhatsApp = useCallback(() => {
+    trackEvent("dialog_open", { channel: "whatsapp" })
+    setOpen(true)
+  }, [])
 
   return (
     <WhatsAppDialogContext.Provider value={{ openWhatsApp }}>
@@ -54,6 +58,12 @@ export function WhatsAppDialogProvider({ children }: { children: React.ReactNode
                 href={option.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("contact_click", {
+                    channel: "whatsapp",
+                    option_id: option.id,
+                  })
+                }
                 className="flex items-center gap-3 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-blue-500/50 transition-colors"
               >
                 <div className="w-10 h-10 rounded-full bg-[#25D366]/20 flex items-center justify-center shrink-0">

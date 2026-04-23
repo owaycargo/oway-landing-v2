@@ -4,6 +4,7 @@ import { Package, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useState } from "react"
+import { trackEvent } from "@/lib/analytics"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -49,7 +50,16 @@ export function Header() {
           </a>
         </nav>
 
-        <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer"><Button className="hidden md:flex shrink-0 bg-orange-600 hover:bg-orange-700 text-white whitespace-nowrap">Личный кабинет</Button></a>
+        <a
+          href="https://client.owaycargo.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackEvent("click_login", { location: "header" })}
+        >
+          <Button className="hidden md:flex shrink-0 bg-orange-600 hover:bg-orange-700 text-white whitespace-nowrap">
+            Личный кабинет
+          </Button>
+        </a>
 
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -119,7 +129,19 @@ export function Header() {
             >
               Контакты
             </a>
-            <a href="https://client.owaycargo.com" target="_blank" rel="noopener noreferrer"><Button className="bg-orange-600 hover:bg-orange-700 text-white w-full mt-2">Личный кабинет</Button></a>
+            <a
+              href="https://client.owaycargo.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                trackEvent("click_login", { location: "header_mobile" })
+                setMobileMenuOpen(false)
+              }}
+            >
+              <Button className="bg-orange-600 hover:bg-orange-700 text-white w-full mt-2">
+                Личный кабинет
+              </Button>
+            </a>
           </nav>
         </div>
       )}
