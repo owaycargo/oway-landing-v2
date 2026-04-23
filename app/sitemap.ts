@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next"
 import { marketplaces } from "@/lib/marketplaces"
+import { COUNTRY_LANDINGS } from "@/lib/countries"
 
 // Stable date для статичных страниц — обновляется только при деплое.
 // Не вычисляется на каждый request, чтобы Google не видел «всё изменилось сегодня».
@@ -15,6 +16,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: STATIC_LAST_MODIFIED,
     changeFrequency: "monthly" as const,
     priority: 0.6,
+  }))
+
+  const countryUrls: MetadataRoute.Sitemap = COUNTRY_LANDINGS.map((c) => ({
+    url: `${baseUrl}/delivery/${c.slug}`,
+    lastModified: STATIC_LAST_MODIFIED,
+    changeFrequency: "monthly" as const,
+    priority: 0.9,
   }))
 
   // Fetch news slugs for dynamic news pages
@@ -78,6 +86,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.7,
     },
+    ...countryUrls,
     ...newsUrls,
     ...marketplaceUrls,
   ]
