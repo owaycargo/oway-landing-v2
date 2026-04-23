@@ -100,6 +100,35 @@ export default async function MarketplacePage({ params }: MarketplacePageProps) 
     .filter((m) => m.category === marketplace.category && m.id !== marketplace.id)
     .slice(0, 4)
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com"
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: `Доставка из ${marketplace.name} в страны СНГ`,
+    description: `Услуга OWAY CARGO по доставке товаров из ${marketplace.name} в Россию, Беларусь, Казахстан, Кыргызстан и Узбекистан. Тарифы от $12 за кг.`,
+    serviceType: "Международная доставка посылок",
+    provider: {
+      "@type": "Organization",
+      name: "OWAY CARGO",
+      url: baseUrl,
+    },
+    areaServed: [
+      { "@type": "Country", name: "Russia" },
+      { "@type": "Country", name: "Belarus" },
+      { "@type": "Country", name: "Kazakhstan" },
+      { "@type": "Country", name: "Kyrgyzstan" },
+      { "@type": "Country", name: "Uzbekistan" },
+    ],
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "USD",
+      lowPrice: "12",
+      highPrice: "18",
+      offerCount: 5,
+      description: "От $12/кг (Кыргызстан, Казахстан, Узбекистан) до $18/кг (Россия, Беларусь)",
+    },
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <BreadcrumbJsonLd
@@ -108,6 +137,10 @@ export default async function MarketplacePage({ params }: MarketplacePageProps) 
           { name: "Магазины США", url: "/#marketplace" },
           { name: marketplace.name, url: `/marketplace/${marketplace.id}` },
         ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
       />
       <Header />
       <main className="w-full max-w-[1440px] mx-auto px-[15px] py-8 md:py-16">
