@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import dynamic from "next/dynamic"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import {
@@ -8,12 +9,18 @@ import {
   HowItWorksSection,
   CalculatorSection,
   LeadFormSection,
-  MarketplaceSection,
-  CaseStudiesSection,
-  ClientsBusinessSection,
-  PartnerSection,
 } from "@/modules/home"
 import { getSeoPage, parseKeywords, getStrapiImageUrl } from "@/lib/seo"
+
+const MarketplaceSection = dynamic(() =>
+  import("@/modules/home/components/marketplace-section").then((m) => m.MarketplaceSection),
+)
+const ClientsBusinessSection = dynamic(() =>
+  import("@/modules/home/components/clients-business-section").then((m) => m.ClientsBusinessSection),
+)
+const PartnerSection = dynamic(() =>
+  import("@/modules/home/components/partner-section").then((m) => m.PartnerSection),
+)
 
 const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com")
 
