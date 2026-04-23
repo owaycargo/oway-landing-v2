@@ -3,6 +3,7 @@
 import { ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { trackEvent } from "@/lib/analytics"
+import { affiliateUrl } from "@/lib/affiliate"
 
 type Props = {
   marketplaceId: string
@@ -10,16 +11,18 @@ type Props = {
 }
 
 export function ShopLinkButton({ marketplaceId, url }: Props) {
+  const finalUrl = affiliateUrl(url)
   return (
     <a
-      href={url}
+      href={finalUrl}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer sponsored"
       className="flex-1"
       onClick={() =>
         trackEvent("shop_visit", {
           marketplace_id: marketplaceId,
           location: "marketplace_page",
+          affiliate: finalUrl !== url ? "yes" : "no",
         })
       }
     >
