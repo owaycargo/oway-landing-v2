@@ -4,6 +4,7 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
 import {
   getNewsArticle,
   getNewsList,
@@ -63,8 +64,48 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
 
   if (!item) notFound()
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com"
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: item.title_seo || item.title,
+    description: item.seo_description || item.card_description,
+    datePublished: item.createdAt,
+    dateModified: item.createdAt,
+    author: {
+      "@type": "Organization",
+      name: "OWAY CARGO",
+      url: baseUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "OWAY CARGO",
+      logo: {
+        "@type": "ImageObject",
+        url: `${baseUrl}/icon.svg`,
+      },
+    },
+    image: `${baseUrl}/banner.jpg`,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${baseUrl}/news/${item.slug}`,
+    },
+    inLanguage: "ru",
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Главная", url: "/" },
+          { name: "Новости", url: "/news" },
+          { name: item.title, url: `/news/${item.slug}` },
+        ]}
+      />
       <Header />
 
       <main className="container mx-auto px-4 py-10 md:py-16">
