@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { categories, marketplaces } from "@/lib/marketplaces"
+import { trackEvent } from "@/lib/analytics"
 
 export function MarketplaceSection() {
   const [activeTab, setActiveTab] = useState("marketplaces")
@@ -85,7 +86,17 @@ export function MarketplaceSection() {
                   </div>
                   <h3 className="font-bold text-lg text-slate-900 mb-2">{marketplace.name}</h3>
                   <p className="text-sm text-slate-600 leading-relaxed mb-4">{marketplace.description}</p>
-                  <Link href={`/marketplace/${marketplace.id}`} className="w-full">
+                  <Link
+                    href={`/marketplace/${marketplace.id}`}
+                    className="w-full"
+                    onClick={() =>
+                      trackEvent("marketplace_click", {
+                        marketplace_id: marketplace.id,
+                        category: marketplace.category,
+                        location: "home_grid",
+                      })
+                    }
+                  >
                     <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium py-2.5 cursor-pointer">Подробнее</Button>
                   </Link>
                 </div>

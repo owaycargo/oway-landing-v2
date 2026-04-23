@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { trackEvent } from "@/lib/analytics"
 
 const TelegramIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -15,9 +16,9 @@ const TelegramIcon = ({ className }: { className?: string }) => (
 )
 
 const TELEGRAM_OPTIONS = [
-  { title: "OWAY CARGO — Новости и акции", handle: "@owaycargo", href: "https://t.me/owaycargo" },
-  { title: "Менеджер по СНГ", handle: "@owaymanagersng", href: "https://t.me/owaymanagersng" },
-  { title: "Менеджер по США", handle: "@owaymanagerusa", href: "https://t.me/owaymanagerusa" },
+  { id: "channel", title: "OWAY CARGO — Новости и акции", handle: "@owaycargo", href: "https://t.me/owaycargo" },
+  { id: "manager_sng", title: "Менеджер по СНГ", handle: "@owaymanagersng", href: "https://t.me/owaymanagersng" },
+  { id: "manager_usa", title: "Менеджер по США", handle: "@owaymanagerusa", href: "https://t.me/owaymanagerusa" },
 ]
 
 type TelegramDialogContextValue = {
@@ -34,7 +35,10 @@ export function useTelegramDialog() {
 
 export function TelegramDialogProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false)
-  const openTelegram = useCallback(() => setOpen(true), [])
+  const openTelegram = useCallback(() => {
+    trackEvent("dialog_open", { channel: "telegram" })
+    setOpen(true)
+  }, [])
 
   return (
     <TelegramDialogContext.Provider value={{ openTelegram }}>
@@ -51,6 +55,12 @@ export function TelegramDialogProvider({ children }: { children: React.ReactNode
                 href={option.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("contact_click", {
+                    channel: "telegram",
+                    option_id: option.id,
+                  })
+                }
                 className="flex items-start gap-3 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-blue-500/50 transition-colors"
               >
                 <div className="w-10 h-10 rounded-full bg-[#0088cc]/20 flex items-center justify-center shrink-0 mt-0.5">
