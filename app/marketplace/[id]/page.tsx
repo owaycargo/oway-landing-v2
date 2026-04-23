@@ -6,6 +6,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
 import { getMarketplaceById, marketplaces, categories } from "@/lib/marketplaces"
 import { ArrowLeft, ExternalLink, ShoppingBag } from "lucide-react"
 
@@ -101,6 +102,13 @@ export default async function MarketplacePage({ params }: MarketplacePageProps) 
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Главная", url: "/" },
+          { name: "Магазины США", url: "/#marketplace" },
+          { name: marketplace.name, url: `/marketplace/${marketplace.id}` },
+        ]}
+      />
       <Header />
       <main className="w-full max-w-[1440px] mx-auto px-[15px] py-8 md:py-16">
         {/* Back Button */}

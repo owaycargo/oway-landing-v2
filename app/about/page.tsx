@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
 import { getSeoPage, parseKeywords, getStrapiImageUrl } from "@/lib/seo"
 import {
   AboutHero,
@@ -75,6 +76,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Главная", url: "/" },
+          { name: "О компании", url: "/about" },
+        ]}
+      />
       <Header />
 
       <main className="container mx-auto px-4 py-16">
