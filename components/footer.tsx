@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Package, Mail, Phone, MapPin } from "lucide-react"
 import { useTelegramDialog } from "@/components/telegram-dialog-provider"
 import { useWhatsAppDialog } from "@/components/whatsapp-dialog-provider"
+import { COUNTRY_LANDINGS } from "@/lib/countries"
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -41,7 +42,7 @@ export function Footer() {
   return (
     <footer id="contact" className="bg-slate-900 text-slate-300">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Logo and description */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -95,6 +96,24 @@ export function Footer() {
                   Публичная оферта
                 </Link>
               </li>
+            </ul>
+          </div>
+
+          {/* Country delivery pages */}
+          <div>
+            <h3 className="font-semibold text-white mb-4">Доставка в страны</h3>
+            <ul className="space-y-2 text-sm">
+              {COUNTRY_LANDINGS.map((c) => (
+                <li key={c.slug}>
+                  <Link
+                    href={`/delivery/${c.slug}`}
+                    className="hover:text-blue-400 transition-colors"
+                  >
+                    <span className="mr-2" aria-hidden>{c.flag}</span>
+                    {c.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
