@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
 import {
   getNewsList,
   getNewsTypes,
@@ -81,6 +82,12 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Главная", url: "/" },
+          { name: "Новости", url: "/news" },
+        ]}
+      />
       <Header />
 
       <main className="container mx-auto px-4 py-16">
