@@ -1,5 +1,5 @@
-import { NEWS_API_BASE } from "./constants"
-import type { ListResponse, NewsItem, NewsType, SingleResponse } from "@/modules/news/types"
+import { getAllPosts, getPostBySlug, getAllCategories } from "@/lib/posts"
+import type { ListResponse, NewsItem, NewsType } from "@/modules/news/types"
 
 export interface GetNewsListParams {
   page?: number
@@ -12,53 +12,33 @@ export async function getNewsList(
 ): Promise<ListResponse<NewsItem>> {
   const { page = 1, pageSize = 12, categoryName } = params ?? {}
 
-  const qs = new URLSearchParams({
-    populate: "news_types",
-    "pagination[page]": String(page),
-    "pagination[pageSize]": String(pageSize),
-    sort: "createdAt:desc",
-  })
+  let posts = getAllPosts()
 
   if (categoryName) {
-    qs.set("filters[news_types][name][$eq]", categoryName)
+    posts = posts.filter((p) =>
+      p.news_types?.some((t) => t.name === categoryName)
+    )
   }
 
-  try {
-    const res = await fetch(`${NEWS_API_BASE}/api/news-list?${qs}`, {
-      next: { revalidate: 60 },
-    })
-    if (!res.ok) throw new Error("fetch failed")
-    return res.json()
-  } catch {
-    return {
-      data: [],
-      meta: { pagination: { page: 1, pageSize, pageCount: 0, total: 0 } },
-    }
+  const total = posts.length
+  const pageCount = Math.ceil(total / pageSize)
+  const start = (page - 1) * pageSize
+  const data = posts.slice(start, start + pageSize)
+
+  return {
+    data,
+    meta: { pagination: { page, pageSize, pageCount, total } },
   }
 }
 
 export async function getNewsArticle(slug: string): Promise<NewsItem | null> {
-  try {
-    const res = await fetch(`${NEWS_API_BASE}/api/news/${slug}`, {
-      next: { revalidate: 60 },
-    })
-    if (!res.ok) return null
-    const json: SingleResponse<NewsItem> = await res.json()
-    return json.data ?? null
-  } catch {
-    return null
-  }
+  return getPostBySlug(slug)
 }
 
 export async function getNewsTypes(): Promise<NewsType[]> {
-  try {
-    const res = await fetch(`${NEWS_API_BASE}/api/news-types`, {
-      next: { revalidate: 300 },
-    })
-    if (!res.ok) return []
-    const json: ListResponse<NewsType> = await res.json()
-    return json.data ?? []
-  } catch {
-    return []
-  }
+  return getAllCategories().map((name, i) => ({
+    id: i + 1,
+    documentId: name,
+    name,
+  }))
 }

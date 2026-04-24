@@ -1,0 +1,17 @@
+{
+  "name": "oway-content-bot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-strip-types src/index.ts",
+    "dev": "node --watch --experimental-strip-types src/index.ts"
+  },
+  "dependencies": {
+    "grammy": "^1.31.0",
+    "@octokit/rest": "^21.0.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
