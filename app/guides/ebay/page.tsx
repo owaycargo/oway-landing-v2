@@ -18,6 +18,7 @@ import {
 } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { RelatedGuides } from "@/app/guides/_components/related-guides"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
@@ -673,6 +674,7 @@ export default function EbayGuidePage() {
             </div>
           </Card>
         </section>
+        <RelatedGuides currentHref="/guides/ebay" />
       </main>
 
       <Footer />

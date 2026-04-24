@@ -19,6 +19,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
+import { RelatedGuides } from "@/app/guides/_components/related-guides"
 
 export const metadata: Metadata = {
   title: "Как покупать на Walmart из США в СНГ — гайд 2026",
@@ -340,6 +341,7 @@ export default function WalmartGuidePage() {
             </div>
           </Card>
         </div>
+        <RelatedGuides currentHref="/guides/walmart" />
       </main>
 
       <Footer />

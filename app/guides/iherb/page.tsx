@@ -21,6 +21,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
+import { RelatedGuides } from "@/app/guides/_components/related-guides"
 
 export const metadata: Metadata = {
   title: "Как покупать на iHerb из США в СНГ — гайд 2026",
@@ -330,6 +331,7 @@ export default function IHerbGuidePage() {
             </div>
           </Card>
         </div>
+        <RelatedGuides currentHref="/guides/iherb" />
       </main>
 
       <Footer />

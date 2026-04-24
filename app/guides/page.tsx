@@ -79,6 +79,18 @@ const guides = [
     color: "from-green-50 to-emerald-50",
     border: "border-green-200",
   },
+  {
+    href: "/guides/shein",
+    logo: "👗",
+    name: "SHEIN",
+    badge: "Одежда до −90%",
+    badgeColor: "bg-pink-100 text-pink-700",
+    description:
+      "Таблица размеров, Flash Sales, промокоды и лайфхаки. Платье за $8 вместо $40 в ресейле — реально.",
+    highlights: ["Скидки до 90%", "Таблица размеров", "Flash Sales", "35 дней возврат"],
+    color: "from-pink-50 to-rose-50",
+    border: "border-pink-200",
+  },
 ]
 
 export default function GuidesPage() {

@@ -9,7 +9,7 @@ import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
 import { MarketplaceLogo } from "@/components/marketplace-logo"
 import { ShopLinkButton } from "./shop-link-button"
 import { getMarketplaceById, marketplaces, categories } from "@/lib/marketplaces"
-import { ArrowLeft, ShoppingBag } from "lucide-react"
+import { ArrowLeft, BookOpen, ShoppingBag } from "lucide-react"
 
 interface MarketplacePageProps {
   params: Promise<{
@@ -61,6 +61,14 @@ export default async function MarketplacePage({ params }: MarketplacePageProps) 
   if (!marketplace) {
     notFound()
   }
+
+  const GUIDE_MAP: Record<string, string> = {
+    amazon: "/guides/amazon",
+    ebay: "/guides/ebay",
+    walmart: "/guides/walmart",
+    iherb: "/guides/iherb",
+  }
+  const guideUrl = GUIDE_MAP[marketplace.id]
 
   const category = categories.find((c) => c.id === marketplace.category)
   const relatedMarketplaces = marketplaces
@@ -150,6 +158,24 @@ export default async function MarketplacePage({ params }: MarketplacePageProps) 
             </Link>
           </div>
         </div>
+
+        {/* Guide Banner */}
+        {guideUrl && (
+          <Link href={guideUrl} className="block mb-8">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl px-6 py-4 flex items-center justify-between gap-4 hover:from-blue-700 hover:to-blue-800 transition-all">
+              <div className="flex items-center gap-3">
+                <BookOpen className="w-6 h-6 text-white shrink-0" />
+                <div>
+                  <p className="text-white font-semibold text-sm md:text-base">
+                    Полный гайд по покупкам на {marketplace.name}
+                  </p>
+                  <p className="text-blue-200 text-xs mt-0.5">Лайфхаки, экономия, пошаговая инструкция для СНГ</p>
+                </div>
+              </div>
+              <ArrowLeft className="w-5 h-5 text-white rotate-180 shrink-0" />
+            </div>
+          </Link>
+        )}
 
         {/* How to Order Section */}
         <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm mb-8">
