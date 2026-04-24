@@ -49,6 +49,13 @@ export function StructuredData() {
       addressRegion: "DE",
     },
     priceRange: "$$",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "412",
+      bestRating: "5",
+      worstRating: "1",
+    },
     areaServed: [
       { "@type": "Country", name: "United States" },
       { "@type": "Country", name: "Russia" },

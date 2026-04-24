@@ -80,8 +80,37 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
   const featured = !category && page === 1 ? articles[0] : null
   const grid = featured ? articles.slice(1) : articles
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://owaycargo.com"
+
+  const blogSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Блог OWAY CARGO",
+    description: "Новости, советы и лайфхаки по доставке из США в страны СНГ",
+    url: `${baseUrl}/news`,
+    inLanguage: "ru",
+    publisher: {
+      "@type": "Organization",
+      name: "OWAY CARGO",
+      url: baseUrl,
+      logo: { "@type": "ImageObject", url: `${baseUrl}/icon.svg` },
+    },
+    blogPost: articles.slice(0, 10).map((a) => ({
+      "@type": "BlogPosting",
+      headline: a.title,
+      description: a.card_description,
+      url: `${baseUrl}/news/${a.slug}`,
+      datePublished: a.createdAt,
+      author: { "@type": "Organization", name: "OWAY CARGO" },
+    })),
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
+      />
       <BreadcrumbJsonLd
         items={[
           { name: "Главная", url: "/" },

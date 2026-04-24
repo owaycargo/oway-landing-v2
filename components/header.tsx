@@ -132,6 +132,13 @@ export function Header() {
             >
               Новости
             </Link>
+            <Link
+              href="/tracking"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-slate-600 hover:text-blue-600 transition-colors py-2"
+            >
+              Отследить посылку
+            </Link>
             <a
               href="/#contact"
               onClick={() => setMobileMenuOpen(false)}

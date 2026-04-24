@@ -391,8 +391,42 @@ const iconMap = {
 }
 
 export default function SalesCalendarPage() {
+  const allSales = SALES_CALENDAR.flatMap((m) => m.sales)
+
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Календарь распродаж США 2026",
+    description: "Все главные шопинг-события в американских магазинах — даты, скидки, категории товаров",
+    numberOfItems: allSales.length,
+    itemListElement: allSales.map((sale, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Event",
+        name: sale.name,
+        description: `${sale.description} Скидки: ${sale.discount}. Топ категории: ${sale.topCategories.join(", ")}.`,
+        eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
+        eventStatus: "https://schema.org/EventScheduled",
+        location: {
+          "@type": "VirtualLocation",
+          url: "https://owaycargo.com/sales",
+        },
+        organizer: {
+          "@type": "Organization",
+          name: "OWAY CARGO",
+          url: "https://owaycargo.com",
+        },
+      },
+    })),
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
       <BreadcrumbJsonLd
         items={[
           { name: "Главная", url: "/" },

@@ -97,6 +97,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/tracking" className="hover:text-blue-400 transition-colors">
+                  Отследить посылку
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacy" className="hover:text-blue-400 transition-colors">
                   Политика конфиденциальности
                 </Link>
