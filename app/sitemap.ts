@@ -2,6 +2,7 @@ import { MetadataRoute } from "next"
 import { marketplaces } from "@/lib/marketplaces"
 import { COUNTRY_LANDINGS } from "@/lib/countries"
 import { CATEGORY_LANDINGS } from "@/lib/categories-data"
+import { getAllPosts } from "@/lib/posts"
 
 // Stable date для статичных страниц — обновляется только при деплое.
 // Не вычисляется на каждый request, чтобы Google не видел «всё изменилось сегодня».
@@ -33,29 +34,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   }))
 
-  // Fetch news slugs for dynamic news pages
-  let newsUrls: MetadataRoute.Sitemap = []
-  try {
-    const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"
-    const res = await fetch(
-      `${strapiUrl}/api/news-list?pagination[pageSize]=100&sort=createdAt:desc`,
-      { next: { revalidate: 3600 } },
-    )
-    if (res.ok) {
-      const json = await res.json()
-      const articles = json.data ?? []
-      newsUrls = articles
-        .filter((a: { slug?: string }) => a.slug)
-        .map((a: { slug: string; createdAt?: string; updatedAt?: string }) => ({
-          url: `${baseUrl}/news/${a.slug}`,
-          lastModified: new Date(a.updatedAt || a.createdAt || STATIC_LAST_MODIFIED),
-          changeFrequency: "monthly" as const,
-          priority: 0.5,
-        }))
-    }
-  } catch {
-    // Strapi unavailable — skip news URLs
-  }
+  const posts = getAllPosts()
+  const newsUrls: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${baseUrl}/news/${post.slug}`,
+    lastModified: new Date(post.createdAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }))
 
   return [
     {

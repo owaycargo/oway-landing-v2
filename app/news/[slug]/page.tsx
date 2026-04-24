@@ -12,9 +12,14 @@ import {
   ArticleBody,
   RelatedArticlesSidebar,
 } from "@/modules/news"
+import { getAllPosts } from "@/lib/posts"
 
 interface NewsDetailPageProps {
   params: Promise<{ slug: string }>
+}
+
+export async function generateStaticParams() {
+  return getAllPosts().map((post) => ({ slug: post.slug }))
 }
 
 export async function generateMetadata({ params }: NewsDetailPageProps): Promise<Metadata> {
