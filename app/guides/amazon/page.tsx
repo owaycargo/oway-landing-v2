@@ -113,6 +113,24 @@ const faqJsonLd = {
   })),
 }
 
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "Как покупать на Amazon из США в СНГ — полный гайд 2026",
+  description:
+    "Подробный гайд по покупкам на Amazon.com с доставкой в Россию, Казахстан, Кыргызстан, Узбекистан, Беларусь через OWAY CARGO.",
+  author: { "@type": "Organization", name: "OWAY CARGO", url: "https://owaycargo.com" },
+  publisher: {
+    "@type": "Organization",
+    name: "OWAY CARGO",
+    logo: { "@type": "ImageObject", url: "https://owaycargo.com/favicon.svg" },
+  },
+  datePublished: "2025-12-01",
+  dateModified: "2026-04-01",
+  mainEntityOfPage: { "@type": "WebPage", "@id": "https://owaycargo.com/guides/amazon" },
+  inLanguage: "ru",
+}
+
 const howToJsonLd = {
   "@context": "https://schema.org",
   "@type": "HowTo",
@@ -161,9 +179,13 @@ export default function AmazonGuidePage() {
       <BreadcrumbJsonLd
         items={[
           { name: "Главная", url: "/" },
-          { name: "Гайды по магазинам", url: "/guides/amazon" },
+          { name: "Гайды", url: "/guides" },
           { name: "Amazon", url: "/guides/amazon" },
         ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
       <script
         type="application/ld+json"

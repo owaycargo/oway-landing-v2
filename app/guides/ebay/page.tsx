@@ -105,6 +105,24 @@ const faqItems = [
   },
 ]
 
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "Как покупать на eBay из США в СНГ — полный гайд 2026",
+  description:
+    "Аукционы, брендовые товары, редкая электроника — как покупать на eBay из США с доставкой через OWAY CARGO в Россию, Казахстан, Кыргызстан.",
+  author: { "@type": "Organization", name: "OWAY CARGO", url: "https://owaycargo.com" },
+  publisher: {
+    "@type": "Organization",
+    name: "OWAY CARGO",
+    logo: { "@type": "ImageObject", url: "https://owaycargo.com/favicon.svg" },
+  },
+  datePublished: "2025-12-01",
+  dateModified: "2026-04-01",
+  mainEntityOfPage: { "@type": "WebPage", "@id": "https://owaycargo.com/guides/ebay" },
+  inLanguage: "ru",
+}
+
 const faqJsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -163,9 +181,13 @@ export default function EbayGuidePage() {
       <BreadcrumbJsonLd
         items={[
           { name: "Главная", url: "/" },
-          { name: "Гайды по магазинам", url: "/guides/ebay" },
+          { name: "Гайды", url: "/guides" },
           { name: "eBay", url: "/guides/ebay" },
         ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
       <script
         type="application/ld+json"

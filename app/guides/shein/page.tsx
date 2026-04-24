@@ -106,6 +106,76 @@ const tips = [
   },
 ]
 
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "Как покупать на SHEIN из США в СНГ — гайд по одежде 2026",
+  description:
+    "Таблица размеров, Flash Sales, промокоды и лайфхаки. Одежда за $3-15 со скидкой до 90% через OWAY CARGO.",
+  author: { "@type": "Organization", name: "OWAY CARGO", url: "https://owaycargo.com" },
+  publisher: {
+    "@type": "Organization",
+    name: "OWAY CARGO",
+    logo: { "@type": "ImageObject", url: "https://owaycargo.com/favicon.svg" },
+  },
+  datePublished: "2026-02-01",
+  dateModified: "2026-04-01",
+  mainEntityOfPage: { "@type": "WebPage", "@id": "https://owaycargo.com/guides/shein" },
+  inLanguage: "ru",
+}
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqItems.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+}
+
+const howToJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "Как купить на SHEIN с доставкой в СНГ через OWAY CARGO",
+  description:
+    "Пошаговая инструкция по покупке одежды на SHEIN.com из США с доставкой в Россию, Казахстан, Кыргызстан, Узбекистан, Беларусь.",
+  estimatedCost: { "@type": "MonetaryAmount", currency: "USD", value: "12" },
+  totalTime: "PT15M",
+  step: [
+    {
+      "@type": "HowToStep",
+      position: 1,
+      name: "Регистрация в OWAY CARGO",
+      text: "Зарегистрируйтесь на owaycargo.com, получите OWAY-ID и адрес склада в штате Делавэр (USA).",
+    },
+    {
+      "@type": "HowToStep",
+      position: 2,
+      name: "Регистрация на SHEIN",
+      text: "Создайте аккаунт на shein.com. При первой покупке используйте промокод для новых клиентов — скидка 15-20%.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 3,
+      name: "Выбор товара и размера",
+      text: "Откройте Size Guide на странице товара и сравните свои мерки с таблицей. SHEIN использует азиатскую размерную сетку — берите на 1-2 размера больше обычного.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 4,
+      name: "Оформление заказа",
+      text: "Укажите адрес склада OWAY при оформлении. Минимальный заказ от $29 — бесплатная доставка на склад. Оплатите картой, PayPal или Apple Pay.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 5,
+      name: "Отправка в страну через OWAY",
+      text: "После поступления посылки на склад OWAY выберите страну, оплатите тариф ($12/кг — КЗ/КГ/УЗ, $18/кг — РФ/BY) и получите заказ в пункте выдачи.",
+    },
+  ],
+}
+
 const sizeChart = [
   { shein: "XS", ru: "40-42", us: "0-2", bust: "80-84", waist: "60-64", hips: "86-90" },
   { shein: "S", ru: "42-44", us: "4-6", bust: "84-88", waist: "64-68", hips: "90-94" },
@@ -124,6 +194,18 @@ export default function SheinGuidePage() {
           { name: "Гайды", url: "https://owaycargo.com/guides" },
           { name: "SHEIN", url: "https://owaycargo.com/guides/shein" },
         ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
       />
       <Header />
       <main className="min-h-screen bg-slate-50">

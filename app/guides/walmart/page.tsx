@@ -79,19 +79,87 @@ const faqSchema = {
   })),
 }
 
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "Как покупать на Walmart из США в СНГ — полный гайд 2026",
+  description:
+    "Детские товары, витамины Equate, бытовая химия дешевле Amazon. Как покупать на Walmart.com с доставкой через OWAY CARGO.",
+  author: { "@type": "Organization", name: "OWAY CARGO", url: "https://owaycargo.com" },
+  publisher: {
+    "@type": "Organization",
+    name: "OWAY CARGO",
+    logo: { "@type": "ImageObject", url: "https://owaycargo.com/favicon.svg" },
+  },
+  datePublished: "2026-01-01",
+  dateModified: "2026-04-01",
+  mainEntityOfPage: { "@type": "WebPage", "@id": "https://owaycargo.com/guides/walmart" },
+  inLanguage: "ru",
+}
+
+const howToJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "Как купить на Walmart с доставкой в СНГ через OWAY CARGO",
+  description:
+    "Пошаговая инструкция по покупке на Walmart.com из США с доставкой в Россию, Казахстан, Кыргызстан, Узбекистан, Беларусь.",
+  estimatedCost: { "@type": "MonetaryAmount", currency: "USD", value: "12" },
+  totalTime: "PT10M",
+  step: [
+    {
+      "@type": "HowToStep",
+      position: 1,
+      name: "Регистрация в OWAY CARGO",
+      text: "Зарегистрируйтесь на owaycargo.com, получите OWAY-ID и адрес склада в штате Делавэр.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 2,
+      name: "Регистрация на Walmart.com",
+      text: "Создайте аккаунт на walmart.com. Добавьте адрес склада OWAY как доставочный адрес.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 3,
+      name: "Выбор товара с меткой Ship to",
+      text: "Убедитесь, что на кнопке товара написано «Ship to», а не «Pickup only». Pickup-товары невозможно отправить на наш склад.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 4,
+      name: "Оформление заказа",
+      text: "Выберите адрес склада OWAY, оплатите картой. С Walmart+ доставка на склад бесплатная без минимальной суммы.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 5,
+      name: "Отправка в страну через OWAY",
+      text: "После поступления посылки на склад OWAY выберите страну, оплатите тариф ($12/кг — КЗ/КГ/УЗ, $18/кг — РФ/BY) и получите заказ в пункте выдачи.",
+    },
+  ],
+}
+
 export default function WalmartGuidePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <BreadcrumbJsonLd
         items={[
           { name: "Главная", url: "/" },
-          { name: "Гайды по магазинам", url: "/guides/walmart" },
+          { name: "Гайды", url: "/guides" },
           { name: "Walmart", url: "/guides/walmart" },
         ]}
       />
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
       />
       <Header />
 

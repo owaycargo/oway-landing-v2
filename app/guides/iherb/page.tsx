@@ -85,19 +85,87 @@ const faqSchema = {
   })),
 }
 
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "Как покупать на iHerb из США в СНГ — витамины и БАДы 2026",
+  description:
+    "Топ-10 брендов, промокод −20% новым, Rewards 5% и Daily Deals. Почему через OWAY дешевле чем напрямую в Россию.",
+  author: { "@type": "Organization", name: "OWAY CARGO", url: "https://owaycargo.com" },
+  publisher: {
+    "@type": "Organization",
+    name: "OWAY CARGO",
+    logo: { "@type": "ImageObject", url: "https://owaycargo.com/favicon.svg" },
+  },
+  datePublished: "2026-01-01",
+  dateModified: "2026-04-01",
+  mainEntityOfPage: { "@type": "WebPage", "@id": "https://owaycargo.com/guides/iherb" },
+  inLanguage: "ru",
+}
+
+const howToJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "Как купить на iHerb с доставкой в СНГ через OWAY CARGO",
+  description:
+    "Пошаговая инструкция по заказу витаминов и БАДов на iHerb.com с доставкой в Россию, Казахстан, Кыргызстан, Узбекистан, Беларусь.",
+  estimatedCost: { "@type": "MonetaryAmount", currency: "USD", value: "12" },
+  totalTime: "PT10M",
+  step: [
+    {
+      "@type": "HowToStep",
+      position: 1,
+      name: "Регистрация в OWAY CARGO",
+      text: "Зарегистрируйтесь на owaycargo.com, получите OWAY-ID и адрес склада в штате Делавэр.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 2,
+      name: "Регистрация на iHerb",
+      text: "Создайте аккаунт на iherb.com. Новым клиентам доступен промокод на 20% скидку на первый заказ.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 3,
+      name: "Выбор товаров",
+      text: "Используйте Daily Deals и фильтры по брендам. Проверьте отзывы и сертификаты. Добавьте товары в корзину.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 4,
+      name: "Оформление заказа",
+      text: "При оформлении укажите адрес склада OWAY в Делавэре. iHerb доставляет на американские адреса бесплатно от $20.",
+    },
+    {
+      "@type": "HowToStep",
+      position: 5,
+      name: "Отправка в страну через OWAY",
+      text: "После поступления посылки на склад OWAY выберите страну назначения, оплатите тариф ($12/кг — КЗ/КГ/УЗ, $18/кг — РФ/BY) и получите заказ.",
+    },
+  ],
+}
+
 export default function IHerbGuidePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-green-50">
       <BreadcrumbJsonLd
         items={[
           { name: "Главная", url: "/" },
-          { name: "Гайды по магазинам", url: "/guides/iherb" },
+          { name: "Гайды", url: "/guides" },
           { name: "iHerb", url: "/guides/iherb" },
         ]}
       />
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
       />
       <Header />
 
