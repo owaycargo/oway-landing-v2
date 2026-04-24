@@ -8,15 +8,17 @@ import { Button } from "@/components/ui/button"
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = {
-  title: "Гайды по шопингу в США — как покупать на Amazon, eBay, Walmart, iHerb",
+  title: "Гайды по шопингу в США — Amazon, eBay, Nike, Best Buy, Nordstrom и другие",
   description:
-    "Подробные инструкции по покупкам в американских интернет-магазинах с доставкой в СНГ через OWAY CARGO. Amazon, eBay, Walmart, iHerb — советы, лайфхаки, экономия.",
+    "Подробные инструкции по покупкам в американских интернет-магазинах с доставкой в СНГ через OWAY CARGO. Amazon, eBay, Nike, Best Buy, Nordstrom Rack, Costco, Target — советы, лайфхаки, экономия.",
   keywords: [
     "гайды шопинг США",
     "как покупать на Amazon",
-    "как покупать на eBay",
-    "Walmart доставка СНГ",
-    "iHerb доставка Россия",
+    "как покупать на Nike",
+    "Best Buy доставка СНГ",
+    "Nordstrom Rack скидки",
+    "Costco Kirkland",
+    "Target доставка Россия",
     "шопинг из США",
     "OWAY CARGO гайды",
   ],
@@ -90,6 +92,66 @@ const guides = [
     highlights: ["Скидки до 90%", "Таблица размеров", "Flash Sales", "35 дней возврат"],
     color: "from-pink-50 to-rose-50",
     border: "border-pink-200",
+  },
+  {
+    href: "/guides/nike",
+    logo: "👟",
+    name: "Nike",
+    badge: "Кроссовки −40%",
+    badgeColor: "bg-slate-100 text-slate-700",
+    description:
+      "Jordan 1 за $180 вместо $280, Air Force 1 за $110 — Nike Member скидки и SNKRS лимитированные дропы.",
+    highlights: ["Nike Member", "SNKRS дропы", "Размеры US→EU", "60 дней возврат"],
+    color: "from-slate-50 to-gray-50",
+    border: "border-slate-200",
+  },
+  {
+    href: "/guides/target",
+    logo: "🎯",
+    name: "Target",
+    badge: "Семейный шопинг",
+    badgeColor: "bg-red-100 text-red-700",
+    description:
+      "Детская одежда Cat&Jack за $5-15, косметика NYX и домашний декор на 40% дешевле чем в СНГ.",
+    highlights: ["Cat&Jack детская", "NYX косметика", "Target Circle", "Clearance −70%"],
+    color: "from-red-50 to-orange-50",
+    border: "border-red-200",
+  },
+  {
+    href: "/guides/bestbuy",
+    logo: "📺",
+    name: "Best Buy",
+    badge: "Электроника №1",
+    badgeColor: "bg-blue-100 text-blue-700",
+    description:
+      "MacBook за $1099 вместо $1449, Open-Box скидки до 40%, Price Match Guarantee. Только оригинальные бренды.",
+    highlights: ["Open-Box −40%", "Price Match", "My Best Buy", "MacBook дешевле"],
+    color: "from-blue-50 to-indigo-50",
+    border: "border-blue-200",
+  },
+  {
+    href: "/guides/nordstrom",
+    logo: "👜",
+    name: "Nordstrom Rack",
+    badge: "Брендовый аутлет",
+    badgeColor: "bg-zinc-100 text-zinc-700",
+    description:
+      "Coach сумка за $85 вместо $350, Ted Baker за $40, UGG за $90 — Nordstrom Rack скидки до 70%.",
+    highlights: ["Coach −70%", "Flash Events", "Nordy Club", "45 дней возврат"],
+    color: "from-zinc-50 to-slate-50",
+    border: "border-zinc-200",
+  },
+  {
+    href: "/guides/costco",
+    logo: "🏢",
+    name: "Costco",
+    badge: "Оптовые цены",
+    badgeColor: "bg-blue-100 text-blue-800",
+    description:
+      "Kirkland Fish Oil 400 капсул за $15 вместо $29, орехи оптом, кофе 1.36 кг за $14. Членство $65/год.",
+    highlights: ["Kirkland −40%", "Членство $65", "Витамины дешевле", "Возврат 90 дней"],
+    color: "from-blue-50 to-sky-50",
+    border: "border-blue-300",
   },
 ]
 

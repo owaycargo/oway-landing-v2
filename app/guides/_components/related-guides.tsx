@@ -46,6 +46,41 @@ const ALL_GUIDES: Guide[] = [
     badge: "Одежда и мода",
     description: "Скидки до 90%, промокоды, таблица размеров",
   },
+  {
+    href: "/guides/nike",
+    logo: "👟",
+    name: "Nike",
+    badge: "Кроссовки −40%",
+    description: "Member скидки, SNKRS дропы, Jordan оригиналы",
+  },
+  {
+    href: "/guides/target",
+    logo: "🎯",
+    name: "Target",
+    badge: "Семейный шопинг",
+    description: "Cat&Jack детская одежда, NYX косметика, RedCard −5%",
+  },
+  {
+    href: "/guides/bestbuy",
+    logo: "📺",
+    name: "Best Buy",
+    badge: "Электроника США",
+    description: "Open-Box −40%, Price Match, MacBook дешевле Amazon",
+  },
+  {
+    href: "/guides/nordstrom",
+    logo: "👜",
+    name: "Nordstrom Rack",
+    badge: "Брендовый аутлет",
+    description: "Coach, Ted Baker, UGG — скидки до 70% на Rack",
+  },
+  {
+    href: "/guides/costco",
+    logo: "🏢",
+    name: "Costco",
+    badge: "Оптовые цены",
+    description: "Kirkland Signature: витамины, орехи, кофе вдвое дешевле",
+  },
 ]
 
 interface RelatedGuidesProps {
