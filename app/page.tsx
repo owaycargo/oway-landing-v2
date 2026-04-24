@@ -28,9 +28,49 @@ export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoPage("home")
   if (!seo) {
     return {
+      title: "OWAY CARGO — Доставка из США в Россию, Казахстан, Кыргызстан, Беларусь, Узбекистан",
+      description:
+        "Карго-доставка из США в 5 стран СНГ. Склад в Делавэре (0% sales tax). Тариф от $12/кг. Авиа 7–21 день. Выкуп, консолидация, страхование.",
+      keywords: [
+        "доставка из США",
+        "карго из Америки",
+        "OWAY CARGO",
+        "доставка США Россия",
+        "доставка США Казахстан",
+        "доставка США Кыргызстан",
+        "склад в Делавэре",
+        "форвардинг из США",
+      ],
+      authors: [{ name: "OWAY CARGO" }],
+      creator: "OWAY CARGO",
+      publisher: "OWAY CARGO",
+      formatDetection: { email: false, address: false, telephone: false },
       metadataBase,
       alternates: { canonical: "/" },
-      robots: { index: true, follow: true },
+      openGraph: {
+        title: "OWAY CARGO — Доставка из США в СНГ",
+        description: "Карго из США: от $12/кг, склад в Делавэре (0% налог), авиа 7–21 день в 5 стран.",
+        url: "/",
+        siteName: "OWAY CARGO",
+        locale: "ru_RU",
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "OWAY CARGO — Доставка из США в СНГ",
+        description: "Карго из США: от $12/кг, склад в Делавэре (0% налог), авиа 7–21 день в 5 стран.",
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-video-preview": -1,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
     }
   }
 

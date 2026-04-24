@@ -343,6 +343,35 @@ export default async function CountryDeliveryPage({ params }: PageProps) {
           </Card>
         </section>
 
+        {/* Popular US stores */}
+        <section className="max-w-5xl mx-auto mb-14">
+          <h2 className="text-xl font-bold text-slate-900 mb-4 text-center">
+            Популярные магазины США для покупок
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {[
+              { href: "/guides/amazon", logo: "🛒", name: "Amazon", badge: "от $5" },
+              { href: "/guides/ebay", logo: "🔖", name: "eBay", badge: "Б/у и редкие" },
+              { href: "/guides/nike", logo: "👟", name: "Nike", badge: "−40%" },
+              { href: "/guides/iherb", logo: "🌿", name: "iHerb", badge: "Витамины" },
+              { href: "/guides/bestbuy", logo: "📺", name: "Best Buy", badge: "Электроника" },
+            ].map((g) => (
+              <Link key={g.href} href={g.href}>
+                <Card className="p-4 bg-white border-slate-200 hover:border-blue-300 hover:shadow-md transition-all text-center">
+                  <div className="text-2xl mb-1">{g.logo}</div>
+                  <div className="font-semibold text-slate-900 text-sm">{g.name}</div>
+                  <div className="text-xs text-blue-600 font-medium mt-0.5">{g.badge}</div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+          <p className="text-center mt-3">
+            <Link href="/guides" className="text-sm text-blue-600 hover:text-blue-700">
+              Все гайды по шопингу в США →
+            </Link>
+          </p>
+        </section>
+
         {/* Other countries */}
         <section className="max-w-5xl mx-auto">
           <h2 className="text-xl font-bold text-slate-900 mb-4 text-center">

@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Card } from "@/components/ui/card"
+import { COUNTRY_LANDINGS } from "@/lib/countries"
 
 interface Guide {
   href: string
@@ -91,27 +92,44 @@ export function RelatedGuides({ currentHref }: RelatedGuidesProps) {
   const related = ALL_GUIDES.filter((g) => g.href !== currentHref).slice(0, 3)
 
   return (
-    <section className="mt-12">
-      <h2 className="text-2xl font-bold text-slate-900 mb-6">Другие гайды по шопингу</h2>
-      <div className="grid md:grid-cols-3 gap-4">
-        {related.map((g) => (
-          <Link key={g.href} href={g.href} className="group block">
-            <Card className="h-full p-5 border-slate-200 hover:border-blue-300 hover:shadow-md transition-all">
-              <div className="flex items-start gap-3">
-                <span className="text-3xl">{g.logo}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-bold text-slate-900">{g.name}</span>
-                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+    <>
+      <section className="mt-12">
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">Другие гайды по шопингу</h2>
+        <div className="grid md:grid-cols-3 gap-4">
+          {related.map((g) => (
+            <Link key={g.href} href={g.href} className="group block">
+              <Card className="h-full p-5 border-slate-200 hover:border-blue-300 hover:shadow-md transition-all">
+                <div className="flex items-start gap-3">
+                  <span className="text-3xl">{g.logo}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-bold text-slate-900">{g.name}</span>
+                      <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+                    </div>
+                    <p className="text-xs text-blue-600 font-medium mt-0.5">{g.badge}</p>
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">{g.description}</p>
                   </div>
-                  <p className="text-xs text-blue-600 font-medium mt-0.5">{g.badge}</p>
-                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">{g.description}</p>
                 </div>
-              </div>
-            </Card>
-          </Link>
-        ))}
-      </div>
-    </section>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-10 mb-2">
+        <h2 className="text-xl font-bold text-slate-900 mb-4">Доставляем товары в 5 стран СНГ</h2>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          {COUNTRY_LANDINGS.map((c) => (
+            <Link key={c.slug} href={`/delivery/${c.slug}`} className="group block">
+              <Card className="p-4 bg-white border-slate-200 hover:border-blue-300 hover:shadow-md transition-all text-center">
+                <div className="text-2xl mb-1">{c.flag}</div>
+                <div className="font-semibold text-slate-900 text-sm">{c.name}</div>
+                <div className="text-xs text-slate-500 mt-1">${c.price}/кг · {c.days} дн.</div>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </>
   )
 }

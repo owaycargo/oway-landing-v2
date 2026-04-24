@@ -20,9 +20,44 @@ export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoPage("about")
   if (!seo) {
     return {
+      title: "О компании OWAY CARGO — Карго-доставка из США с 2019 года",
+      description:
+        "OWAY CARGO — международная карго-служба доставки товаров из США в Россию, Казахстан, Кыргызстан, Беларусь, Узбекистан. Склад в Делавэре, команда в 5 странах, 50 000+ клиентов.",
+      keywords: [
+        "о компании OWAY CARGO",
+        "карго из США отзывы",
+        "OWAY CARGO надёжность",
+        "склад Делавэр США",
+        "доставка из США официальная компания",
+      ],
+      authors: [{ name: "OWAY CARGO" }],
+      creator: "OWAY CARGO",
+      publisher: "OWAY CARGO",
       metadataBase,
       alternates: { canonical: "/about" },
-      robots: { index: true, follow: true },
+      openGraph: {
+        title: "О компании OWAY CARGO — Карго из США",
+        description: "Международная карго-служба с 2019 года. 50 000+ клиентов, 5 стран СНГ, склад в Делавэре.",
+        url: "/about",
+        siteName: "OWAY CARGO",
+        locale: "ru_RU",
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "О компании OWAY CARGO — Карго из США",
+        description: "Международная карго-служба с 2019 года. 50 000+ клиентов, 5 стран СНГ, склад в Делавэре.",
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
     }
   }
 

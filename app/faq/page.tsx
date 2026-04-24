@@ -13,9 +13,41 @@ export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoPage("faq")
   if (!seo) {
     return {
+      title: "FAQ — Частые вопросы о доставке из США | OWAY CARGO",
+      description:
+        "Ответы на 50+ вопросов о доставке из США в Россию, Казахстан, Кыргызстан, Беларусь, Узбекистан. Тарифы, таможня, запрещённые товары, сроки, оплата.",
+      keywords: [
+        "FAQ доставка из США",
+        "вопросы доставка США СНГ",
+        "таможня ЕАЭС лимит",
+        "объёмный вес посылки",
+        "OWAY CARGO часто задаваемые вопросы",
+      ],
       metadataBase,
       alternates: { canonical: "/faq" },
-      robots: { index: true, follow: true },
+      openGraph: {
+        title: "FAQ — Частые вопросы о доставке из США | OWAY CARGO",
+        description: "50+ ответов о доставке из США в СНГ: тарифы, таможня, сроки, выкуп товаров.",
+        url: "/faq",
+        siteName: "OWAY CARGO",
+        locale: "ru_RU",
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "FAQ — Частые вопросы о доставке из США | OWAY CARGO",
+        description: "50+ ответов о доставке из США в СНГ: тарифы, таможня, сроки, выкуп товаров.",
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
     }
   }
 
