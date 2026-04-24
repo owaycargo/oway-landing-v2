@@ -42,6 +42,9 @@ export function Header() {
           <Link href="/faq" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
             FAQ
           </Link>
+          <Link href="/guides" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
+            Гайды
+          </Link>
           <Link href="/news" className="text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap">
             Новости
           </Link>
@@ -114,6 +117,13 @@ export function Header() {
               className="text-slate-600 hover:text-blue-600 transition-colors py-2"
             >
               FAQ
+            </Link>
+            <Link
+              href="/guides"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-slate-600 hover:text-blue-600 transition-colors py-2"
+            >
+              Гайды
             </Link>
             <Link
               href="/news"

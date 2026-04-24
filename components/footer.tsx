@@ -87,6 +87,16 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/guides" className="hover:text-blue-400 transition-colors">
+                  Гайды по шопингу
+                </Link>
+              </li>
+              <li>
+                <Link href="/news" className="hover:text-blue-400 transition-colors">
+                  Новости
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacy" className="hover:text-blue-400 transition-colors">
                   Политика конфиденциальности
                 </Link>
