@@ -12,6 +12,7 @@ export type CategoryData = {
   customsNote: string
   faq: CategoryFaq[]
   recommendedShops: string[]  // marketplace slugs
+  relatedGuides: string[]    // guide slugs from /guides/*
   metaKeywords: string[]
 }
 
@@ -65,6 +66,7 @@ export const CATEGORY_LANDINGS: CategoryData[] = [
       },
     ],
     recommendedShops: ["amazon", "bestbuy", "applestore", "bhphoto", "newegg", "microcenter"],
+    relatedGuides: ["bestbuy", "amazon", "walmart", "ebay"],
     metaKeywords: [
       "электроника из США",
       "купить iPhone в США",
@@ -123,6 +125,7 @@ export const CATEGORY_LANDINGS: CategoryData[] = [
       },
     ],
     recommendedShops: ["nike", "levis", "ralphlauren", "gap", "oldnavy", "macys", "nordstrom"],
+    relatedGuides: ["shein", "target", "nordstrom"],
     metaKeywords: [
       "одежда из США",
       "Levi's из Америки",
@@ -181,6 +184,7 @@ export const CATEGORY_LANDINGS: CategoryData[] = [
       },
     ],
     recommendedShops: ["nike", "footlocker", "adidas", "zappos", "finishline", "newbalance"],
+    relatedGuides: ["nike", "nordstrom", "target"],
     metaKeywords: [
       "кроссовки из США",
       "Jordan из Америки",
@@ -238,6 +242,7 @@ export const CATEGORY_LANDINGS: CategoryData[] = [
       },
     ],
     recommendedShops: ["sephora", "ulta", "bathandbodyworks", "nordstrom", "saks", "thefragranceshop"],
+    relatedGuides: ["amazon", "walmart", "target"],
     metaKeywords: [
       "парфюм из США",
       "Tom Ford парфюм",
@@ -296,6 +301,7 @@ export const CATEGORY_LANDINGS: CategoryData[] = [
       },
     ],
     recommendedShops: ["iherb", "vitacost", "nowfoods", "swansonvitamins", "bodybuildingcom", "vitaminshoppe", "gnc"],
+    relatedGuides: ["iherb", "amazon", "costco", "walmart"],
     metaKeywords: [
       "БАДы из США",
       "iHerb из России",
@@ -354,6 +360,7 @@ export const CATEGORY_LANDINGS: CategoryData[] = [
       },
     ],
     recommendedShops: ["carters", "childrensplace", "oshkosh", "potterybarnkids", "gapkids", "legostore", "mattel", "buildabear"],
+    relatedGuides: ["target", "amazon", "walmart", "costco"],
     metaKeywords: [
       "детская одежда из США",
       "Carter's детская одежда",
@@ -411,6 +418,7 @@ export const CATEGORY_LANDINGS: CategoryData[] = [
       },
     ],
     recommendedShops: ["rockauto", "autozone", "oreilly", "advanceauto", "tirerack", "partsgeek", "summitracing"],
+    relatedGuides: ["amazon", "walmart", "ebay"],
     metaKeywords: [
       "автозапчасти из США",
       "RockAuto Россия",

@@ -23,6 +23,20 @@ import {
 } from "@/components/ui/accordion"
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
 import { CATEGORY_LANDINGS, getCategoryBySlug } from "@/lib/categories-data"
+import { COUNTRY_LANDINGS } from "@/lib/countries"
+
+const GUIDE_LOOKUP: Record<string, { name: string; logo: string; badge: string }> = {
+  amazon:    { name: "Amazon",        logo: "🛒", badge: "Самый популярный" },
+  ebay:      { name: "eBay",          logo: "🔖", badge: "Б/у и редкие" },
+  walmart:   { name: "Walmart",       logo: "🏪", badge: "Дешевле Amazon" },
+  iherb:     { name: "iHerb",         logo: "🌿", badge: "Витамины и БАДы" },
+  shein:     { name: "SHEIN",         logo: "👗", badge: "Одежда до −90%" },
+  nike:      { name: "Nike",          logo: "👟", badge: "Кроссовки −40%" },
+  target:    { name: "Target",        logo: "🎯", badge: "Семейный шопинг" },
+  bestbuy:   { name: "Best Buy",      logo: "📺", badge: "Электроника №1" },
+  nordstrom: { name: "Nordstrom Rack",logo: "👜", badge: "Брендовый аутлет" },
+  costco:    { name: "Costco",        logo: "🏢", badge: "Оптовые цены" },
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -110,9 +124,8 @@ export default async function CategoryPage({ params }: PageProps) {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <BreadcrumbJsonLd
         items={[
-          { name: "Главная", url: "/" },
-          { name: "Категории товаров", url: "/category/" + data.slug },
-          { name: data.name, url: `/category/${data.slug}` },
+          { name: "Главная", url: "https://owaycargo.com" },
+          { name: data.name, url: `https://owaycargo.com/category/${data.slug}` },
         ]}
       />
       <script
@@ -358,6 +371,48 @@ export default async function CategoryPage({ params }: PageProps) {
               </a>
             </div>
           </Card>
+        </section>
+
+        {/* Related guide pages */}
+        {data.relatedGuides.length > 0 && (
+          <section className="max-w-5xl mx-auto mb-10">
+            <h2 className="text-xl font-bold text-slate-900 mb-4 text-center">
+              Гайды по магазинам для этой категории
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {data.relatedGuides.map((slug) => {
+                const g = GUIDE_LOOKUP[slug]
+                if (!g) return null
+                return (
+                  <Link key={slug} href={`/guides/${slug}`}>
+                    <Card className="p-4 bg-white border-slate-200 hover:border-blue-300 hover:shadow-md transition-all text-center">
+                      <div className="text-2xl mb-1">{g.logo}</div>
+                      <div className="font-semibold text-slate-900 text-sm">{g.name}</div>
+                      <div className="text-xs text-blue-600 font-medium mt-0.5">{g.badge}</div>
+                    </Card>
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* Country delivery */}
+        <section className="max-w-5xl mx-auto mb-10">
+          <h2 className="text-xl font-bold text-slate-900 mb-4 text-center">
+            Доставляем в 5 стран СНГ
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {COUNTRY_LANDINGS.map((c) => (
+              <Link key={c.slug} href={`/delivery/${c.slug}`}>
+                <Card className="p-4 bg-white border-slate-200 hover:border-blue-300 hover:shadow-md transition-all text-center">
+                  <div className="text-2xl mb-1">{c.flag}</div>
+                  <div className="font-semibold text-slate-900 text-sm">{c.name}</div>
+                  <div className="text-xs text-slate-500 mt-0.5">${c.price}/кг · {c.days} дн.</div>
+                </Card>
+              </Link>
+            ))}
+          </div>
         </section>
 
         {/* Other categories */}

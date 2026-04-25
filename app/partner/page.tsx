@@ -48,7 +48,16 @@ export const metadata: Metadata = {
     url: "/partner",
     type: "website",
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 }
 
 const faqItems = [
