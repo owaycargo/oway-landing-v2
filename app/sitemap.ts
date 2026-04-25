@@ -128,6 +128,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/consolidation`,
+      lastModified: STATIC_LAST_MODIFIED,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/guides/amazon`,
       lastModified: STATIC_LAST_MODIFIED,
       changeFrequency: "monthly",

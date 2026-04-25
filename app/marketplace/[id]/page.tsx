@@ -9,6 +9,7 @@ import { BreadcrumbJsonLd } from "@/components/breadcrumb-jsonld"
 import { MarketplaceLogo } from "@/components/marketplace-logo"
 import { ShopLinkButton } from "./shop-link-button"
 import { getMarketplaceById, marketplaces, categories } from "@/lib/marketplaces"
+import { COUNTRY_LANDINGS } from "@/lib/countries"
 import { ArrowLeft, BookOpen, ShoppingBag } from "lucide-react"
 
 interface MarketplacePageProps {
@@ -46,10 +47,21 @@ export async function generateMetadata({ params }: MarketplacePageProps): Promis
       "доставка из США",
       "OWAY CARGO",
     ],
+    alternates: { canonical: `/marketplace/${id}` },
     openGraph: {
       title: `${marketplace.name} — Заказ товаров из США`,
       description: marketplace.description,
       type: "website",
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   }
 }
@@ -63,10 +75,15 @@ export default async function MarketplacePage({ params }: MarketplacePageProps) 
   }
 
   const GUIDE_MAP: Record<string, string> = {
-    amazon: "/guides/amazon",
-    ebay: "/guides/ebay",
-    walmart: "/guides/walmart",
-    iherb: "/guides/iherb",
+    amazon:       "/guides/amazon",
+    ebay:         "/guides/ebay",
+    walmart:      "/guides/walmart",
+    iherb:        "/guides/iherb",
+    nike:         "/guides/nike",
+    target:       "/guides/target",
+    bestbuy:      "/guides/bestbuy",
+    nordstrom:    "/guides/nordstrom",
+    nordstromrack:"/guides/nordstrom",
   }
   const guideUrl = GUIDE_MAP[marketplace.id]
 
@@ -239,6 +256,24 @@ export default async function MarketplacePage({ params }: MarketplacePageProps) 
                 </div>
               </div>
             </Card>
+          </div>
+        </div>
+
+        {/* Country delivery links */}
+        <div className="bg-white rounded-3xl p-8 shadow-sm mb-8">
+          <h2 className="text-2xl font-bold text-slate-900 mb-5">
+            Доставляем из {marketplace.name} в 5 стран СНГ
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {COUNTRY_LANDINGS.map((c) => (
+              <Link key={c.slug} href={`/delivery/${c.slug}`}>
+                <Card className="p-4 bg-slate-50 border-slate-200 hover:border-blue-300 hover:shadow-md transition-all text-center">
+                  <div className="text-2xl mb-1">{c.flag}</div>
+                  <div className="font-semibold text-slate-900 text-sm">{c.name}</div>
+                  <div className="text-xs text-slate-500 mt-0.5">${c.price}/кг · {c.days} дн.</div>
+                </Card>
+              </Link>
+            ))}
           </div>
         </div>
 

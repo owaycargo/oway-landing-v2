@@ -117,6 +117,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/consolidation" className="hover:text-blue-400 transition-colors">
+                  Консолидация посылок
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacy" className="hover:text-blue-400 transition-colors">
                   Политика конфиденциальности
                 </Link>
