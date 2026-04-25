@@ -102,6 +102,21 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/calculator" className="hover:text-blue-400 transition-colors">
+                  Калькулятор доставки
+                </Link>
+              </li>
+              <li>
+                <Link href="/customs" className="hover:text-blue-400 transition-colors">
+                  Таможня и пошлины
+                </Link>
+              </li>
+              <li>
+                <Link href="/purchase" className="hover:text-blue-400 transition-colors">
+                  Выкуп товаров из США
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacy" className="hover:text-blue-400 transition-colors">
                   Политика конфиденциальности
                 </Link>
