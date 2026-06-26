@@ -1,4 +1,4 @@
-import { Bot, InlineKeyboard } from "grammy"
+import { Bot, InlineKeyboard, Keyboard } from "grammy"
 import { commitPost } from "./github.ts"
 import { slugify } from "./slugify.ts"
 import { generateArticle } from "./ai.ts"
@@ -15,6 +15,24 @@ const ALLOWED_IDS = (process.env.ALLOWED_USER_IDS || "")
   .filter(Boolean)
 
 const CATEGORIES = ["how-to", "новости", "советы", "акции", "обзор"]
+
+// Ready-made topic ideas (tap instead of typing)
+const TOPIC_IDEAS = [
+  "Как выкупить товары с Amazon в страны СНГ",
+  "Сколько идёт посылка из США и от чего зависит срок",
+  "Что нельзя отправлять посылкой из США",
+  "Как сэкономить на доставке: консолидация посылок",
+  "Как работает виртуальный адрес в США",
+  "Как отслеживать посылку из США до получения",
+]
+
+// Persistent menu shown at the bottom (no need to type /new)
+const mainMenu = new Keyboard()
+  .text("📝 Новая статья")
+  .row()
+  .text("❓ Помощь")
+  .resized()
+  .persistent()
 
 // ── State machine ─────────────────────────────────────────────────────────────
 
@@ -47,47 +65,59 @@ bot.use(async (ctx, next) => {
 
 // ── Commands ──────────────────────────────────────────────────────────────────
 
-bot.command("start", async (ctx) => {
-  await ctx.reply(
-    `👋 *OWAY CARGO — контент-бот*\n\n` +
-    `Теперь умею писать статьи через AI (Claude) 🤖\n\n` +
-    `Команды:\n` +
-    `/new — новая статья (AI или вручную)\n` +
-    `/cancel — отменить текущую\n` +
-    `/help — показать это сообщение`,
-    { parse_mode: "Markdown" }
-  )
-})
-
-bot.command("help", async (ctx) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function showHelp(ctx: any) {
   await ctx.reply(
     `📋 *Как добавить статью:*\n\n` +
-    `1. /new — начать\n` +
-    `2. Введи заголовок (тему статьи)\n` +
+    `1. Жми «📝 Новая статья» (или /new)\n` +
+    `2. Выбери готовую тему или введи свою\n` +
     `3. Выбери режим:\n` +
     `   🤖 *AI* — выбираешь категорию, Claude пишет готовую статью\n` +
     `   ✍️ *Вручную* — пишешь описание и текст сам\n` +
-    `4. Проверь превью → можно перегенерировать или изменить текст\n` +
+    `4. Проверь полный текст → можно перегенерировать или изменить\n` +
     `5. Нажми ✅ Опубликовать\n\n` +
     `После публикации сайт обновляется автоматически (~2 мин).`,
     { parse_mode: "Markdown" }
   )
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function startNewArticle(ctx: any) {
+  const id = ctx.from!.id
+  drafts.set(id, { step: "title" })
+  const kb = new InlineKeyboard()
+  TOPIC_IDEAS.forEach((t, i) => kb.text(t, `topic:${i}`).row())
+  kb.text("✍️ Своя тема", "topic_custom")
+  await ctx.reply(
+    `📝 *Новая статья*\n\n💡 Выбери готовую тему или введи свою сообщением:`,
+    { parse_mode: "Markdown", reply_markup: kb }
+  )
+}
+
+bot.command("start", async (ctx) => {
+  await ctx.reply(
+    `👋 *OWAY CARGO — контент-бот*\n\n` +
+    `Пишу готовые статьи через AI (Claude) 🤖\n\n` +
+    `Жми кнопку «📝 Новая статья» внизу — и поехали.`,
+    { parse_mode: "Markdown", reply_markup: mainMenu }
+  )
 })
+
+bot.command("help", (ctx) => showHelp(ctx))
 
 bot.command("cancel", async (ctx) => {
   const id = ctx.from!.id
   drafts.delete(id)
-  await ctx.reply("❌ Отменено. Напиши /new чтобы начать заново.")
+  await ctx.reply("❌ Отменено. Жми «📝 Новая статья» чтобы начать заново.", {
+    reply_markup: mainMenu,
+  })
 })
 
-bot.command("new", async (ctx) => {
-  const id = ctx.from!.id
-  drafts.set(id, { step: "title" })
-  await ctx.reply(
-    `📝 *Новая статья*\n\nШаг 1/4 — Введи заголовок статьи:`,
-    { parse_mode: "Markdown" }
-  )
-})
+bot.command("new", (ctx) => startNewArticle(ctx))
+
+// Persistent-menu buttons (tap instead of typing commands)
+bot.hears("📝 Новая статья", (ctx) => startNewArticle(ctx))
+bot.hears("❓ Помощь", (ctx) => showHelp(ctx))
 
 // ── Message handler ───────────────────────────────────────────────────────────
 
@@ -107,13 +137,9 @@ bot.on("message:text", async (ctx) => {
     case "title": {
       draft.title = text
       draft.step = "mode"
-      const kb = new InlineKeyboard()
-        .text("🤖 Сгенерировать через AI", "mode:ai")
-        .row()
-        .text("✍️ Написать самому", "mode:manual")
       await ctx.reply(
         `✅ Заголовок: *${text}*\n\nКак подготовить статью?`,
-        { parse_mode: "Markdown", reply_markup: kb }
+        { parse_mode: "Markdown", reply_markup: modeKeyboard() }
       )
       break
     }
@@ -145,6 +171,39 @@ bot.on("message:text", async (ctx) => {
     default:
       await ctx.reply("Нажми кнопку или напиши /cancel.")
   }
+})
+
+// ── Callback: topic selection ───────────────────────────────────────────────────
+
+function modeKeyboard(): InlineKeyboard {
+  return new InlineKeyboard()
+    .text("🤖 Сгенерировать через AI", "mode:ai")
+    .row()
+    .text("✍️ Написать самому", "mode:manual")
+}
+
+bot.callbackQuery(/^topic:(\d+)$/, async (ctx) => {
+  const id = ctx.from.id
+  const draft = drafts.get(id)
+  if (!draft) { await ctx.answerCallbackQuery(); return }
+  const title = TOPIC_IDEAS[parseInt(ctx.match[1])]
+  if (!title) { await ctx.answerCallbackQuery(); return }
+  draft.title = title
+  draft.step = "mode"
+  await ctx.answerCallbackQuery()
+  await ctx.editMessageText(`✅ Тема: *${title}*\n\nКак подготовить статью?`, {
+    parse_mode: "Markdown",
+    reply_markup: modeKeyboard(),
+  })
+})
+
+bot.callbackQuery("topic_custom", async (ctx) => {
+  const id = ctx.from.id
+  const draft = drafts.get(id)
+  if (!draft) { await ctx.answerCallbackQuery(); return }
+  draft.step = "title"
+  await ctx.answerCallbackQuery()
+  await ctx.editMessageText("✍️ Введи свою тему/заголовок статьи сообщением:")
 })
 
 // ── Callback: mode selection (AI vs manual) ─────────────────────────────────────
@@ -308,20 +367,26 @@ bot.callbackQuery("edit_all", async (ctx) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function sendPreview(ctx: any, draft: Draft) {
   const slug = slugify(draft.title!)
-  const preview =
+  const meta =
     `📄 *Превью статьи*\n\n` +
     `*Заголовок:* ${draft.title}\n` +
     `*Категория:* ${draft.category}\n` +
     `*Описание:* ${draft.card_desc}\n` +
-    `*URL:* /news/${slug}\n\n` +
-    `*Текст (начало):*\n${draft.body!.slice(0, 300)}${draft.body!.length > 300 ? "..." : ""}`
+    `*URL:* /news/${slug}`
+  await ctx.reply(meta, { parse_mode: "Markdown" })
+
+  // Full article body, plain text, chunked (Telegram limit ~4096 chars/msg)
+  const body = draft.body!.trim()
+  for (let i = 0; i < body.length; i += 3800) {
+    await ctx.reply(body.slice(i, i + 3800))
+  }
 
   const kb = new InlineKeyboard()
     .text("✅ Опубликовать", "approve").row()
   if (draft.aiMode) kb.text("🔄 Перегенерировать", "regen").row()
   kb.text("✏️ Изменить текст", "edit_body").text("🔄 Начать заново", "edit_all")
 
-  await ctx.reply(preview, { parse_mode: "Markdown", reply_markup: kb })
+  await ctx.reply("👆 Это полный текст статьи. Что делаем?", { reply_markup: kb })
 }
 
 function buildFilename(title: string): string {
