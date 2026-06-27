@@ -6,6 +6,8 @@ const client = new Anthropic()
 export interface GenerateInput {
   title: string
   category: string
+  feedback?: string // refinement instruction from the user
+  previousBody?: string // current article to rewrite when feedback is given
 }
 
 export interface GeneratedArticle {
@@ -47,17 +49,20 @@ const SCHEMA = {
 }
 
 export async function generateArticle(input: GenerateInput): Promise<GeneratedArticle> {
+  const userContent =
+    input.feedback && input.previousBody
+      ? `Заголовок статьи: ${input.title}\nКатегория: ${input.category}\n\n` +
+        `Текущая версия статьи:\n\n${input.previousBody}\n\n` +
+        `---\nПерепиши статью с учётом правок: «${input.feedback}»\n` +
+        `Сохрани тему, но примени правки. Верни обновлённую статью и краткое описание для карточки.`
+      : `Заголовок статьи: ${input.title}\nКатегория: ${input.category}\n\nНапиши статью и краткое описание для карточки.`
+
   const response = await client.messages.create({
     model: "claude-opus-4-8",
     max_tokens: 8000,
     system: SYSTEM,
     output_config: { format: { type: "json_schema", schema: SCHEMA } },
-    messages: [
-      {
-        role: "user",
-        content: `Заголовок статьи: ${input.title}\nКатегория: ${input.category}\n\nНапиши статью и краткое описание для карточки.`,
-      },
-    ],
+    messages: [{ role: "user", content: userContent }],
   })
 
   const textBlock = response.content.find((b) => b.type === "text")

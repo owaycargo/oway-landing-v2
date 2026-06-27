@@ -36,7 +36,7 @@ const mainMenu = new Keyboard()
 
 // ── State machine ─────────────────────────────────────────────────────────────
 
-type Step = "idle" | "title" | "mode" | "card_desc" | "category" | "body" | "preview"
+type Step = "idle" | "title" | "mode" | "card_desc" | "category" | "body" | "preview" | "refine"
 
 interface Draft {
   step: Step
@@ -165,6 +165,31 @@ bot.on("message:text", async (ctx) => {
       draft.body = text
       draft.step = "preview"
       await sendPreview(ctx, draft)
+      break
+    }
+
+    case "refine": {
+      if (!draft.title || !draft.category || !draft.body) {
+        await ctx.reply("Сначала сгенерируй статью через /new.")
+        break
+      }
+      await ctx.reply("🤖 Дорабатываю статью через Claude... ~20-40 секунд.")
+      try {
+        const result = await generateArticle({
+          title: draft.title,
+          category: draft.category,
+          feedback: text,
+          previousBody: draft.body,
+        })
+        draft.card_desc = result.card_description
+        draft.body = result.body
+        draft.step = "preview"
+        await sendPreview(ctx, draft)
+      } catch (err) {
+        console.error(err)
+        draft.step = "preview"
+        await ctx.reply(`❌ Не удалось доработать (${String(err)}). Попробуй ещё раз.`)
+      }
       break
     }
 
@@ -345,6 +370,18 @@ bot.callbackQuery("regen", async (ctx) => {
   }
 })
 
+bot.callbackQuery("refine", async (ctx) => {
+  const id = ctx.from.id
+  const draft = drafts.get(id)
+  if (!draft || !draft.body) { await ctx.answerCallbackQuery(); return }
+  draft.step = "refine"
+  await ctx.answerCallbackQuery()
+  await ctx.editMessageText(
+    "💬 Напиши, что изменить — я перепишу эту же статью с учётом правок.\n\n" +
+    "Примеры: «сделай короче, для минутного чтения», «больше продающий», «добавь призыв в конце», «убери воду»."
+  )
+})
+
 bot.callbackQuery("edit_body", async (ctx) => {
   const id = ctx.from.id
   const draft = drafts.get(id)
@@ -383,7 +420,10 @@ async function sendPreview(ctx: any, draft: Draft) {
 
   const kb = new InlineKeyboard()
     .text("✅ Опубликовать", "approve").row()
-  if (draft.aiMode) kb.text("🔄 Перегенерировать", "regen").row()
+  if (draft.aiMode) {
+    kb.text("💬 Доработать (комментарий)", "refine").row()
+    kb.text("🔄 Перегенерировать", "regen").row()
+  }
   kb.text("✏️ Изменить текст", "edit_body").text("🔄 Начать заново", "edit_all")
 
   await ctx.reply("👆 Это полный текст статьи. Что делаем?", { reply_markup: kb })
