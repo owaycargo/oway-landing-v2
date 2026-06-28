@@ -45,6 +45,7 @@ interface Draft {
   category?: string
   body?: string
   aiMode?: boolean
+  altTitles?: string[]
 }
 
 const drafts = new Map<number, Draft>()
@@ -181,6 +182,8 @@ bot.on("message:text", async (ctx) => {
           feedback: text,
           previousBody: draft.body,
         })
+        draft.title = result.title
+        draft.altTitles = result.alt_titles
         draft.card_desc = result.card_description
         draft.body = result.body
         draft.step = "preview"
@@ -220,6 +223,21 @@ bot.callbackQuery(/^topic:(\d+)$/, async (ctx) => {
     parse_mode: "Markdown",
     reply_markup: modeKeyboard(),
   })
+})
+
+bot.callbackQuery(/^usetitle:(\d+)$/, async (ctx) => {
+  const id = ctx.from.id
+  const draft = drafts.get(id)
+  if (!draft || !draft.altTitles) { await ctx.answerCallbackQuery(); return }
+  const t = draft.altTitles[parseInt(ctx.match[1])]
+  if (!t) { await ctx.answerCallbackQuery(); return }
+  draft.title = t
+  await ctx.answerCallbackQuery("Заголовок обновлён ✅")
+  const slug = slugify(t)
+  await ctx.editMessageText(
+    `📄 *Превью статьи*\n\n*Заголовок:* ${t}\n*Категория:* ${draft.category}\n*Описание:* ${draft.card_desc}\n*URL:* /news/${slug}\n\n✅ Заголовок выбран. Текст статьи — выше, кнопки действий — ниже.`,
+    { parse_mode: "Markdown" }
+  )
 })
 
 bot.callbackQuery("topic_custom", async (ctx) => {
@@ -293,6 +311,8 @@ bot.callbackQuery(/^cat:(.+)$/, async (ctx) => {
     )
     try {
       const result = await generateArticle({ title: draft.title!, category: draft.category })
+      draft.title = result.title
+      draft.altTitles = result.alt_titles
       draft.card_desc = result.card_description
       draft.body = result.body
       draft.step = "preview"
@@ -360,6 +380,8 @@ bot.callbackQuery("regen", async (ctx) => {
   await ctx.editMessageText("🤖 Переписываю статью через Claude... ~20-40 секунд.")
   try {
     const result = await generateArticle({ title: draft.title, category: draft.category })
+    draft.title = result.title
+    draft.altTitles = result.alt_titles
     draft.card_desc = result.card_description
     draft.body = result.body
     draft.step = "preview"
@@ -410,7 +432,17 @@ async function sendPreview(ctx: any, draft: Draft) {
     `*Категория:* ${draft.category}\n` +
     `*Описание:* ${draft.card_desc}\n` +
     `*URL:* /news/${slug}`
-  await ctx.reply(meta, { parse_mode: "Markdown" })
+
+  // Alternative title suggestions from Claude — tap to swap
+  let metaKb: InlineKeyboard | undefined
+  if (draft.aiMode && draft.altTitles && draft.altTitles.length > 0) {
+    metaKb = new InlineKeyboard()
+    draft.altTitles.forEach((t, i) => metaKb!.text(`📝 ${t}`.slice(0, 60), `usetitle:${i}`).row())
+  }
+  await ctx.reply(
+    metaKb ? `${meta}\n\n💡 Или выбери другой заголовок:` : meta,
+    { parse_mode: "Markdown", reply_markup: metaKb }
+  )
 
   // Full article body, plain text, chunked (Telegram limit ~4096 chars/msg)
   const body = draft.body!.trim()
