@@ -96,3 +96,61 @@ export async function generateArticle(input: GenerateInput): Promise<GeneratedAr
     body: parsed.body.trim(),
   }
 }
+
+// ── Product post for the Telegram channel ──────────────────────────────────────
+
+export interface ProductMeta {
+  url: string
+  title?: string
+  description?: string
+  pageText?: string
+}
+
+const PRODUCT_SYSTEM = `Ты — SMM-маркетолог OwayCargo (доставка товаров из США в страны СНГ: виртуальный адрес в США, выкуп товаров, консолидация, страхование, трекинг).
+
+Напиши короткий продающий пост для Telegram-канала о товаре из США.
+
+Требования:
+- Язык: русский, живой, с лёгким хайпом, но без перебора.
+- Длина: до ~700 знаков (это подпись под фото в Telegram).
+- Структура: 🔥 цепляющий первый строкой-заголовком с эмодзи → 1–2 коротких абзаца (что за товар, чем крут) → цена, если известна → мягкий призыв заказать через OwayCargo (виртуальный адрес/выкуп/доставка из США).
+- В самом конце добавь блок контактов ровно так:
+📦 Заказать:
+Из СНГ → @owaymanagersng
+С США → @owaymanager
+- Эмодзи в меру (3–6 на пост).
+- Если цена неизвестна — напиши «цена — по ссылке», не выдумывай.
+- ВАЖНО: обычный текст с эмодзи и переносами строк. Без markdown-разметки (никаких **, ##, [текст](ссылка)). Ссылку на товар не вставляй в текст — её прикрепим отдельной кнопкой.
+
+Верни ТОЛЬКО текст поста, без пояснений.`
+
+export async function generateProductPost(
+  meta: ProductMeta,
+  feedback?: string,
+  previous?: string,
+): Promise<string> {
+  const facts = [
+    `Ссылка: ${meta.url}`,
+    meta.title ? `Название: ${meta.title}` : "",
+    meta.description ? `Описание: ${meta.description}` : "",
+    meta.pageText ? `Текст со страницы товара:\n${meta.pageText.slice(0, 3500)}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n")
+
+  const content =
+    feedback && previous
+      ? `Данные о товаре:\n${facts}\n\nТекущий пост:\n${previous}\n\n---\nПерепиши пост с учётом правок: «${feedback}». Верни только текст поста.`
+      : `Данные о товаре:\n${facts}\n\nНапиши пост для канала. Верни только текст поста.`
+
+  const response = await client.messages.create({
+    model: "claude-opus-4-8",
+    max_tokens: 2000,
+    system: PRODUCT_SYSTEM,
+    messages: [{ role: "user", content }],
+  })
+
+  const textBlock = response.content.find((b) => b.type === "text")
+  if (!textBlock || textBlock.type !== "text") throw new Error("Пустой ответ от Claude")
+  return textBlock.text.trim()
+}

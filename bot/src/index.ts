@@ -1,7 +1,10 @@
 import { Bot, InlineKeyboard, Keyboard } from "grammy"
 import { commitPost } from "./github.ts"
 import { slugify } from "./slugify.ts"
-import { generateArticle } from "./ai.ts"
+import { generateArticle, generateProductPost } from "./ai.ts"
+
+// Telegram channel to publish product posts to (e.g. @owaycargo_news or -100...)
+const CHANNEL_ID = process.env.CHANNEL_ID
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -26,9 +29,11 @@ const TOPIC_IDEAS = [
   "Как отслеживать посылку из США до получения",
 ]
 
-// Persistent menu shown at the bottom (no need to type /new)
+// Persistent menu shown at the bottom (no need to type commands)
 const mainMenu = new Keyboard()
   .text("📝 Новая статья")
+  .row()
+  .text("🛍️ Пост о товаре")
   .row()
   .text("❓ Помощь")
   .resized()
@@ -36,7 +41,9 @@ const mainMenu = new Keyboard()
 
 // ── State machine ─────────────────────────────────────────────────────────────
 
-type Step = "idle" | "title" | "mode" | "card_desc" | "category" | "body" | "preview" | "refine"
+type Step =
+  | "idle" | "title" | "mode" | "card_desc" | "category" | "body" | "preview" | "refine"
+  | "product_url" | "product_refine"
 
 interface Draft {
   step: Step
@@ -46,6 +53,10 @@ interface Draft {
   body?: string
   aiMode?: boolean
   altTitles?: string[]
+  // product post
+  productUrl?: string
+  productImage?: string
+  productPost?: string
 }
 
 const drafts = new Map<number, Draft>()
@@ -69,15 +80,16 @@ bot.use(async (ctx, next) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function showHelp(ctx: any) {
   await ctx.reply(
-    `📋 *Как добавить статью:*\n\n` +
-    `1. Жми «📝 Новая статья» (или /new)\n` +
-    `2. Выбери готовую тему или введи свою\n` +
-    `3. Выбери режим:\n` +
-    `   🤖 *AI* — выбираешь категорию, Claude пишет готовую статью\n` +
-    `   ✍️ *Вручную* — пишешь описание и текст сам\n` +
-    `4. Проверь полный текст → можно перегенерировать или изменить\n` +
-    `5. Нажми ✅ Опубликовать\n\n` +
-    `После публикации сайт обновляется автоматически (~2 мин).`,
+    `📋 *Что умеет бот:*\n\n` +
+    `📝 *Новая статья* (для сайта)\n` +
+    `1. Выбери готовую тему или введи свою\n` +
+    `2. 🤖 AI пишет статью / ✍️ пишешь сам\n` +
+    `3. Можно сменить заголовок, доработать комментарием\n` +
+    `4. ✅ Опубликовать → сайт обновится (~2 мин)\n\n` +
+    `🛍️ *Пост о товаре* (для канала)\n` +
+    `1. Кинь ссылку на товар из США\n` +
+    `2. Бот берёт фото + Claude пишет продающий пост\n` +
+    `3. 💬 Доработать → ✅ Опубликовать в канал`,
     { parse_mode: "Markdown" }
   )
 }
@@ -114,10 +126,22 @@ bot.command("cancel", async (ctx) => {
   })
 })
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function startProduct(ctx: any) {
+  const id = ctx.from!.id
+  drafts.set(id, { step: "product_url" })
+  await ctx.reply(
+    `🛍️ *Пост о товаре*\n\nКинь ссылку на товар из США (Amazon, Crocs, любой магазин) — я возьму фото и напишу продающий пост для канала.`,
+    { parse_mode: "Markdown" }
+  )
+}
+
 bot.command("new", (ctx) => startNewArticle(ctx))
+bot.command("product", (ctx) => startProduct(ctx))
 
 // Persistent-menu buttons (tap instead of typing commands)
 bot.hears("📝 Новая статья", (ctx) => startNewArticle(ctx))
+bot.hears("🛍️ Пост о товаре", (ctx) => startProduct(ctx))
 bot.hears("❓ Помощь", (ctx) => showHelp(ctx))
 
 // ── Message handler ───────────────────────────────────────────────────────────
@@ -188,6 +212,56 @@ bot.on("message:text", async (ctx) => {
         draft.body = result.body
         draft.step = "preview"
         await sendPreview(ctx, draft)
+      } catch (err) {
+        console.error(err)
+        draft.step = "preview"
+        await ctx.reply(`❌ Не удалось доработать (${String(err)}). Попробуй ещё раз.`)
+      }
+      break
+    }
+
+    case "product_url": {
+      if (!/^https?:\/\//i.test(text)) {
+        await ctx.reply("Это не похоже на ссылку. Кинь ссылку на товар (начинается с http).")
+        break
+      }
+      await ctx.reply("🔎 Открываю страницу товара и пишу пост через Claude... ~20-40 секунд.")
+      try {
+        const meta = await fetchProductMeta(text)
+        const post = await generateProductPost({
+          url: text,
+          title: meta.ogTitle,
+          description: meta.ogDescription,
+          pageText: meta.pageText,
+        })
+        draft.productUrl = text
+        draft.productImage = meta.ogImage
+        draft.productPost = post
+        draft.step = "preview"
+        await sendProductPreview(ctx, draft)
+      } catch (err) {
+        console.error(err)
+        drafts.delete(id)
+        await ctx.reply(`❌ Не удалось обработать ссылку (${String(err)}). Попробуй другую или /product ещё раз.`)
+      }
+      break
+    }
+
+    case "product_refine": {
+      if (!draft.productUrl || !draft.productPost) {
+        await ctx.reply("Сначала пришли ссылку на товар через /product.")
+        break
+      }
+      await ctx.reply("🤖 Дорабатываю пост... ~20 секунд.")
+      try {
+        const post = await generateProductPost(
+          { url: draft.productUrl },
+          text,
+          draft.productPost,
+        )
+        draft.productPost = post
+        draft.step = "preview"
+        await sendProductPreview(ctx, draft)
       } catch (err) {
         console.error(err)
         draft.step = "preview"
@@ -392,6 +466,71 @@ bot.callbackQuery("regen", async (ctx) => {
   }
 })
 
+// ── Product post callbacks ──────────────────────────────────────────────────────
+
+bot.callbackQuery("pub_channel", async (ctx) => {
+  const id = ctx.from.id
+  const draft = drafts.get(id)
+  if (!draft || !draft.productPost) { await ctx.answerCallbackQuery(); return }
+  if (!CHANNEL_ID) {
+    await ctx.answerCallbackQuery()
+    await ctx.reply(
+      "⚠️ Канал не настроен. Нужно: 1) добавить бота админом в канал, 2) задать переменную CHANNEL_ID (@username канала или -100…).\n\nПока можешь скопировать текст поста выше и опубликовать вручную."
+    )
+    return
+  }
+  await ctx.answerCallbackQuery("Публикую в канал...")
+  try {
+    const post = draft.productPost
+    if (draft.productImage) {
+      await ctx.api.sendPhoto(CHANNEL_ID, draft.productImage, { caption: post.slice(0, 1024) })
+      if (post.length > 1024) await ctx.api.sendMessage(CHANNEL_ID, post.slice(1024))
+    } else {
+      await ctx.api.sendMessage(CHANNEL_ID, post)
+    }
+    drafts.delete(id)
+    await ctx.editMessageText("🚀 Опубликовано в канал!")
+  } catch (err) {
+    console.error(err)
+    await ctx.reply(`❌ Не удалось опубликовать (${String(err)}). Проверь, что бот — админ канала и CHANNEL_ID верный.`)
+  }
+})
+
+bot.callbackQuery("prod_refine", async (ctx) => {
+  const id = ctx.from.id
+  const draft = drafts.get(id)
+  if (!draft || !draft.productPost) { await ctx.answerCallbackQuery(); return }
+  draft.step = "product_refine"
+  await ctx.answerCallbackQuery()
+  await ctx.reply(
+    "💬 Напиши, что изменить в посте (например: «короче», «больше про цену», «добавь юмора»). Перепишу."
+  )
+})
+
+bot.callbackQuery("prod_regen", async (ctx) => {
+  const id = ctx.from.id
+  const draft = drafts.get(id)
+  if (!draft || !draft.productUrl) { await ctx.answerCallbackQuery(); return }
+  await ctx.answerCallbackQuery("Переписываю...")
+  await ctx.reply("🤖 Переписываю пост заново... ~20 секунд.")
+  try {
+    const meta = await fetchProductMeta(draft.productUrl)
+    const post = await generateProductPost({
+      url: draft.productUrl,
+      title: meta.ogTitle,
+      description: meta.ogDescription,
+      pageText: meta.pageText,
+    })
+    draft.productImage = meta.ogImage
+    draft.productPost = post
+    draft.step = "preview"
+    await sendProductPreview(ctx, draft)
+  } catch (err) {
+    console.error(err)
+    await ctx.reply(`❌ Не удалось переписать (${String(err)}).`)
+  }
+})
+
 bot.callbackQuery("refine", async (ctx) => {
   const id = ctx.from.id
   const draft = drafts.get(id)
@@ -459,6 +598,81 @@ async function sendPreview(ctx: any, draft: Draft) {
   kb.text("✏️ Изменить текст", "edit_body").text("🔄 Начать заново", "edit_all")
 
   await ctx.reply("👆 Это полный текст статьи. Что делаем?", { reply_markup: kb })
+}
+
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&#x27;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+}
+
+async function fetchProductMeta(url: string): Promise<{
+  ogImage?: string
+  ogTitle?: string
+  ogDescription?: string
+  pageText?: string
+}> {
+  const res = await fetch(url, {
+    headers: {
+      "user-agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0 Safari/537.36",
+      "accept-language": "ru,en;q=0.9",
+    },
+    redirect: "follow",
+  })
+  const html = await res.text()
+
+  const metaContent = (prop: string): string | undefined => {
+    const m =
+      html.match(
+        new RegExp(`<meta[^>]+(?:property|name)=["']${prop}["'][^>]*content=["']([^"']+)["']`, "i")
+      ) ||
+      html.match(
+        new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]*(?:property|name)=["']${prop}["']`, "i")
+      )
+    return m ? decodeEntities(m[1]) : undefined
+  }
+
+  const ogImage = metaContent("og:image") || metaContent("twitter:image")
+  const titleTag = html.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]
+  const ogTitle = metaContent("og:title") || (titleTag ? decodeEntities(titleTag) : undefined)
+  const ogDescription = metaContent("og:description") || metaContent("description")
+
+  const pageText = html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 4000)
+
+  return { ogImage, ogTitle, ogDescription, pageText }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function sendProductPreview(ctx: any, draft: Draft) {
+  const kb = new InlineKeyboard()
+    .text("✅ Опубликовать в канал", "pub_channel").row()
+    .text("💬 Доработать", "prod_refine")
+    .text("🔄 Заново", "prod_regen")
+
+  const post = draft.productPost!
+  if (draft.productImage) {
+    try {
+      await ctx.replyWithPhoto(draft.productImage, { caption: post.slice(0, 1024) })
+      if (post.length > 1024) await ctx.reply(post.slice(1024))
+    } catch {
+      // Image URL not accepted by Telegram — fall back to text
+      await ctx.reply(post)
+    }
+  } else {
+    await ctx.reply("⚠️ Не нашёл фото на странице — пост без картинки.\n\n" + post)
+  }
+  await ctx.reply("👆 Так выглядит пост. Что делаем?", { reply_markup: kb })
 }
 
 function buildFilename(title: string): string {
