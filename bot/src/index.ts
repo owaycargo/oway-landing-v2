@@ -1,7 +1,8 @@
-import { Bot, InlineKeyboard, Keyboard } from "grammy"
+import { Bot, InlineKeyboard, Keyboard, InputFile } from "grammy"
 import { commitPost } from "./github.ts"
 import { slugify } from "./slugify.ts"
-import { generateArticle, generateProductPost } from "./ai.ts"
+import { generateArticle, generateProductPost, editImage } from "./ai.ts"
+import type { InputImage } from "./ai.ts"
 
 // Telegram channel to publish product posts to (e.g. @owaycargo_news or -100...)
 const CHANNEL_ID = process.env.CHANNEL_ID
@@ -34,6 +35,7 @@ const mainMenu = new Keyboard()
   .text("📝 Новая статья")
   .row()
   .text("🛍️ Пост о товаре")
+  .text("🎨 Обработать фото")
   .row()
   .text("❓ Помощь")
   .resized()
@@ -44,6 +46,7 @@ const mainMenu = new Keyboard()
 type Step =
   | "idle" | "title" | "mode" | "card_desc" | "category" | "body" | "preview" | "refine"
   | "product_url" | "product_refine"
+  | "image_collect" | "image_refine"
 
 interface Draft {
   step: Step
@@ -57,6 +60,9 @@ interface Draft {
   productUrl?: string
   productImage?: string
   productPost?: string
+  // image editing
+  photos?: InputImage[]
+  editedImage?: InputImage
 }
 
 const drafts = new Map<number, Draft>()
@@ -89,7 +95,11 @@ async function showHelp(ctx: any) {
     `🛍️ *Пост о товаре* (для канала)\n` +
     `1. Кинь ссылку на товар из США\n` +
     `2. Бот берёт фото + Claude пишет продающий пост\n` +
-    `3. 💬 Доработать → ✅ Опубликовать в канал`,
+    `3. 💬 Доработать → ✅ Опубликовать в канал\n\n` +
+    `🎨 *Обработать фото* (Gemini)\n` +
+    `1. Пришли 1–4 фото\n` +
+    `2. Напиши, что сделать (единый стиль, убрать фон…)\n` +
+    `3. Получишь готовую картинку → 💬 доработать`,
     { parse_mode: "Markdown" }
   )
 }
@@ -136,13 +146,64 @@ async function startProduct(ctx: any) {
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function startImage(ctx: any) {
+  const id = ctx.from!.id
+  drafts.set(id, { step: "image_collect", photos: [] })
+  await ctx.reply(
+    `🎨 *Обработать фото*\n\nПришли 1–4 фото (по одному или альбомом). Потом напиши, что сделать — например:\n` +
+    `• «объедини в один кадр, единый стиль»\n` +
+    `• «убери фон, поставь чистый студийный»\n` +
+    `• «надень эти очки на модель»\n\n` +
+    `Картинку сделает Google Gemini.`,
+    { parse_mode: "Markdown" }
+  )
+}
+
 bot.command("new", (ctx) => startNewArticle(ctx))
 bot.command("product", (ctx) => startProduct(ctx))
+bot.command("image", (ctx) => startImage(ctx))
 
 // Persistent-menu buttons (tap instead of typing commands)
 bot.hears("📝 Новая статья", (ctx) => startNewArticle(ctx))
 bot.hears("🛍️ Пост о товаре", (ctx) => startProduct(ctx))
+bot.hears("🎨 Обработать фото", (ctx) => startImage(ctx))
 bot.hears("❓ Помощь", (ctx) => showHelp(ctx))
+
+// Download a Telegram photo as base64
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function tgPhotoToBase64(ctx: any, fileId: string): Promise<InputImage> {
+  const file = await ctx.api.getFile(fileId)
+  const url = `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${file.file_path}`
+  const res = await fetch(url)
+  const buf = Buffer.from(await res.arrayBuffer())
+  return { mimeType: "image/jpeg", data: buf.toString("base64") }
+}
+
+// Collect photos for the image-editing flow
+bot.on("message:photo", async (ctx) => {
+  const id = ctx.from!.id
+  const draft = drafts.get(id)
+  if (!draft || draft.step !== "image_collect") {
+    await ctx.reply("Чтобы обработать фото — жми «🎨 Обработать фото».")
+    return
+  }
+  if (!draft.photos) draft.photos = []
+  if (draft.photos.length >= 4) {
+    await ctx.reply("Уже 4 фото. Напиши, что сделать.")
+    return
+  }
+  const sizes = ctx.message.photo
+  const largest = sizes[sizes.length - 1]
+  try {
+    const img = await tgPhotoToBase64(ctx, largest.file_id)
+    draft.photos.push(img)
+    await ctx.reply(`📷 Фото ${draft.photos.length} принято. Пришли ещё (до 4) или напиши, что сделать.`)
+  } catch (err) {
+    console.error(err)
+    await ctx.reply(`❌ Не смог скачать фото (${String(err)})`)
+  }
+})
 
 // ── Message handler ───────────────────────────────────────────────────────────
 
@@ -262,6 +323,51 @@ bot.on("message:text", async (ctx) => {
         draft.productPost = post
         draft.step = "preview"
         await sendProductPreview(ctx, draft)
+      } catch (err) {
+        console.error(err)
+        draft.step = "preview"
+        await ctx.reply(`❌ Не удалось доработать (${String(err)}). Попробуй ещё раз.`)
+      }
+      break
+    }
+
+    case "image_collect": {
+      if (!draft.photos || draft.photos.length === 0) {
+        await ctx.reply("Сначала пришли хотя бы одно фото.")
+        break
+      }
+      await ctx.reply(`🎨 Обрабатываю ${draft.photos.length} фото через Gemini... ~20-40 секунд.`)
+      try {
+        const prompt =
+          `Профессиональное брендовое изображение для OwayCargo (доставка товаров из США в страны СНГ). ` +
+          `Объедини/обработай присланные фото в единый чистый рекламный стиль, аккуратно и реалистично. ` +
+          `Задача: ${text}`
+        const out = await editImage(draft.photos, prompt)
+        draft.editedImage = out
+        draft.step = "preview"
+        await sendImageResult(ctx, draft)
+      } catch (err) {
+        console.error(err)
+        draft.step = "image_collect"
+        await ctx.reply(`❌ Не удалось обработать (${String(err)}). Попробуй другую инструкцию или фото.`)
+      }
+      break
+    }
+
+    case "image_refine": {
+      if (!draft.editedImage) {
+        await ctx.reply("Сначала обработай фото.")
+        break
+      }
+      await ctx.reply("🎨 Дорабатываю картинку... ~20-40 секунд.")
+      try {
+        const out = await editImage(
+          [draft.editedImage],
+          `Доработай это изображение для бренда OwayCargo: ${text}`,
+        )
+        draft.editedImage = out
+        draft.step = "preview"
+        await sendImageResult(ctx, draft)
       } catch (err) {
         console.error(err)
         draft.step = "preview"
@@ -496,6 +602,24 @@ bot.callbackQuery("pub_channel", async (ctx) => {
   }
 })
 
+bot.callbackQuery("img_refine", async (ctx) => {
+  const id = ctx.from.id
+  const draft = drafts.get(id)
+  if (!draft || !draft.editedImage) { await ctx.answerCallbackQuery(); return }
+  draft.step = "image_refine"
+  await ctx.answerCallbackQuery()
+  await ctx.reply("💬 Напиши, что поправить на картинке (например: «фон светлее», «добавь логотип», «убери лишнее»).")
+})
+
+bot.callbackQuery("img_regen", async (ctx) => {
+  const id = ctx.from.id
+  const draft = drafts.get(id)
+  if (!draft || !draft.photos || draft.photos.length === 0) { await ctx.answerCallbackQuery(); return }
+  draft.step = "image_collect"
+  await ctx.answerCallbackQuery()
+  await ctx.reply("🔄 Ок. Напиши инструкцию заново — переделаю из исходных фото. (Или пришли другие фото.)")
+})
+
 bot.callbackQuery("prod_refine", async (ctx) => {
   const id = ctx.from.id
   const draft = drafts.get(id)
@@ -598,6 +722,18 @@ async function sendPreview(ctx: any, draft: Draft) {
   kb.text("✏️ Изменить текст", "edit_body").text("🔄 Начать заново", "edit_all")
 
   await ctx.reply("👆 Это полный текст статьи. Что делаем?", { reply_markup: kb })
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function sendImageResult(ctx: any, draft: Draft) {
+  const buf = Buffer.from(draft.editedImage!.data, "base64")
+  const kb = new InlineKeyboard()
+    .text("💬 Доработать", "img_refine")
+    .text("🔄 Заново", "img_regen")
+  await ctx.replyWithPhoto(new InputFile(buf, "oway.png"), {
+    caption: "🎨 Готово! Скачай картинку или доработай.",
+    reply_markup: kb,
+  })
 }
 
 function decodeEntities(s: string): string {

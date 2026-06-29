@@ -3,6 +3,57 @@ import Anthropic from "@anthropic-ai/sdk"
 // Reads ANTHROPIC_API_KEY from the environment.
 const client = new Anthropic()
 
+// ── Image editing via Google Gemini (Nano Banana) ──────────────────────────────
+// Claude can't make images; Gemini 2.5 Flash Image edits/composites them.
+
+export interface InputImage {
+  mimeType: string
+  data: string // base64
+}
+
+export async function editImage(
+  images: InputImage[],
+  instruction: string,
+): Promise<InputImage> {
+  const key = process.env.GEMINI_API_KEY
+  if (!key) throw new Error("GEMINI_API_KEY не задан")
+  const model = process.env.GEMINI_IMAGE_MODEL || "gemini-2.5-flash-image"
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const parts: any[] = [{ text: instruction }]
+  for (const img of images) {
+    parts.push({ inline_data: { mime_type: img.mimeType, data: img.data } })
+  }
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts }] }),
+    },
+  )
+  if (!res.ok) {
+    const t = await res.text().catch(() => "")
+    throw new Error(`Gemini ${res.status}: ${t.slice(0, 300)}`)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const json = (await res.json()) as any
+  const outParts = json?.candidates?.[0]?.content?.parts ?? []
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const imgPart = outParts.find((p: any) => p.inline_data?.data || p.inlineData?.data)
+  const inline = imgPart?.inline_data || imgPart?.inlineData
+  if (!inline?.data) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const textPart = outParts.find((p: any) => p.text)?.text
+    throw new Error(
+      textPart ? `Gemini не вернул картинку: ${textPart.slice(0, 200)}` : "Gemini не вернул картинку",
+    )
+  }
+  return { mimeType: inline.mime_type || inline.mimeType || "image/png", data: inline.data }
+}
+
 export interface GenerateInput {
   title: string
   category: string
