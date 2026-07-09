@@ -73,6 +73,10 @@ const bot = new Bot(BOT_TOKEN)
 
 // Auth middleware
 bot.use(async (ctx, next) => {
+  // Only respond in private chats with the bot. Ignore channel posts and group
+  // messages entirely — otherwise, once the bot is a channel admin, every post
+  // triggers a "Нет доступа" reply straight into the channel (spam).
+  if (ctx.chat?.type !== 'private') return
   const id = ctx.from?.id
   if (!id || (ALLOWED_IDS.length > 0 && !ALLOWED_IDS.includes(id))) {
     await ctx.reply("⛔️ Нет доступа.")
